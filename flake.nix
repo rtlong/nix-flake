@@ -12,6 +12,22 @@
 
   outputs = inputs@{ self, nix-darwin, nixpkgs, ... }:
     let
+      system = "aarch64-darwin";
+
+      inherit (nixpkgs) lib;
+      nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (builtins.traceVal (lib.getName pkg)) [
+        "vscode"
+        "1password"
+        "1password-cli"
+      ];
+
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [ nix-darwin.overlays.default ];
+      };
+
+      ykman-gui = (pkgs.callPackage ./lib/ykman-gui { });
+
       configuration = { pkgs, lib, ... }: {
         # List packages installed in system profile. To search by name, run:
         environment.systemPackages = with pkgs; [
@@ -52,6 +68,8 @@
           pick
           utm
           yubikey-manager
+          # ykman-gui
+
           lastpass-cli
           tealdeer # provides tldr
           tig
@@ -67,15 +85,8 @@
 
           # other language tools
           shellcheck
-        ];
 
-        nixpkgs.config.allowUnfreePredicate = pkg:
-          builtins.elem (lib.getName pkg) [
-            "vscode"
-            "1password"
-            "1password-cli"
-          ];
-        nixpkgs.overlays = [ ];
+        ];
 
         fonts.packages = with pkgs; [
           (nerdfonts.override { fonts = [ "OpenDyslexic" "Lilex" "FiraCode" ]; })
@@ -193,7 +204,7 @@
         nix.settings.trusted-users = [ "ryanlong" ];
 
         # The platform the configuration will be used on.
-        nixpkgs.hostPlatform = "aarch64-darwin";
+        nixpkgs.hostPlatform = system;
 
         # Used for backwards compatibility, please read the changelog before changing.
         # $ darwin-rebuild changelog
@@ -204,6 +215,8 @@
       # Build darwin flake using:
       # $ darwin-rebuild build --flake .#fumuk-ligip-makit
       darwinConfigurations."fumuk-ligip-makit" = nix-darwin.lib.darwinSystem {
+        inherit pkgs;
+
         modules = [
           inputs.mac-app-util.darwinModules.default # enables Alfred/Spotlight to launch nix-controlled apps correctly
           configuration
@@ -212,5 +225,7 @@
 
       # Expose the package set, including overlays, for convenience.
       darwinPackages = self.darwinConfigurations."fumuk-ligip-makit".pkgs;
+
+      # inherit ykman-gui;
     };
 }
