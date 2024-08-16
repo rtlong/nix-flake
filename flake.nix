@@ -36,7 +36,8 @@
 
           # other software/tools
           _1password # -- op CLI tool
-          aws-mfa
+          # aws-mfa
+          aws-vault
           awscli
           # brave -- not yet available in nix-darwin
           colima # replacement for Docker Desktop
@@ -46,12 +47,14 @@
           # hammerspoon -- need something to handle meh+{app} launch/focus bindings
           iterm2
           jq
+          fx # tool like JQ with interactive filtering
           nix-direnv
           pick
           utm
           yubikey-manager
           lastpass-cli
           tealdeer # provides tldr
+          tig
 
           # probably move to homemanager.packages once I set that up:
           starship
@@ -75,7 +78,7 @@
         nixpkgs.overlays = [ ];
 
         fonts.packages = with pkgs; [
-          (nerdfonts.override { fonts = [ "OpenDyslexic" "Lilex" ]; })
+          (nerdfonts.override { fonts = [ "OpenDyslexic" "Lilex" "FiraCode" ]; })
           open-dyslexic
           font-awesome
         ];
@@ -105,11 +108,10 @@
           enableSensible = true;
           enableMouse = true;
         };
-        programs.vim =
-          {
-            enable = true;
-            enableSensible = true;
-          };
+        programs.vim = {
+          enable = true;
+          enableSensible = true;
+        };
 
         # networking = {
         #   computerName = "";
@@ -121,6 +123,7 @@
           enable = true;
           addresses = {
             test = "127.0.0.1"; # redirect all queries for *.test TLD to localhost
+            localhost = "127.0.0.1"; # redirect all queries for *.localhost TLD to localhost
           };
         };
 
@@ -187,6 +190,7 @@
 
         # Necessary for using flakes on this system.
         nix.settings.experimental-features = "nix-command flakes";
+        nix.settings.trusted-users = [ "ryanlong" ];
 
         # The platform the configuration will be used on.
         nixpkgs.hostPlatform = "aarch64-darwin";
