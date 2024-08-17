@@ -22,6 +22,8 @@
           findutils
           htop
           dig
+          openssh
+          # openssh_gssapi
           nmap
           curl
           wget
@@ -47,7 +49,8 @@
           # hammerspoon -- need something to handle meh+{app} launch/focus bindings
           iterm2
           jq
-          fx # tool like JQ with interactive filtering
+          ijq
+          # fx # tool like JQ with interactive filtering
           nix-direnv
           pick
           utm
@@ -55,6 +58,7 @@
           lastpass-cli
           tealdeer # provides tldr
           tig
+          github-cli
 
           # probably move to homemanager.packages once I set that up:
           starship
@@ -119,14 +123,9 @@
         #   localHostName = "";
         # };
 
-        services.dnsmasq = {
-          enable = true;
-          addresses = {
-            test = "127.0.0.1"; # redirect all queries for *.test TLD to localhost
-            localhost = "127.0.0.1"; # redirect all queries for *.localhost TLD to localhost
-          };
-        };
-
+        # services.dnsmasq = {
+        #   enable = true; ## TODO: this is buggy, notbly needs the bin/wait4path trick in the dnsmasq module below -- good PR!
+        # };
         security.pam.enableSudoTouchIdAuth = true;
 
         system.defaults = {
@@ -199,6 +198,51 @@
         # $ darwin-rebuild changelog
         system.stateVersion = 4;
       };
+
+      dnsmasq_module = { config, lib, pkgs, ... }:
+        with lib;
+        let
+          mapA = f: attrs: with builtins; attrValues (mapAttrs f attrs);
+          package = pkgs.dnsmasq;
+          addresses = {
+            test = "127.0.0.1"; # redirect all queries for *.test TLD to localhost
+            localhost = "127.0.0.1"; # redirect all queries for *.localhost TLD to localhost
+          };
+          bind = "127.0.0.1";
+          port = 53;
+          args = [
+            "--listen-address=${bind}"
+            "--port=${toString port}"
+            "--no-daemon"
+          ] ++ (mapA (domain: addr: "--address=/${domain}/${addr}") addresses);
+        in
+        {
+          environment.systemPackages = [ package ];
+
+          launchd.daemons.dnsmasq = {
+            # serviceConfig.Debug = true;
+            serviceConfig.ProgramArguments = [
+              "/bin/sh"
+              "-c"
+              "/bin/wait4path ${package} &amp;&amp; exec ${package}/bin/dnsmasq ${toString args}"
+            ];
+            serviceConfig.StandardOutPath = /var/log/dnsmasq.log;
+            serviceConfig.StandardErrorPath = /var/log/dnsmasq.log;
+          };
+
+          environment.etc = builtins.listToAttrs (builtins.map
+            (domain: {
+              name = "resolver/${domain}";
+              value = {
+                enable = true;
+                text = ''
+                  port ${toString port}
+                  nameserver ${bind}
+                '';
+              };
+            })
+            (builtins.attrNames addresses));
+        };
     in
     {
       # Build darwin flake using:
@@ -206,6 +250,7 @@
       darwinConfigurations."fumuk-ligip-makit" = nix-darwin.lib.darwinSystem {
         modules = [
           inputs.mac-app-util.darwinModules.default # enables Alfred/Spotlight to launch nix-controlled apps correctly
+          dnsmasq_module
           configuration
         ];
       };
