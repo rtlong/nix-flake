@@ -1,4 +1,18 @@
 { config, pkgs, lib, local-ai, ... }:
+let
+  aws-vault-wrapper = (pkgs.writeShellApplication {
+    name = "aws-vault";
+    runtimeEnv = {
+      AWS_VAULT_BACKEND = "file";
+      AWS_SESSION_TOKEN_TTL = "36h";
+      AWS_VAULT_FILE_PASSPHRASE = "op://qvutxi2zizeylilt23rflojdky/c5nz76at6k6vqx4cxhday5yg7u/password";
+    };
+    text = ''
+      exec ${pkgs._1password}/bin/op --account my run -- "${pkgs.aws-vault}/bin/aws-vault" "$@"
+    '';
+  });
+
+in
 {
   home.stateVersion = "22.05";
 
@@ -30,6 +44,13 @@
       dc = "docker compose";
     };
     syntaxHighlighting.enable = true;
+    autosuggestion.enable = true;
+    autosuggestion.strategy = [
+      "completion"
+      "match_prev_cmd"
+    ];
+    history.extended = true;
+    historySubstringSearch.enable = true;
   };
 
   programs.starship.enable = true;
@@ -54,15 +75,25 @@
     wget
     ripgrep
     ripgrep-all
+    fd # find alternative - recommended by DoomEmacs
     fzf
 
     # editors
     # vim ## implied by programs.vim.enable and apparently incompatible with it
-    emacs
+    emacsMacport
     vscode
 
-    colima # replacement for Docker Desktop
-    docker # CLI
+    # docker # CLI
+    # (pkgs.writeShellApplication {
+    #   name = "docker";
+    #   text = ''
+    #     exec ${podman}/bin/podman "$@"
+    #   '';
+    # })
+    # podman # installed through Podman Desktop app
+    # podman-compose
+    # kubectl
+    # podman-desktop # broken as of 2024-08-19
 
     # brave -- not yet available in nix-darwin
     dasht
@@ -71,7 +102,6 @@
     iterm2
     jq
     ijq
-    nix-direnv
     pick
     utm
     tealdeer # provides tldr
@@ -79,7 +109,7 @@
 
     # Auth tools
     _1password # -- op CLI tool
-    aws-vault
+    aws-vault-wrapper
     yubikey-manager
     lastpass-cli
 
@@ -113,6 +143,14 @@
   #     };
   #   };
   #   nix.enable = true;
+  # };
+
+  # home.file.".local/bin/docker" = {
+  #   text = ''
+  #     exec podman "$@"
+  #   '';
+
+  #   executable = true;
   # };
 
 }
