@@ -12,6 +12,8 @@ let
     '';
   });
 
+  repository_path = "${config.home.homeDirectory}/Code";
+
 in
 {
   home.stateVersion = "22.05";
@@ -39,10 +41,31 @@ in
       [[ -f "$HOME/.zshenv.local" ]] && source "$HOME/.zshenv.local"
     '';
     shellAliases = {
+      l = "ls -1A";
       ll = "ls -la";
       tf = "aws-vault exec opencounter -- terraform";
       dc = "docker compose";
     };
+    initExtra = ''
+      xtrace() { printf >&2 '+ %s\n' "$*"; "$@"; }
+
+      git-get() {
+        set -x
+        git_url="$1"; shift
+        [[ -n $git_url ]] || return 1
+        dest="$(${pkgs.ruby}/bin/ruby $HOME/.local/bin/calculate-git-clone-destination "$git_url")"
+        [[ -n $dest ]] || return 1
+
+        if [[ -d $dest ]]; then
+            cd "$dest"
+            xtrace git fetch
+        else
+            xtrace git clone "$git_url" "$dest"
+            cd "$dest"
+        fi
+        set +x
+      }
+    '';
     syntaxHighlighting.enable = true;
     autosuggestion.enable = true;
     autosuggestion.strategy = [
@@ -53,7 +76,25 @@ in
     historySubstringSearch.enable = true;
   };
 
-  programs.starship.enable = true;
+  programs.starship = {
+    enable = true;
+    settings = {
+      directory = {
+        truncation_length = 10;
+        truncate_to_repo = false; # truncates directory to root folder if in github repo
+        # truncation_symbol = "…/";
+        # fish_style_pwd_dir_length = 1;
+        # read_only = " ";
+        # style = "bold bright-blue";
+        # repo_root_style = "bold bright-green";
+        # repo_root_format = "[$before_root_path]($style)[$repo_root$path]($repo_root_style)[$read_only]($read_only_style) ";
+
+        substitutions = {
+          "~/Code/github.com/" = " ";
+        };
+      };
+    };
+  };
   programs.zoxide.enable = true;
 
   programs.direnv = {
@@ -61,6 +102,9 @@ in
     nix-direnv.enable = true;
   };
 
+  home.sessionVariables = {
+    CODE_WORKSPACE_ROOT = repository_path;
+  };
   home.packages = with pkgs; [
     # essential tools
     coreutils
