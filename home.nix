@@ -5,10 +5,10 @@ let
     runtimeEnv = {
       AWS_VAULT_BACKEND = "file";
       AWS_SESSION_TOKEN_TTL = "36h";
-      AWS_VAULT_FILE_PASSPHRASE = "op://qvutxi2zizeylilt23rflojdky/c5nz76at6k6vqx4cxhday5yg7u/password";
     };
     text = ''
-      exec ${pkgs._1password}/bin/op --account my run -- "${pkgs.aws-vault}/bin/aws-vault" "$@"
+      exec env AWS_VAULT_FILE_PASSPHRASE="$(${pkgs._1password}/bin/op --account my read op://qvutxi2zizeylilt23rflojdky/c5nz76at6k6vqx4cxhday5yg7u/password)" \
+        "${pkgs.aws-vault}/bin/aws-vault" "$@"
     '';
   });
   get-puppeteer-chromium-path = (pkgs.writeShellApplication {
