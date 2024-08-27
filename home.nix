@@ -11,6 +11,17 @@ let
       exec ${pkgs._1password}/bin/op --account my run -- "${pkgs.aws-vault}/bin/aws-vault" "$@"
     '';
   });
+  get-puppeteer-chromium-path = (pkgs.writeShellApplication {
+    # provides a the recommended way to obtain a chromium for use in development (ie. likely using puppeteer-core and CDP), lazily downloads the right release and then returns the path. Probably need to do something like this in a .envrc.local: `export BROWSER_PATH="$(get-puppeteer-chromium-path)"`
+    name = "get-puppeteer-chromium-path";
+    runtimeInputs = with pkgs; [
+      nodejs
+    ];
+    text = ''
+      result="$( ${pkgs.nodejs}/bin/npx @puppeteer/browsers install --path "$HOME/.cache/puppeteer/" chrome@canary < /dev/null | cut -d' ' -f 2-)"
+      echo "$result"
+    '';
+  });
 
   repository_path = "${config.home.homeDirectory}/Code";
 
@@ -105,6 +116,7 @@ in
   home.sessionVariables = {
     CODE_WORKSPACE_ROOT = repository_path;
   };
+
   home.packages = with pkgs; [
     # essential tools
     coreutils
@@ -172,6 +184,8 @@ in
 
     # other language tools
     shellcheck
+
+    get-puppeteer-chromium-path
   ];
 
   # # Misc configuration files --------------------------------------------------------------------{{{
