@@ -72,33 +72,41 @@
       NSWindowShouldDragOnGesture = true;
     };
     # WindowManager.AutoHide = true;
-    alf.allowdownloadsignedenabled = 1;
-    alf.allowsignedenabled = 1;
+    alf = {
+      allowdownloadsignedenabled = 1;
+      allowsignedenabled = 1;
+    };
 
-    dock.appswitcher-all-displays = true;
-    dock.autohide = true;
-    dock.mru-spaces = false;
+    dock = {
+      appswitcher-all-displays = true;
+      autohide = true;
+      mru-spaces = false;
 
-    # hot corners
-    dock.wvous-bl-corner = 1; # disabled
-    dock.wvous-br-corner = 1;
-    dock.wvous-tl-corner = 1;
-    dock.wvous-tr-corner = 1;
+      # hot corners
+      wvous-bl-corner = 1; # disabled
+      wvous-br-corner = 1;
+      wvous-tl-corner = 1;
+      wvous-tr-corner = 1;
+    };
 
-    finder.AppleShowAllExtensions = true;
-    finder.AppleShowAllFiles = true;
-    finder.CreateDesktop = false;
-    finder.FXEnableExtensionChangeWarning = false;
-    finder.FXPreferredViewStyle = "Nlsv";
-    finder.ShowPathbar = true;
-    finder.ShowStatusBar = true;
-    finder._FXShowPosixPathInTitle = true;
+    finder = {
+      AppleShowAllExtensions = true;
+      AppleShowAllFiles = true;
+      CreateDesktop = false;
+      FXEnableExtensionChangeWarning = false;
+      FXPreferredViewStyle = "Nlsv";
+      ShowPathbar = true;
+      ShowStatusBar = true;
+      _FXShowPosixPathInTitle = true;
+    };
 
-    menuExtraClock.Show24Hour = true;
-    menuExtraClock.ShowDate = 2; # 2 = never
-    menuExtraClock.ShowDayOfMonth = false;
-    menuExtraClock.ShowDayOfWeek = false;
-    menuExtraClock.ShowSeconds = false;
+    menuExtraClock = {
+      Show24Hour = true;
+      ShowDate = 2; # 2 = never
+      ShowDayOfMonth = false;
+      ShowDayOfWeek = false;
+      ShowSeconds = false;
+    };
 
     # smb.NetBIOSName = "";
     spaces.spans-displays = true; # false = each physical display has a separate space (Mac default) true = one space spans across all physical displays

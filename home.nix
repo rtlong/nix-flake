@@ -76,6 +76,10 @@ in
         fi
         set +x
       }
+
+      autoload -U select-word-style
+      select-word-style bash
+      local WORDCHARS='*?_[]~=&;!#$%^(){}<>'
     '';
     syntaxHighlighting.enable = true;
     autosuggestion.enable = true;
@@ -85,6 +89,7 @@ in
     ];
     history.extended = true;
     historySubstringSearch.enable = true;
+
   };
 
   programs.starship = {
