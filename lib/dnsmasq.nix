@@ -27,6 +27,8 @@ in
     ];
     serviceConfig.StandardOutPath = /var/log/dnsmasq.log;
     serviceConfig.StandardErrorPath = /var/log/dnsmasq.log;
+    serviceConfig.RunAtLoad = true;
+    serviceConfig.KeepAlive = true;
   };
 
   environment.etc = builtins.listToAttrs (builtins.map

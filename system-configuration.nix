@@ -78,7 +78,7 @@
     };
 
     dock = {
-      appswitcher-all-displays = true;
+      appswitcher-all-displays = false;
       autohide = true;
       mru-spaces = false;
 
@@ -109,7 +109,7 @@
     };
 
     # smb.NetBIOSName = "";
-    spaces.spans-displays = true; # false = each physical display has a separate space (Mac default) true = one space spans across all physical displays
+    spaces.spans-displays = false; # false = each physical display has a separate space (Mac default) true = one space spans across all physical displays
 
     trackpad.ActuationStrength = 0; # silent clicking
 

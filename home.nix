@@ -18,7 +18,7 @@ let
       nodejs
     ];
     text = ''
-      result="$( ${pkgs.nodejs}/bin/npx @puppeteer/browsers install --path "$HOME/.cache/puppeteer/" chrome@canary < /dev/null | cut -d' ' -f 2-)"
+      result="$( ${pkgs.nodejs}/bin/npx @puppeteer/browsers install --path "$HOME/.cache/puppeteer/" chrome@latest < /dev/null | cut -d' ' -f 2-)"
       echo "$result"
     '';
   });
@@ -131,7 +131,8 @@ in
     htop
     dig
     openssh
-    nmap
+    # nmap
+    liblinear
     curl
     wget
     ripgrep
@@ -176,6 +177,7 @@ in
 
     # Webservice CLIs
     awscli
+    ssm-session-manager-plugin
     github-cli
 
     # probably move to homemanager.packages once I set that up:
@@ -191,6 +193,9 @@ in
     shellcheck
 
     get-puppeteer-chromium-path
+
+    gephi
+    pgadmin4-desktopmode
   ];
 
   # # Misc configuration files --------------------------------------------------------------------{{{
