@@ -6,11 +6,26 @@ let
       AWS_VAULT_BACKEND = "file";
       AWS_SESSION_TOKEN_TTL = "36h";
     };
+    excludeShellChecks = [ "SC2209" ];
     text = ''
       exec env AWS_VAULT_FILE_PASSPHRASE="$(${pkgs._1password}/bin/op --account my read op://qvutxi2zizeylilt23rflojdky/c5nz76at6k6vqx4cxhday5yg7u/password)" \
         "${pkgs.aws-vault}/bin/aws-vault" "$@"
     '';
   });
+
+  terraform-wrapper = (pkgs.writeShellApplication {
+    name = "terraform";
+    # runtimeEnv = { };
+    # NB: unlike aws-vault wrapper, I expect local versions of terraform to be provided in various contexts, so I use a PATH-climbing approach to find the "next" terraform executable down the path (that which this script is wrapping)
+    text = ''
+      set -x
+      mapfile -t executables < <( which -a terraform )
+      terraform="''${executables[1]}"
+      exec "${aws-vault-wrapper}/bin/aws-vault" exec opencounter -- "$terraform" "$@"
+    '';
+  });
+
+
   get-puppeteer-chromium-path = (pkgs.writeShellApplication {
     # provides a the recommended way to obtain a chromium for use in development (ie. likely using puppeteer-core and CDP), lazily downloads the right release and then returns the path. Probably need to do something like this in a .envrc.local: `export BROWSER_PATH="$(get-puppeteer-chromium-path)"`
     name = "get-puppeteer-chromium-path";
@@ -18,7 +33,7 @@ let
       nodejs
     ];
     text = ''
-      result="$( ${pkgs.nodejs}/bin/npx @puppeteer/browsers install --path "$HOME/.cache/puppeteer/" chrome@latest < /dev/null | cut -d' ' -f 2-)"
+      result="$( ${pkgs.nodejs}/bin/npx @puppeteer/browsers install --path "$HOME/.cache/puppeteer/" chrome < /dev/null | cut -d' ' -f 2-)"
       echo "$result"
     '';
   });
@@ -46,6 +61,7 @@ in
   programs.htop.enable = true;
   programs.htop.settings.show_program_path = true;
 
+  programs.bash.enable = true;
   programs.zsh = {
     enable = true;
     envExtra = ''
@@ -95,6 +111,10 @@ in
   programs.starship = {
     enable = true;
     settings = {
+      shlvl = {
+        disabled = false;
+        threshold = 0;
+      };
       directory = {
         truncation_length = 10;
         truncate_to_repo = false; # truncates directory to root folder if in github repo
@@ -137,9 +157,10 @@ in
     wget
     ripgrep
     ripgrep-all
+    rsync
     fd # find alternative - recommended by DoomEmacs
     fzf
-
+    docker-credential-helpers
     # editors
     # vim ## implied by programs.vim.enable and apparently incompatible with it
     emacsMacport
@@ -168,6 +189,8 @@ in
     utm
     tealdeer # provides tldr
     tig
+
+    terraform-wrapper
 
     # Auth tools
     _1password # -- op CLI tool
