@@ -85,7 +85,7 @@
       # hot corners
       wvous-bl-corner = 1; # disabled
       wvous-br-corner = 1;
-      wvous-tl-corner = 1;
+      wvous-tl-corner = 13;
       wvous-tr-corner = 1;
     };
 

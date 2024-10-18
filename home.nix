@@ -25,31 +25,21 @@ let
     '';
   });
 
-
-  get-puppeteer-chromium-path = (pkgs.writeShellApplication {
-    # provides a the recommended way to obtain a chromium for use in development (ie. likely using puppeteer-core and CDP), lazily downloads the right release and then returns the path. Probably need to do something like this in a .envrc.local: `export BROWSER_PATH="$(get-puppeteer-chromium-path)"`
-    name = "get-puppeteer-chromium-path";
-    runtimeInputs = with pkgs; [
-      nodejs
-    ];
-    text = ''
-      result="$( ${pkgs.nodejs}/bin/npx @puppeteer/browsers install --path "$HOME/.cache/puppeteer/" chrome < /dev/null | cut -d' ' -f 2-)"
-      echo "$result"
-    '';
-  });
-
   repository_path = "${config.home.homeDirectory}/Code";
 
+  inherit (builtins) map listToAttrs;
 in
 {
   home.stateVersion = "22.05";
 
-  # programs.tmux = {
-  #   enable = true;
-  #   enableVim = true;
-  #   enableSensible = true;
-  #   enableMouse = true;
-  # };
+  programs.tmux = {
+    enable = true;
+    # enableVim = true;
+    # enableSensible = true;
+    # enableMouse = true;
+    keyMode = "vi";
+    shortcut = "<space>";
+  };
 
   # programs.vim = {
   #   enable = true;
@@ -58,8 +48,12 @@ in
 
   # # Htop
   # # https://rycee.gitlab.io/home-manager/options.html#opt-programs.htop.enable
-  programs.htop.enable = true;
-  programs.htop.settings.show_program_path = true;
+  programs.htop = {
+    enable = true;
+    settings = {
+      show_program_path = true;
+    };
+  };
 
   programs.bash.enable = true;
   programs.zsh = {
@@ -67,12 +61,19 @@ in
     envExtra = ''
       [[ -f "$HOME/.zshenv.local" ]] && source "$HOME/.zshenv.local"
     '';
+
     shellAliases = {
       l = "ls -1A";
       ll = "ls -la";
-      tf = "aws-vault exec opencounter -- terraform";
+      with-aws = "aws-vault exec opencounter --";
+      tf = "terraform";
       dc = "docker compose";
-    };
+    } // (listToAttrs (map
+      (cmd: {
+        name = cmd;
+        value = "with-aws ${cmd}";
+      }) [ "rails" "sidekiq" "overmind" "terraform" ]));
+
     initExtra = ''
       xtrace() { printf >&2 '+ %s\n' "$*"; "$@"; }
 
@@ -203,9 +204,6 @@ in
     ssm-session-manager-plugin
     github-cli
 
-    # probably move to homemanager.packages once I set that up:
-    # starship
-    # zoxide
     bat
 
     # nix language server
@@ -214,8 +212,6 @@ in
 
     # other language tools
     shellcheck
-
-    get-puppeteer-chromium-path
 
     gephi
     pgadmin4-desktopmode
