@@ -24,29 +24,18 @@
   config
 , ...
 }:
-
 {
-  # Build darwin flake using:
-  # $ darwin-rebuild build --flake .#fumuk-ligip-makit
-  # modules = [
+  ${namespace} = {
+    user = {
+      name = "ryanlong";
+    };
 
-  # (args: {
-  #   # Set Git commit hash for darwin-version.
-  #   system.configurationRevision = self.rev or self.dirtyRev or null;
-  # })
-
-
-  # home-manager.useGlobalPkgs = true;
-  # home-manager.useUserPackages = false;
-  # home-manager.users.ryanlong = import ./home.nix;
-  # home-manager.backupFileExtension = "hm-backup";
-  # home-manager.extraSpecialArgs = [ local-ai ];
-
-  users.users.ryanlong = {
-    home = "/Users/ryanlong";
+    dnsmasq-dev-domains = {
+      domains = [ "localhost" "test" ];
+    };
   };
 
-  nix.settings.trusted-users = [ "ryanlong" ];
+  security.pam.enableSudoTouchIdAuth = true;
 
   # List packages installed in system profile. To search by name, run:
   environment.systemPackages = with pkgs; [
@@ -77,17 +66,14 @@
     font-awesome
   ];
 
-  # Create /etc/zshrc that loads the nix-darwin environment.
-  programs.zsh.enable = true; # default shell on catalina
+  programs.nix-index.enable = true;
+
+  programs.zsh.enable = true;
   programs.bash.enable = true;
 
   environment.shellAliases = {
     ll = "ls -l";
   };
-
-  programs.nix-index.enable = true;
-
-  security.pam.enableSudoTouchIdAuth = true;
 
   system.defaults = {
     NSGlobalDomain = {
@@ -139,7 +125,6 @@
       ShowSeconds = false;
     };
 
-    # smb.NetBIOSName = "";
     spaces.spans-displays = false; # false = each physical display has a separate space (Mac default) true = one space spans across all physical displays
 
     trackpad.ActuationStrength = 0; # silent clicking
@@ -149,15 +134,6 @@
 
   system.keyboard.enableKeyMapping = true;
   system.keyboard.remapCapsLockToControl = true;
-
-  # Auto upgrade nix package and the daemon servic.
-  services.nix-daemon.enable = true;
-
-  # Necessary for using flakes on this system.
-  nix.settings.experimental-features = "nix-command flakes";
-
-  # The platform the configuration will be used on.
-  nixpkgs.hostPlatform = "aarch64-darwin";
 
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog

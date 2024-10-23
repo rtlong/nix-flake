@@ -24,6 +24,12 @@
 
     mac-app-util.url = "github:hraban/mac-app-util";
 
+
+    # nix-diff = {
+    #   url = "github:Gabriella439/nix-diff";
+    #   # inputs.nixpkgs.follows = "nixpkgs";
+    # };
+
     local-ai = {
       url = "github:ck3d/nix-local-ai";
       # inputs.pkgs.follows = "nixpkgs";
@@ -34,6 +40,8 @@
     inputs.snowfall-lib.mkFlake {
       inherit inputs;
       src = ./.;
+
+      namespace = "rtlong";
 
       channels-config = {
         allowUnfree = true;
@@ -47,11 +55,12 @@
         #   ];
       };
 
-      overlays = with inputs; [ ];
+      overlays = with inputs; [
+        # nix-diff.overlays.default
+      ];
 
       systems.modules.darwin = with inputs; [
         mac-app-util.darwinModules.default # enables Alfred/Spotlight to launch nix-controlled apps correctly
-        (self.outputs.darwinModules.dnsmasq-domain-resolver { domains = [ "test" "localhost" ]; })
       ];
       homes.modules = with inputs; [
         mac-app-util.homeManagerModules.default
