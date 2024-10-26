@@ -123,6 +123,8 @@ in
       autoload -U select-word-style
       select-word-style bash
       local WORDCHARS='*?_[]~=&;!#$%^(){}<>'
+
+      setopt extended_glob
     '';
     syntaxHighlighting.enable = true;
     autosuggestion.enable = true;
@@ -132,7 +134,6 @@ in
     ];
     history.extended = true;
     historySubstringSearch.enable = true;
-
   };
 
   programs.starship = {
