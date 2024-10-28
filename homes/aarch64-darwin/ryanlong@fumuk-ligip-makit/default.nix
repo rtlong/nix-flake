@@ -56,8 +56,6 @@ let
 
 in
 {
-  home.stateVersion = "22.05";
-
   programs.tmux = {
     enable = true;
     # enableVim = true;
@@ -124,7 +122,7 @@ in
       select-word-style bash
       local WORDCHARS='*?_[]~=&;!#$%^(){}<>'
 
-      setopt extended_glob
+      # setopt extended_glob
     '';
     syntaxHighlighting.enable = true;
     autosuggestion.enable = true;
@@ -268,4 +266,5 @@ in
   #   executable = true;
   # };
 
+  home.stateVersion = "22.05";
 }

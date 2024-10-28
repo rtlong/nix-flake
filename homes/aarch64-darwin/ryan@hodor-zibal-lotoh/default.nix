@@ -73,6 +73,7 @@ in
         tf = "terraform";
         dc = "docker compose";
       };
+
     initExtra = ''
       xtrace() { printf >&2 '+ %s\n' "$*"; "$@"; }
 
@@ -97,6 +98,7 @@ in
       select-word-style bash
       local WORDCHARS='*?_[]~=&;!#$%^(){}<>'
     '';
+
     syntaxHighlighting.enable = true;
     autosuggestion.enable = true;
     autosuggestion.strategy = [
@@ -105,7 +107,6 @@ in
     ];
     history.extended = true;
     historySubstringSearch.enable = true;
-
   };
 
   programs.starship = {
