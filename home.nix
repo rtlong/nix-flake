@@ -13,18 +13,6 @@ let
     '';
   });
 
-  terraform-wrapper = (pkgs.writeShellApplication {
-    name = "terraform";
-    # runtimeEnv = { };
-    # NB: unlike aws-vault wrapper, I expect local versions of terraform to be provided in various contexts, so I use a PATH-climbing approach to find the "next" terraform executable down the path (that which this script is wrapping)
-    text = ''
-      set -x
-      mapfile -t executables < <( which -a terraform )
-      terraform="''${executables[1]}"
-      exec "${aws-vault-wrapper}/bin/aws-vault" exec opencounter -- "$terraform" "$@"
-    '';
-  });
-
   repository_path = "${config.home.homeDirectory}/Code";
 
   inherit (builtins) map listToAttrs;
@@ -65,13 +53,13 @@ in
     shellAliases = {
       l = "ls -1A";
       ll = "ls -la";
-      with-aws = "aws-vault exec opencounter --";
+      with-creds = "op run -- aws-vault exec opencounter --";
       tf = "terraform";
       dc = "docker compose";
     } // (listToAttrs (map
       (cmd: {
         name = cmd;
-        value = "with-aws ${cmd}";
+        value = "with-creds ${cmd}";
       }) [ "rails" "sidekiq" "overmind" "terraform" ]));
 
     initExtra = ''
@@ -190,8 +178,6 @@ in
     utm
     tealdeer # provides tldr
     tig
-
-    terraform-wrapper
 
     # Auth tools
     _1password # -- op CLI tool
