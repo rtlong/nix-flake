@@ -35,8 +35,8 @@ in
       # enables backing up existing files instead of erroring if conflicts exist
       backupFileExtension = "hm.old";
 
-      useUserPackages = false;
-      useGlobalPkgs = true;
+      useUserPackages = true;
+      useGlobalPkgs = true; # share nixpkgs with homemanager - not a separate copy
 
       verbose = true;
     };

@@ -30,29 +30,35 @@
     #   # inputs.nixpkgs.follows = "nixpkgs";
     # };
 
-    local-ai = {
-      url = "github:ck3d/nix-local-ai";
-      # inputs.pkgs.follows = "nixpkgs";
-    };
+    # local-ai = {
+    #   url = "github:ck3d/nix-local-ai";
+    #   # inputs.pkgs.follows = "nixpkgs";
+    # };
   };
 
   outputs = inputs:
-    inputs.snowfall-lib.mkFlake {
-      inherit inputs;
-      src = ./.;
+    let
+      lib = inputs.snowfall-lib.mkLib {
+        inherit inputs;
+        src = ./.;
 
-      namespace = "rtlong";
-
+        namespace = "rtlong"; # TODO: is this necessary ?
+        snowfall = {
+          namespace = "rtlong";
+        };
+        # You can optionally place your Snowfall-related files in another
+        # directory.
+        # snowfall.root = ./nix;
+      };
+    in
+    lib.mkFlake {
       channels-config = {
-        allowUnfree = true;
-
-        # TODO: is it possible to use the predicate here?
-        # nixpkgs.config.allowUnfreePredicate = pkg:
-        #   builtins.elem (lib.getName pkg) [
-        #     "vscode"
-        #     "1password"
-        #     "1password-cli"
-        #   ];
+        allowUnfreePredicate = pkg:
+          builtins.elem (lib.getName pkg) [
+            "vscode"
+            "1password"
+            "1password-cli"
+          ];
       };
 
       overlays = with inputs; [
