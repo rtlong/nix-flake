@@ -52,21 +52,21 @@ in
       value = "with-creds ${cmd}";
     }) [ "rails" "sidekiq" "overmind" "terraform" ]));
 
-  # home.packages = with pkgs; [
-  #   # Auth tools
-  #   aws-vault-wrapper
-  #   yubikey-manager
-  #   lastpass-cli
-  #   _1password-cli # -- op CLI tool
+  home.packages = with pkgs; [
+    # Auth tools
+    aws-vault-wrapper
+    yubikey-manager
+    lastpass-cli
+    _1password-cli # -- op CLI tool
 
-  #   # Webservice CLIs
-  #   awscli
-  #   ssm-session-manager-plugin
-  #   github-cli
+    # Webservice CLIs
+    awscli
+    ssm-session-manager-plugin
+    github-cli
 
-  #   gephi
-  #   pgadmin4-desktopmode
-  # ];
+    gephi
+    pgadmin4-desktopmode
+  ];
 
   home.stateVersion = "22.05";
 }
