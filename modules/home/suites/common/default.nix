@@ -159,12 +159,10 @@ in
         ripgrep
         ripgrep-all
         rsync
-        fd # find alternative - recommended by DoomEmacs
         fzf
         docker-credential-helpers
+
         # editors
-        # vim ## implied by programs.vim.enable and apparently incompatible with it
-        emacsMacport
         vscode
 
         # brave -- not yet available in nix-darwin
