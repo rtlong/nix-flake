@@ -35,7 +35,7 @@ let
     };
     excludeShellChecks = [ "SC2209" ];
     text = ''
-      exec env AWS_VAULT_FILE_PASSPHRASE="$(${pkgs._1password}/bin/op --account my read op://qvutxi2zizeylilt23rflojdky/c5nz76at6k6vqx4cxhday5yg7u/password)" \
+      exec env AWS_VAULT_FILE_PASSPHRASE="$(${pkgs._1password-cli}/bin/op --account my read op://qvutxi2zizeylilt23rflojdky/c5nz76at6k6vqx4cxhday5yg7u/password)" \
         "${pkgs.aws-vault}/bin/aws-vault" "$@"
     '';
   });

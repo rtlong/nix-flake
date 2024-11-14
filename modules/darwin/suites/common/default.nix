@@ -27,8 +27,6 @@ in
     # };
 
     environment = {
-      loginShell = pkgs.zsh;
-
       systemPackages = with pkgs; [
         bash-completion
         coreutils
@@ -54,7 +52,7 @@ in
       ];
     };
 
-    ${namespace} = {
+    rtlong = {
       nix = enabled;
 
       # tools = {

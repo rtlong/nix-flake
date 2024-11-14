@@ -4,13 +4,14 @@
 , ...
 }:
 let
-  inherit (lib) mkIf mkMerge mkEnableOption;
+  inherit (lib) mkIf mkMerge;
+  inherit (lib.${namespace}) mkBoolOpt;
 
   cfg = config.${namespace}.system.input;
 in
 {
   options.${namespace}.system.input = {
-    enable = mkEnableOption "macOS input";
+    enable = mkBoolOpt true "macOS input";
   };
 
   config = mkIf cfg.enable (mkMerge [

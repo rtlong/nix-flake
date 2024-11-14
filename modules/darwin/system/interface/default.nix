@@ -5,13 +5,14 @@
 , ...
 }:
 let
-  inherit (lib) mkIf mkEnableOption;
+  inherit (lib) mkIf;
+  inherit (lib.${namespace}) mkBoolOpt;
 
   cfg = config.${namespace}.system.interface;
 in
 {
   options.${namespace}.system.interface = {
-    enable = mkEnableOption "macOS interface";
+    enable = mkBoolOpt true "macOS interface";
   };
 
   config = mkIf cfg.enable {
@@ -171,7 +172,7 @@ in
         _HIHideMenuBar = true;
       };
 
-      universalaccess.mouseDriverCursorSize = 2.0;
+      # universalaccess.mouseDriverCursorSize = 2.0;
     };
   };
 }
