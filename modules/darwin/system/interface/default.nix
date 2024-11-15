@@ -169,7 +169,7 @@ in
         AppleShowAllExtensions = true;
         AppleShowScrollBars = "Automatic";
         NSAutomaticWindowAnimationsEnabled = false;
-        _HIHideMenuBar = true;
+        _HIHideMenuBar = false;
       };
 
       # universalaccess.mouseDriverCursorSize = 2.0;
