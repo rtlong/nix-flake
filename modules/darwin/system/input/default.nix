@@ -48,8 +48,8 @@ in
             AppleKeyboardUIMode = 3; # enable full keyboard control
             ApplePressAndHoldEnabled = false;
 
-            KeyRepeat = 1;
-            InitialKeyRepeat = 10;
+            KeyRepeat = 5;
+            InitialKeyRepeat = 25;
 
             NSAutomaticCapitalizationEnabled = false;
             NSAutomaticDashSubstitutionEnabled = false;
