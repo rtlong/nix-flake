@@ -37,4 +37,26 @@ rec {
   nested-default-attrs = mapAttrs (_key: default-attrs);
 
   nested-force-attrs = mapAttrs (_key: force-attrs);
+
+  # alias because my brain does not understand this nonsense
+  join = concatStringsSep;
+
+  # right-to-left composition; compose [a b c] x == a (b (c x))
+  compose = fns: v: foldr (f: e: f e) v fns;
+
+  # (string: bool) => string => string
+  filterLines = pred: compose [
+    (join "\n")
+    (filter pred)
+    (strings.splitString "\n")
+  ];
+
+  # array => bool
+  isEmpty = compose [
+    (lessThan 1)
+    length
+  ];
+
+  # f => f
+  complement = f: v: !(f v);
 }

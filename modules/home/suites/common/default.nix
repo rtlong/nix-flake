@@ -27,9 +27,8 @@
 let
   repository_path = "${config.home.homeDirectory}/Code";
 
-  inherit (builtins) map listToAttrs;
   inherit (lib) mkIf;
-  inherit (lib.${namespace}) enabled mkBoolOpt;
+  inherit (lib.${namespace}) mkBoolOpt;
 
   cfg = config.${namespace}.suites.common;
 in
@@ -42,7 +41,6 @@ in
 
   config = mkIf cfg.enable
     {
-
       programs.tmux = {
         enable = true;
         keyMode = "vi";
@@ -97,8 +95,6 @@ in
         '';
       };
 
-      # # Htop
-      # # https://rycee.gitlab.io/home-manager/options.html#opt-programs.htop.enable
       programs.htop = {
         enable = true;
         settings = {
@@ -137,13 +133,12 @@ in
 
       };
 
-      home.shellAliases =
-        {
-          l = "ls -1A";
-          ll = "ls -la";
-          tf = "terraform";
-          dc = "docker compose";
-        };
+      home.shellAliases = {
+        l = "ls -1A";
+        ll = "ls -la";
+        tf = "terraform";
+        dc = "docker compose";
+      };
 
       programs.bash.enable = true;
 
