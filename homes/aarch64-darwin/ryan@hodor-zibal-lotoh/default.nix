@@ -40,6 +40,11 @@ in
 
     gephi
     pgadmin4-desktopmode
+
+    vlc-bin-universal
+    tailscale
+
+    duckdb
   ];
 
   home.stateVersion = "22.05";
