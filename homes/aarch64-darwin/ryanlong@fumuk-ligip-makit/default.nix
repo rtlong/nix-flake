@@ -57,14 +57,12 @@ in
     aws-vault-wrapper
     yubikey-manager
     lastpass-cli
-    _1password-cli # -- op CLI tool
 
     # Webservice CLIs
     awscli
     ssm-session-manager-plugin
     github-cli
 
-    gephi
     pgadmin4-desktopmode
   ];
 

@@ -74,7 +74,17 @@ in
 
     appLaunchBinds = mkOption {
       type = types.attrsOf types.string;
-      default = { };
+      default = {
+        A = "Activity Monitor";
+        F = "Finder";
+        G = "Messages";
+        I = "Calendar";
+        M = "Mail";
+        N = "Notes";
+        P = "com.1password.1password";
+        T = "iTerm2";
+        Y = "Spotify";
+      };
       description = "attrset of keys to map (combined with the MEH key [ctrl+shift+option] + command) to launch/focus Mac applications";
     };
   };
