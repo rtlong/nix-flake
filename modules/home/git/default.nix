@@ -30,6 +30,50 @@ let
   inherit (lib.${namespace}) enabled mkBoolOpt;
 
   cfg = config.${namespace}.git;
+
+  calculate-clone-destination = pkgs.writeScript "calculate-git-clone-application"
+    ''
+      #!${pkgs.ruby}/bin/ruby
+
+      require 'uri'
+
+      SSH_INPUT_PATTERN = /^\w+@(?<host>([a-z0-9-]+\.)*[a-z0-9-]+):(?<path>.+)$/i
+      CODE_LIBRARY_ROOT = ENV.fetch('CODE_WORKSPACE_ROOT')
+
+      input = ARGV[0]
+
+      if (m = SSH_INPUT_PATTERN.match(input))
+        host = m[:host]
+        path = m[:path]
+
+      else
+        uri = URI(input)
+        host = uri.host
+        path = uri.path
+      end
+
+      clone_dest = File.join(CODE_LIBRARY_ROOT, host, path.sub(/\.git$/, ""))
+
+      puts clone_dest
+    '';
+
+  git-get-function = ''
+    git-get() {
+      git_url="$1"; shift
+      [[ -n $git_url ]] || return 1
+      dest="$( ${calculate-clone-destination} "$git_url" )"
+      [[ -n $dest ]] || return 1
+
+      if [[ -d $dest ]]; then
+        cd "$dest"
+        git fetch
+      else
+        git clone "$git_url" "$dest"
+        cd "$dest"
+      fi
+    }
+  '';
+
 in
 {
   options.${namespace}.git = {
@@ -37,7 +81,6 @@ in
   };
 
   config = mkIf cfg.enable {
-
     programs.git = {
       enable = true;
 
@@ -201,8 +244,6 @@ in
       };
     };
 
-    # home.packages = with pkgs; [
-    # ];
+    programs.zsh.initExtra = git-get-function;
   };
 }
-

@@ -134,8 +134,9 @@ in
       };
 
       home.shellAliases = {
-        l = "ls -1A";
-        ll = "ls -la";
+        l = "eza -1A";
+        ll = "eza -la";
+        ls = "eza";
         tf = "terraform";
         dc = "docker compose";
       };
@@ -150,23 +151,6 @@ in
 
         initExtra = ''
           xtrace() { printf >&2 '+ %s\n' "$*"; "$@"; }
-
-          git-get() {
-            set -x
-            git_url="$1"; shift
-            [[ -n $git_url ]] || return 1
-            dest="$(${pkgs.ruby}/bin/ruby $HOME/.local/bin/calculate-git-clone-destination "$git_url")"
-            [[ -n $dest ]] || return 1
-
-            if [[ -d $dest ]]; then
-                cd "$dest"
-                xtrace git fetch
-            else
-                xtrace git clone "$git_url" "$dest"
-                cd "$dest"
-            fi
-            set +x
-          }
 
           autoload -U select-word-style
           select-word-style bash
@@ -229,6 +213,7 @@ in
         findutils
         dig
         openssh
+        eza # modern ls replacement with features
         # nmap
         liblinear
         curl
