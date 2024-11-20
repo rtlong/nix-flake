@@ -45,7 +45,7 @@ let
 in
 {
   options.${namespace}.dircolors = {
-    enable = mkBoolOpt true "Whether or not to enable dircolors configuration.";
+    enable = mkBoolOpt false "Whether or not to enable dircolors configuration.";
   };
 
   config = mkIf cfg.enable
