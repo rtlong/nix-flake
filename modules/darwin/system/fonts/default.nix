@@ -17,6 +17,7 @@ in
       packages = with pkgs; [
         # Add any Darwin-specific font packages here
       ] ++ cfg.fonts;
+      # enableDefaultPackages = true;
     };
 
     system = {

@@ -170,7 +170,13 @@ in
         AppleShowScrollBars = "Automatic";
         NSAutomaticWindowAnimationsEnabled = false;
         _HIHideMenuBar = false;
+
       };
+
+      # universalaccess = {
+      #   reduceMotion = true;
+      #   mouseDriverCursorSize = 1.824528217315674;
+      # };
 
       # universalaccess.mouseDriverCursorSize = 2.0;
     };

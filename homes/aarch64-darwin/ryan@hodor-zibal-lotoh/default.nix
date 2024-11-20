@@ -65,7 +65,7 @@ in
         P = "com.1password.1password";
         # Q = "";
         R = "Msty";
-        S = "Slack";
+        # S = "";
         T = "iTerm2";
         U = "Perplexity";
         # V = "Discord";
@@ -73,8 +73,8 @@ in
         # X = "";
         Y = "Spotify";
         Z = "us.zoom.xos";
-        # "," = "";
-        # "." = "";
+        "," = "System Settings";
+        "." = "";
         # "-" = "";
       };
     };
@@ -89,6 +89,9 @@ in
     tailscale
 
     duckdb
+
+    # BROKEN:
+    # blender
   ];
 
   home.stateVersion = "22.05";
