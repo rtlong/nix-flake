@@ -139,6 +139,13 @@ in
         ls = "eza";
         tf = "terraform";
         dc = "docker compose";
+
+        nix-apply =
+          let
+            rebuild = if (lib.snowfall.system.is-darwin system) then "darwin-rebuild" else "nixos-rebuild";
+          in
+          "${rebuild} switch --flake $(readlink -f ~/.nix-config)"; # this assumes a symlink was created pointing at this repo. Nix apparently cannot be made to do this, so it muct happen manually/out-of-band
+        cd-nix = "cd $(readlink -f ~/.nix-config)";
       };
 
       programs.bash.enable = true;
