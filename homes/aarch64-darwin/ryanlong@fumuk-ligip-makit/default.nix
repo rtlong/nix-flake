@@ -42,6 +42,8 @@ let
 
 in
 {
+  rtlong.user.human = "ryan";
+
   home.shellAliases = {
     tf = "terraform";
     dc = "docker compose";
