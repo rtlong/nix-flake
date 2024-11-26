@@ -1,5 +1,5 @@
 {
-  description = "fumuk-ligip-makit";
+  description = "rtlong nix flake";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -56,6 +56,7 @@
         allowUnfreePredicate = pkg:
           builtins.elem (lib.getName pkg) [
             "vscode"
+            "spotify"
             "1password"
             "1password-cli"
           ];

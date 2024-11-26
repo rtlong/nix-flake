@@ -73,8 +73,8 @@ in
         # X = "";
         Y = "Spotify";
         Z = "us.zoom.xos";
-        "," = "System Settings";
-        "." = "";
+        # "," = "System Settings";
+        # "." = "";
         # "-" = "";
       };
     };
@@ -90,6 +90,9 @@ in
 
     duckdb
 
+    spotify
+
+    devenv
     # BROKEN:
     # blender
   ];
