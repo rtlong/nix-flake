@@ -68,16 +68,18 @@ in
         # S = "";
         T = "iTerm2";
         U = "Perplexity";
-        # V = "Discord";
+        # V = "";
         W = "Sonos";
         # X = "";
         Y = "Spotify";
         Z = "us.zoom.xos";
-        # "," = "System Settings";
+        # "," = "";
         # "." = "";
         # "-" = "";
       };
     };
+
+    spotify.enable = true;
   };
 
   home.packages = with pkgs; [
@@ -89,8 +91,6 @@ in
     tailscale
 
     duckdb
-
-    spotify
 
     devenv
     # BROKEN:

@@ -40,9 +40,62 @@ let
     '';
   });
 
+  openBraveWithProfile = profile:
+    let
+      applescriptFile = pkgs.writeScript "open-brave-with-profile-${profile}.scpt" ''
+        tell application "Brave Browser" to activate
+        delay 0.5
+        tell application "System Events"
+            tell process "Brave Browser"
+                click menu item "${profile}" of menu "Profiles" of menu bar 1
+            end tell
+        end tell
+      '';
+    in
+    ": osascript ${applescriptFile}";
 in
 {
-  rtlong.user.human = "ryan";
+
+  rtlong = {
+    user.human = "ryan";
+
+    spotify.enable = true;
+
+    skhd = {
+      enable = true;
+      appLaunchBinds = {
+        A = "Activity Monitor";
+        B = openBraveWithProfile "Personal";
+        C = openBraveWithProfile "Work";
+        D = "Dash";
+        E = "Visual Studio Code";
+        F = "Finder";
+        G = "Messages";
+        H = "Home Assistant";
+        I = '': osascript -e 'tell application "BusyCal" to activate' ''; # When launched using `open` BusyCal always prompts for some settings reset... IDK
+        J = "com.culturedcode.ThingsMac";
+        K = "Yubico Authenticator";
+        # L = "";
+        M = "Spark Mail";
+        N = "Notes";
+        O = "com.microsoft.Outlook";
+        P = "com.1password.1password";
+        # Q = "";
+        # R = "";
+        S = "Slack";
+        T = "iTerm2";
+        U = "Perplexity";
+        # V = "";
+        # W = "";
+        # X = "";
+        Y = "Spotify";
+        Z = "us.zoom.xos";
+        # "," = "";
+        # "." = "";
+        # "-" = "";
+      };
+    };
+  };
 
   home.shellAliases = {
     tf = "terraform";
@@ -64,6 +117,7 @@ in
     awscli
     ssm-session-manager-plugin
     github-cli
+
 
     pgadmin4-desktopmode
   ];

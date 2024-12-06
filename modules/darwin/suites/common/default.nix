@@ -46,6 +46,7 @@ in
         nawk
         nmap
         openssh
+        openssl
         ripgrep
         ripgrep-all
         wget

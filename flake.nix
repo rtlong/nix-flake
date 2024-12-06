@@ -25,6 +25,10 @@
     mac-app-util.url = "github:hraban/mac-app-util";
 
 
+    spicetify-nix = {
+      url = "github:Gerg-L/spicetify-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # nix-diff = {
     #   url = "github:Gabriella439/nix-diff";
     #   # inputs.nixpkgs.follows = "nixpkgs";
@@ -70,6 +74,7 @@
         mac-app-util.darwinModules.default # enables Alfred/Spotlight to launch nix-controlled apps correctly
       ];
       homes.modules = with inputs; [
+        spicetify-nix.homeManagerModules.default
         mac-app-util.homeManagerModules.default
       ];
     };
