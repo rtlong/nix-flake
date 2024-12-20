@@ -178,7 +178,7 @@ in
         enable = true;
       };
 
-      difftastic = {
+      delta = {
         enable = true;
       };
 

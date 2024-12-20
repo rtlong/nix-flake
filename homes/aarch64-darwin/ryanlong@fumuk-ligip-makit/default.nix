@@ -80,7 +80,7 @@ in
         N = "Notes";
         O = "com.microsoft.Outlook";
         P = "com.1password.1password";
-        # Q = "";
+        Q = "System Settings";
         # R = "";
         S = "Slack";
         T = "iTerm2";
@@ -90,9 +90,9 @@ in
         # X = "";
         Y = "Spotify";
         Z = "us.zoom.xos";
-        # "," = "";
-        # "." = "";
-        # "-" = "";
+        # "0x2B" = '': osascript -e 'tell application "System Settings" to activate' ''; # , -- this is bound globally by `tailspin` 
+        # "0x2F" = ""; # . -- this is bound globally by MacOS `sysdiagnose` 
+        # "0x2C" = ""; # /
       };
     };
   };
