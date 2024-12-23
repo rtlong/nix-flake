@@ -80,21 +80,18 @@ in
     };
 
     spotify.enable = true;
+
+    # nexa.enable = true;
   };
 
   home.packages = with pkgs; [
-    inkscape-with-extensions
-
-    pgadmin4-desktopmode
-
-    vlc-bin-universal
-    tailscale
-
-    duckdb
-
+    # blender # BROKEN
     devenv
-    # BROKEN:
-    # blender
+    duckdb
+    inkscape-with-extensions
+    pgadmin4-desktopmode
+    tailscale
+    vlc-bin-universal
   ];
 
   home.stateVersion = "22.05";
