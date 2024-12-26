@@ -118,7 +118,6 @@ in
     ssm-session-manager-plugin
     github-cli
 
-
     pgadmin4-desktopmode
   ];
 
