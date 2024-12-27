@@ -114,7 +114,11 @@ in
     with-creds = "op run -- aws-vault exec rtlong --";
     tf = "terraform";
     dc = "docker compose";
-  };
+  } // (listToAttrs (map
+    (cmd: {
+      name = cmd;
+      value = "with-creds ${cmd}";
+    }) [ "terraform" ]));
 
   home.stateVersion = "22.05";
 }
