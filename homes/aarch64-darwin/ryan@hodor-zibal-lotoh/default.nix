@@ -76,7 +76,7 @@ in
         N = "Notes";
         # O = "";
         P = "com.1password.1password";
-        # Q = "";
+        Q = "System Settings";
         R = "Msty";
         # S = "";
         T = "iTerm2";
