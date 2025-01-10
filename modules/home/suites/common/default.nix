@@ -25,10 +25,11 @@
 , ...
 }:
 let
-  repository_path = "${config.home.homeDirectory}/Code";
-
   inherit (lib) mkIf;
   inherit (lib.${namespace}) mkBoolOpt;
+
+  repository_path = "${config.home.homeDirectory}/Code";
+  toml = pkgs.formats.toml { };
 
   cfg = config.${namespace}.suites.common;
 in
@@ -174,33 +175,8 @@ in
         ];
         history.extended = true;
         historySubstringSearch.enable = true;
-
-
       };
 
-      programs.starship = {
-        enable = true;
-        settings = {
-          shlvl = {
-            disabled = false;
-            threshold = 0;
-          };
-          directory = {
-            truncation_length = 10;
-            truncate_to_repo = false; # truncates directory to root folder if in github repo
-            # truncation_symbol = "…/";
-            # fish_style_pwd_dir_length = 1;
-            # read_only = " ";
-            # style = "bold bright-blue";
-            # repo_root_style = "bold bright-green";
-            # repo_root_format = "[$before_root_path]($style)[$repo_root$path]($repo_root_style)[$read_only]($read_only_style) ";
-
-            substitutions = {
-              "~/Code/github.com/" = " ";
-            };
-          };
-        };
-      };
       programs.zoxide.enable = true;
 
       programs.direnv = {
@@ -210,6 +186,8 @@ in
 
       home.sessionVariables = {
         CODE_WORKSPACE_ROOT = repository_path;
+
+        _ZO_FZF_OPTS = '' --extended --no-sort --bind=ctrl-z:ignore,btab:up,tab:down --cycle --keep-right --border=sharp --height=45% --info=inline --layout=reverse --tabstop=1 --exit-0  --preview='${pkgs.eza}/bin/eza --color=always -A -F -s oldest --group-directories-first {2..}' --preview-window=down,30%,sharp '';
       };
 
       home.packages = with pkgs; [

@@ -57,7 +57,7 @@ in
   options.${namespace}.aerospace = {
     enable = mkBoolOpt false "Enable aerospace WM";
     config = mkOption {
-      type = types.attrsOf types.any;
+      type = types.attrsOf types.anything;
       default = defaultSettings;
       description = "Settings for aerospace to be written as the aerospace.toml file";
     };
@@ -68,7 +68,7 @@ in
 
     xdg.configFile."aerospace/aerospace.toml".source = settingsFormat.generate "aerospace.toml" cfg.config;
 
-    home.activation.aeorspaceConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] /* bash */ ''
+    home.activation.aerospaceConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] /* bash */ ''
       $VERBOSE_ECHO "Reloading configuration"
       $DRY_RUN_CMD ${pkgs.aerospace}/bin/aerospace reload-config
     '';
