@@ -98,16 +98,18 @@ in
   };
 
   home.packages = with pkgs; [
+    aws-vault-wrapper
     # blender # BROKEN
+    cyberduck
     devenv
     duckdb
     inkscape-with-extensions
+    keepassxc
+    ollama
     pgadmin4-desktopmode
     tailscale
     vlc-bin-universal
     yubikey-manager
-
-    aws-vault-wrapper
   ];
 
   home.shellAliases = {
