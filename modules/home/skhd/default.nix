@@ -101,6 +101,7 @@ in
         StandardErrorPath = "/tmp/skhd.log";
         ProgramArguments = [ "${cfg.package}/bin/skhd" "-V" ];
         KeepAlive = true;
+        # FIXME: this needs to chill out whenever it's failing due to lacking permissions. It agressively restarts and makes it actually difficult to grant permissions for the new binary. Also is there some way to make it provide a consistent path to MacOS for this purpose, instead of the hashed store path that is version dependent?
         ProcessType = "Interactive";
       };
     };

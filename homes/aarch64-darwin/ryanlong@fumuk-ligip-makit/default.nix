@@ -112,6 +112,7 @@ in
     aws-vault-wrapper
     yubikey-manager
     lastpass-cli
+    tailscale
 
     # Webservice CLIs
     awscli
@@ -119,6 +120,7 @@ in
     github-cli
 
     pgadmin4-desktopmode
+    lnav
   ];
 
   home.stateVersion = "22.05";

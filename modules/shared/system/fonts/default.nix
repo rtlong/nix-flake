@@ -20,10 +20,14 @@ let
 
     # Icons
     font-awesome
-  ] ++ (
-    # Nerd Fonts (all)
-    builtins.filter lib.attrsets.isDerivation (builtins.attrValues nerd-fonts)
-  );
+
+    # Nerd Fonts
+    nerd-fonts.fira-code
+    nerd-fonts.inconsolata-go
+    nerd-fonts.martian-mono
+    nerd-fonts.ubuntu-mono
+    nerd-fonts.droid-sans-mono
+  ];
 in
 {
   options.${namespace}.system.fonts = with types; {
