@@ -77,6 +77,9 @@
     bzip2
     unar
     vlc
+    brave
+    tailscale
+
   ];
   # Enable the X11 windowing system.
   services.xserver = {

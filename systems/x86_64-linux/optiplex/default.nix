@@ -281,6 +281,8 @@
     user = "ryan";
     home = "/data/downloads";
 
+    webHome = pkgs.flood-for-transmission;
+
     settings = {
       rpc-bind-address = "0.0.0.0";
       rpc-whitelist-enabled = false;
