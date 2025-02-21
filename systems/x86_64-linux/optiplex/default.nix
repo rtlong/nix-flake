@@ -142,7 +142,7 @@
 
   users.users.ryan = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "media" ]; # Enable ‘sudo’ for the user.
     hashedPassword = "$y$j9T$78Su41EqfVOpXnSeZ3Vge0$LuN8CBD95WbvxP14VD00ktMLUciuzV8cu4.7SlNnC/D";
     openssh = {
       authorizedKeys.keys = [
@@ -153,25 +153,23 @@
     };
   };
 
+  users.groups.media = {
+    name = "media";
+  };
+
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    git
-    jq
-    htop
-    tmux
-    nixfmt-rfc-style
-    hfsprogs
-  ];
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
+  environment.systemPackages = with pkgs;
+    [
+      vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+      git
+      jq
+      htop
+      tmux
+      nixfmt-rfc-style
+      hfsprogs
+    ];
 
   #  programs.nix-ld = {
   #    enable = true;
@@ -180,24 +178,8 @@
 
   # List services that you want to enable:
 
-  # Enable the X11 windowing system.
-  # services.xserver.enable = true;
-
-  # Configure keymap in X11
-  # services.xserver.xkb.layout = "us";
-  # services.xserver.xkb.options = "eurosign:e,caps:escape";
-
   # Enable CUPS to print documents.
   services.printing.enable = true;
-
-  # Enable sound.
-  # hardware.pulseaudio.enable = true;
-  # OR
-  # services.pipewire = {
-  #   enable = true;
-  #   pulse.enable = true;
-  # };
-
   services.avahi.enable = true;
 
   services.k3s.enable = true;
@@ -218,6 +200,21 @@
   services.jellyfin = {
     enable = true;
     openFirewall = true;
+  };
+
+  services.calibre-web = {
+    enable = true;
+    openFirewall = true;
+    listen = {
+      port = 8083;
+      ip = "0.0.0.0";
+    };
+    options = {
+      calibreLibrary = "/data/media/books";
+    };
+  };
+  users.users.calibre-web = {
+    extraGroups = [ "media" ];
   };
 
   #  services.static-web-server = {
@@ -269,10 +266,8 @@
         "directory mask" = "0755";
         "force user" = "ryan";
         "force group" = "users";
-
       };
     };
-
   };
 
   services.transmission = {
@@ -290,9 +285,6 @@
     };
   };
 
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
   services.zfs.autoScrub.enable = true;
@@ -301,16 +293,8 @@
   systemd.services.NetworkManager-wait-online.enable = lib.mkForce false;
   systemd.services.systemd-networkd-wait-online.enable = lib.mkForce false;
 
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
+  # Disable the firewall altogether.
   networking.firewall.enable = false;
-
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  # system.copySystemConfiguration = true;
 
   ### END
   # This option defines the first version of NixOS you have installed on this particular machine,
@@ -331,6 +315,4 @@
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "24.05"; # Did you read the comment?
-
-
 }
