@@ -220,7 +220,8 @@ in
         ripgrep-all
         rsync
         fzf
-        docker-credential-helpers
+        # docker-credential-helpers
+        sops
 
         # editors
         vscode
