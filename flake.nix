@@ -2,7 +2,8 @@
   description = "rtlong nix flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    # nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     snowfall-lib = {
       url = "github:snowfallorg/lib";
@@ -14,7 +15,6 @@
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
 
     # nb: snowfall demands this input be named `home-manager`
     home-manager = {
@@ -29,10 +29,6 @@
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # nix-diff = {
-    #   url = "github:Gabriella439/nix-diff";
-    #   # inputs.nixpkgs.follows = "nixpkgs";
-    # };
 
     # local-ai = {
     #   url = "github:ck3d/nix-local-ai";
@@ -67,7 +63,7 @@
       };
 
       overlays = with inputs; [
-        # nix-diff.overlays.default
+        self.outputs.overlays.my-patches
       ];
 
       systems.modules.darwin = with inputs; [

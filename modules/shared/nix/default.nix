@@ -48,12 +48,9 @@ in
       systemPackages = with pkgs; [
         cachix
         deploy-rs
-        gitFull
         nix-prefetch-git
       ];
     };
-
-    services.nix-daemon.enable = true;
 
     nix =
       let

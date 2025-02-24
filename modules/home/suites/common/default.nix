@@ -207,7 +207,6 @@ in
       home.packages = with pkgs; [
         # essential tools
         coreutils
-        gitFull
         nawk
         findutils
         dig

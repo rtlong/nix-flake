@@ -21,7 +21,7 @@ On an aarch64 system (or with aarch64 emulation):
 After flashing the image and booting it up on the ODROID:
 
     nixos-generate-config # populates /etc/nixos/ with empty configuration
-    nix-env -iA nixos.gitFull
+    nix-env -iA nixos.git
     cd /etc/nixos
     git clone https://github.com/povik/nixos-on-odroid-n2.git
 
