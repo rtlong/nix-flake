@@ -81,7 +81,7 @@ in
         O = "com.microsoft.Outlook";
         P = "com.1password.1password";
         Q = "System Settings";
-        # R = "";
+        R = "LM Studio";
         S = "Slack";
         T = "iTerm2";
         U = "Perplexity";
@@ -108,19 +108,15 @@ in
     }) [ "rails" "sidekiq" "overmind" "terraform" ]));
 
   home.packages = with pkgs; [
-    # Auth tools
     aws-vault-wrapper
-    yubikey-manager
-    lastpass-cli
-    tailscale
-
-    # Webservice CLIs
     awscli
-    ssm-session-manager-plugin
     github-cli
-
-    pgadmin4-desktopmode
+    # lastpass-cli
     lnav
+    pgadmin4-desktopmode
+    ssm-session-manager-plugin
+    tailscale
+    yubikey-manager
   ];
 
   home.stateVersion = "22.05";

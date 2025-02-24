@@ -56,7 +56,8 @@ let
 in
 {
   rtlong = {
-    # TODO: why can i not use `${namespace}  = {` here? I get an infinite recursion error
+    spotify.enable = true;
+
     skhd = {
       enable = true;
       appLaunchBinds = {
@@ -77,12 +78,12 @@ in
         # O = "";
         P = "com.1password.1password";
         Q = "System Settings";
-        R = "Msty";
+        R = "LM Studio";
         # S = "";
         T = "iTerm2";
         U = "Perplexity";
         # V = "";
-        W = "Sonos";
+        # W = "Sonos";
         # X = "";
         Y = "Spotify";
         Z = "us.zoom.xos";
@@ -91,10 +92,6 @@ in
         # "-" = "";
       };
     };
-
-    spotify.enable = true;
-
-    # nexa.enable = true;
   };
 
   home.packages = with pkgs; [
@@ -105,7 +102,6 @@ in
     duckdb
     inkscape-with-extensions
     keepassxc
-    ollama
     pgadmin4-desktopmode
     tailscale
     vlc-bin-universal
