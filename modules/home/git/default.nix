@@ -124,11 +124,12 @@ in
 
       # attributes = [""];
 
-      # signing = {
-      # signByDefault = true;
-      # key = "";
-      # gpgPath = "";
-      # };
+      signing = {
+        signByDefault = true;
+        key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEZRO70wZDRS1UvbBxoA4X+RPfOrisXYX162V6z8mkVa";
+        signer = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+        format = "ssh";
+      };
 
       lfs = {
         enable = true;
