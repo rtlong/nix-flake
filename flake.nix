@@ -30,6 +30,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    emacs-overlay = {
+      url = "github:nix-community/emacs-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # local-ai = {
     #   url = "github:ck3d/nix-local-ai";
     #   # inputs.pkgs.follows = "nixpkgs";
@@ -64,6 +73,7 @@
 
       overlays = with inputs; [
         self.outputs.overlays.my-patches
+        inputs.emacs-overlay.overlays.default
       ];
 
       systems.modules.darwin = with inputs; [

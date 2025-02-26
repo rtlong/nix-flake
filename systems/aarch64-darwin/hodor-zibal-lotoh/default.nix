@@ -31,6 +31,7 @@
   environment.systemPackages = with pkgs; [
     colima # replacement for Docker Desktop
     docker # CLI
+    kubo
   ];
 
   # Used for backwards compatibility, please read the changelog before changing.

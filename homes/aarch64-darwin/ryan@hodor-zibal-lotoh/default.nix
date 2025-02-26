@@ -57,6 +57,7 @@ in
 {
   rtlong = {
     spotify.enable = true;
+    emacs.enable = true;
 
     skhd = {
       enable = true;
@@ -106,6 +107,9 @@ in
     tailscale
     vlc-bin-universal
     yubikey-manager
+
+    macfuse-stubs
+    ext4fuse
   ];
 
   home.shellAliases = {

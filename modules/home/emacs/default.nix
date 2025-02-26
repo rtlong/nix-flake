@@ -27,30 +27,82 @@
 let
   inherit (builtins) map listToAttrs;
   inherit (lib) mkIf;
-  inherit (lib.${namespace}) enabled mkBoolOpt;
+  inherit (lib.${namespace}) enabled mkBoolOpt mkOpt;
 
+  # emacs = (pkgs.emacsPackagesFor cfg.package).emacsWithPackages (
+  #   epkgs: with epkgs; [
+  #   ]
+  # );
   cfg = config.${namespace}.emacs;
 in
 {
-  imports = [ ];
+  # imports = [ ];
 
   options.${namespace}.emacs = {
-    enable = mkBoolOpt true "Whether or not to enable emacs";
+    enable = mkBoolOpt false "Whether or not to enable emacs";
+    package = mkOpt lib.types.package pkgs.emacsMacport "Which emacs package to use.";
   };
 
   config = mkIf cfg.enable {
     programs.emacs = {
       enable = true;
-      package = pkgs.emacsMacport;
-      # extraPackages = epkgs: with epkgs;[
-      #   magit
-      # ];
+      package = cfg.package;
+      extraPackages = epkgs: with epkgs;[
+        treesit-grammars.with-all-grammars
+        vterm
+        mu4e
+        magit
+
+      ];
     };
 
     home.packages = with pkgs; [
       fontconfig
       coreutils-prefixed
       fd # find alternative - recommended by DoomEmacs
+
+      ## Emacs itself
+      binutils # native-comp needs 'as', provided by this
+      # emacs # HEAD + native-comp
+
+      ## Doom dependencies
+      gitFull
+      ripgrep
+      gnutls # for TLS connectivity
+
+      ## Optional dependencies
+      fd # faster projectile indexing
+      imagemagick # for image-dired
+      # (mkIf (config.programs.gnupg.agent.enable)
+      #   pinentry-emacs) # in-emacs gnupg prompts
+      zstd # for undo-fu-session/undo-tree compression
+
+      ## Module dependencies
+      # :email mu4e
+      mu
+      isync
+      # :checkers spell
+      # (aspellWithDicts (ds: with ds; [ en en-computers en-science ]))
+      # :tools editorconfig
+      editorconfig-core-c # per-project style config
+      # :tools lookup & :lang org +roam
+      sqlite
+      # :lang cc
+      clang-tools
+      # :lang latex & :lang org (latex previews)
+      texlive.combined.scheme-medium
+      # :lang beancount
+      beancount
+      fava
+      # :lang nix
+      age
+      markdownlint-cli
+      pandoc
+
+      nerd-fonts.symbols-only
     ];
+
   };
 }
+
+

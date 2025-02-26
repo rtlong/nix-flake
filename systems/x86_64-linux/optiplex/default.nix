@@ -80,6 +80,10 @@
           command = "/run/current-system/sw/bin/systemd-run *";
           options = [ "NOPASSWD" ];
         }
+        {
+          command = "/run/current-system/sw/bin/nixos-rebuild --flake ~/nix-flake switch";
+          options = [ "NOPASSWD" ];
+        }
       ];
     }
 
@@ -168,6 +172,11 @@
       tmux
       nixfmt-rfc-style
       hfsprogs
+      zfs
+      zfstools
+      iotop
+
+      maestral
     ];
 
   #  programs.nix-ld = {
@@ -185,6 +194,11 @@
   services.k3s.extraFlags = [ "--tls-san=optiplex,optiplex.liberty.rtlong.com" ];
 
   services.ollama.enable = true;
+
+  # IPFS
+  services.kubo = {
+    enable = true;
+  };
 
   services.tailscale = {
     enable = true;
