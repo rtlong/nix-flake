@@ -42,6 +42,27 @@ in
         };
       };
 
+      CustomUserPreferences = {
+        NSGlobalDomain = {
+          NSQuitAlwaysKeepsWindows = true;
+        };
+      };
+
+      NSGlobalDomain = {
+        "com.apple.sound.beep.feedback" = 0;
+        "com.apple.sound.beep.volume" = 0.0;
+        AppleShowAllExtensions = true;
+        AppleShowScrollBars = "Automatic";
+        NSAutomaticWindowAnimationsEnabled = false;
+        _HIHideMenuBar = false;
+      };
+
+      WindowManager = {
+        AppWindowGroupingBehavior = true;
+        EnableTiledWindowMargins = false;
+        EnableTilingOptionAccelerator = true;
+      };
+
       # login window settings
       loginwindow = {
         # disable guest account
@@ -70,19 +91,25 @@ in
         # auto show and hide dock
         autohide = true;
         # remove delay for showing dock
-        autohide-delay = 0.0;
+        autohide-delay = 1.0;
         # how fast is the dock showing animation
         autohide-time-modifier = 1.0;
         mineffect = "scale";
-        minimize-to-application = true;
+        minimize-to-application = false;
         mouse-over-hilite-stack = true;
         mru-spaces = false;
-        orientation = "bottom";
+        orientation = "left";
         show-process-indicators = true;
-        show-recents = false;
+        show-recents = true;
         showhidden = false;
         static-only = false;
-        tilesize = 50;
+        tilesize = 26;
+        largesize = 40;
+
+        persistent-apps = [
+          "/System/Applications/iPhone Mirroring.app"
+          "/System/Applications/System Settings.app"
+        ];
 
         # Hot corners
         # Possible values:
@@ -102,49 +129,6 @@ in
         wvous-br-corner = 1;
         wvous-tl-corner = 1;
         wvous-tr-corner = 1;
-
-        # sudo su "$USER" -c "defaults write com.apple.dock persistent-apps -array 	\
-        # '$launchpad' '$settings' '$appstore' '$small_blank' 																		\
-        # '$messages' '$messenger' '$teams' '$discord' '$mail' '$small_blank' 										\
-        # '$firefox' '$safari' '$fantastical' '$reminders' '$notes' '$small_blank' 								\
-        # '$music' '$spotify' '$plex' '$small_blank' 																							\
-        # '$code' '$github' '$gitkraken' '$small_blank' 													\
-        # '$alacritty' '$kitty'"
-        # Larger spacer
-        # {tile-data={}; tile-type="spacer-tile";}
-        # Small spacer
-        # ''{tile-data={}; tile-type="small-spacer-tile";}''
-        # persistent-apps = [
-        #   "/System/Applications/Launchpad.app"
-        #   "/System/Applications/System Settings.app"
-        #   "/System/Applications/App Store.app"
-        #   # TODO: implement small_blank
-        #   # Need to update upstream to accept something like this
-        #   # ''{tile-data={}; tile-type="small-spacer-tile";}''
-        #   "/System/Applications/Messages.app"
-        #   "/Applications/Caprine.app"
-        #   "/Applications/Element.app"
-        #   "/Applications/Microsoft Teams (work or school).app"
-        #   "/Applications/Discord.app"
-        #   "/Applications/Thunderbird.app"
-        #   # TODO: implement small_blank
-        #   "/Applications/Firefox Developer Edition.app"
-        #   "/Applications/Safari.app"
-        #   "/Applications/Fantastical.app"
-        #   "/System/Applications/Reminders.app"
-        #   "/System/Applications/Notes.app"
-        #   # TODO: implement small_blank
-        #   "/System/Applications/Music.app"
-        #   "/Applications/Spotify.app"
-        #   "/Applications/Plex.app"
-        #   # TODO: implement small_blank
-        #   "/Applications/Visual Studio Code.app"
-        #   "/Applications/Visual Studio (Preview).app"
-        #   "/Applications/GitHub Desktop.app"
-        #   "/Applications/GitKraken.app"
-        #   # TODO: implement small_blank
-        #   "${pkgs.wezterm}/Applications/WezTerm.app"
-        # ];
       };
 
       screencapture = {
@@ -161,16 +145,6 @@ in
         ShowDayOfMonth = false;
         ShowDayOfWeek = false;
         ShowSeconds = false;
-      };
-
-      NSGlobalDomain = {
-        "com.apple.sound.beep.feedback" = 0;
-        "com.apple.sound.beep.volume" = 0.0;
-        AppleShowAllExtensions = true;
-        AppleShowScrollBars = "Automatic";
-        NSAutomaticWindowAnimationsEnabled = false;
-        _HIHideMenuBar = false;
-
       };
 
       # universalaccess = {
