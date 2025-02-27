@@ -70,8 +70,8 @@ in
         D = "Dash";
         E = "Visual Studio Code";
         F = "Finder";
-        G = "Messages";
-        H = "Home Assistant";
+        # G = "Messages";
+        # H = "Home Assistant";
         I = '': osascript -e 'tell application "BusyCal" to activate' ''; # When launched using `open` BusyCal always prompts for some settings reset... IDK
         J = "com.culturedcode.ThingsMac";
         K = "Yubico Authenticator";

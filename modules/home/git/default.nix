@@ -113,6 +113,7 @@ in
         mc = "merge --no-ff";
         mt = "mergetool";
         ps = "push";
+        push-force = "push --force-with-lease";
         rb = "rebase";
         rbi = "rebase -i";
         rbc = "rebase --continue";
