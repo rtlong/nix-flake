@@ -25,11 +25,11 @@
 , ...
 }:
 {
-  ${namespace} = {
-    user = {
-      name = "ryanlong";
-    };
+  primaryUser = {
+    name = "ryanlong";
+  };
 
+  ${namespace} = {
     dnsmasq-dev-domains = {
       domains = [ "localhost" "test" ];
     };

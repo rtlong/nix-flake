@@ -14,10 +14,29 @@ in
   imports = [ (lib.snowfall.fs.get-file "modules/shared/suites/common/default.nix") ];
 
   config = mkIf cfg.enable {
-    programs.zsh.enable = true;
-    # programs.bash.enable = true;
+    rtlong = {
+      nix = enabled;
 
-    programs.nix-index.enable = true;
+      system = {
+        fonts = enabled;
+        input = enabled;
+        # interface = enabled;
+        networking = enabled;
+      };
+    };
+
+    programs.zsh.enable = true;
+
+    services.avahi.enable = true;
+
+    services.openssh = {
+      enable = true;
+    };
+
+    users.users.root = {
+      isNormalUser = false;
+      hashedPassword = config.primaryUser.hashedPassword;
+    };
 
     security = {
       pam = {
@@ -26,6 +45,7 @@ in
             sshAgentAuth = true;
           };
         };
+
         sshAgentAuth = {
           enable = true;
           # authorizedKeysFiles = [
@@ -38,9 +58,11 @@ in
     environment = {
       systemPackages = with pkgs; [
         bash-completion
+        bzip2
         coreutils
         curl
         dig
+        dosfstools
         findutils
         fzf
         gawk
@@ -49,7 +71,9 @@ in
         gnupg
         gnused
         gnutls
+        gzip
         htop
+        iotop
         jq
         moreutils
         nawk
@@ -58,19 +82,14 @@ in
         openssl
         ripgrep
         ripgrep-all
+        tmux
+        unar
+        usbtop
+        usbutils
+        vim
         wget
+        xz
       ];
-    };
-
-    rtlong = {
-      nix = enabled;
-
-      system = {
-        fonts = enabled;
-        input = enabled;
-        # interface = enabled;
-        networking = enabled;
-      };
     };
   };
 }

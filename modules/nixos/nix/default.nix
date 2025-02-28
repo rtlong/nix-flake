@@ -21,29 +21,41 @@ in
       '';
 
       gc = {
-        interval = {
-          Day = 7;
-          Hour = 3;
-        };
+        dates = "Mon *-*-* 03:00:00";
       };
 
       optimise = {
-        interval = {
-          Day = 7;
-          Hour = 4;
-        };
+        dates = [ "Mon *-*-* 04:00:00" ];
       };
 
       settings = {
         build-users-group = "nixbld";
 
         extra-sandbox-paths = [
-          "/usr/lib"
-          "/private/tmp"
-          "/private/var/tmp"
           "/usr/bin/env"
         ];
       };
     };
+
+    programs.nix-index.enable = true;
+    programs.nix-index.enableZshIntegration = true;
+    programs.command-not-found.enable = false;
+
+    security.sudo.extraRules = [
+      # Allow execution of "nixos-rebuild switch" by user `nixbuild` without a password.
+      {
+        users = [
+          "nixbuild"
+          config.primaryUser.name
+        ];
+        commands = [
+          {
+            command = "/run/current-system/sw/bin/nixos-rebuild";
+            options = [ "NOPASSWD" ];
+          }
+        ];
+      }
+    ];
+
   };
 }

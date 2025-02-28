@@ -17,14 +17,26 @@ in
 
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
+      bat
       coreutils
       curl
+      dig
+      direnv
       fd
       file
       findutils
+      fzf
+      jq
       killall
       lsof
+      nawk
+      nixd
+      nixpkgs-fmt
+      openssh
       pciutils
+      ripgrep
+      ripgrep-all
+      rsync
       tldr
       unzip
       wget

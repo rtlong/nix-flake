@@ -24,7 +24,6 @@
 
     mac-app-util.url = "github:hraban/mac-app-util";
 
-
     spicetify-nix = {
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -39,10 +38,6 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # local-ai = {
-    #   url = "github:ck3d/nix-local-ai";
-    #   # inputs.pkgs.follows = "nixpkgs";
-    # };
   };
 
   outputs = inputs:

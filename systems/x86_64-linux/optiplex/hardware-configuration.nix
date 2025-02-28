@@ -57,6 +57,11 @@
     fsType = "ext4";
   };
 
+  fileSystems."/lacie-orange" = {
+    device = "lacie-orange";
+    fsType = "zfs";
+  };
+
   swapDevices = [{ device = "/dev/disk/by-uuid/4324e534-1c0a-46f9-8213-2ce14e998f87"; }];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking

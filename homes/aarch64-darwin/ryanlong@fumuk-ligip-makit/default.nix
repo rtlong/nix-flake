@@ -57,8 +57,6 @@ in
 {
 
   rtlong = {
-    user.human = "ryan";
-
     spotify.enable = true;
 
     skhd = {

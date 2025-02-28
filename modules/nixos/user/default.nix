@@ -15,15 +15,17 @@ in
     (lib.snowfall.fs.get-file "modules/shared/user/default.nix")
   ];
 
-  options.primaryUser = {
-    uid = mkOpt (types.nullOr types.int) 501 "The uid for the user account.";
+  options.primaryUser = with types; {
+    uid = mkOpt (nullOr int) 1000 "The uid for the user account.";
   };
 
   config = {
     users.users.${cfg.name} = {
+      isNormalUser = true;
       uid = mkIf (cfg.uid != null) cfg.uid;
       shell = pkgs.zsh;
-
+      extraGroups = [ "wheel" ] ++ cfg.extraGroups;
+      inherit (cfg) hashedPassword;
       openssh = {
         authorizedKeys.keys = cfg.sshPublicKeys;
       };

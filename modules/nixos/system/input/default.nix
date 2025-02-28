@@ -16,14 +16,7 @@ in
 
   config = mkIf cfg.enable (mkMerge [
     {
-      system = {
-        keyboard = {
-          enableKeyMapping = true;
-          remapCapsLockToEscape = true;
-          # swapLeftCommandAndLeftAlt = true;
-        };
-
-      };
+      system = { };
     }
   ]);
 }

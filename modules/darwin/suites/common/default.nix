@@ -41,6 +41,7 @@ in
         gnused
         gnutls
         htop
+        iterm2
         jq
         moreutils
         nawk

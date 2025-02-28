@@ -14,7 +14,7 @@
 let
   inherit (lib) lists strings debug;
 
-  trc = label: debug.traceValFn (v: "${label}: ${toString v}");
+  # trc = label: debug.traceValFn (v: "${label}: ${toString v}");
 in
 final: prev: {
   # For example, to pull a package from unstable NixPkgs make sure you have the

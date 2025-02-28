@@ -40,8 +40,8 @@ in
     programs.git = {
       enable = true;
 
-      userEmail = config.${namespace}.user.email;
-      userName = config.${namespace}.user.fullName;
+      userEmail = config.primaryUser.email;
+      userName = config.primaryUser.fullName;
 
       package = pkgs.gitFull;
       ignores = [

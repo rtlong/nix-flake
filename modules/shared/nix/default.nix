@@ -49,6 +49,7 @@ in
         cachix
         deploy-rs
         nix-prefetch-git
+        nixfmt-rfc-style
       ];
     };
 
@@ -64,7 +65,7 @@ in
           "root"
           "@wheel"
           "nix-builder"
-          config.${namespace}.user.name
+          config.primaryUser.name
         ];
       in
       {
@@ -89,7 +90,7 @@ in
           allowed-users = users;
           auto-optimise-store = false; # TODO: try enabling again in the future. as of 2024/11/03 I'm seeing warnings like `filesystem error: in create_hard_lin: File exists`
           builders-use-substitutes = true;
-          experimental-features = "nix-command flakes";
+          experimental-features = [ "nix-command" "flakes" ];
           flake-registry = "/etc/nix/registry.json";
           http-connections = 50;
           keep-derivations = true;

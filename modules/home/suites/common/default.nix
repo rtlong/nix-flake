@@ -205,53 +205,10 @@ in
       };
 
       home.packages = with pkgs; [
-        # essential tools
-        coreutils
-        nawk
-        findutils
-        dig
-        openssh
         eza # modern ls replacement with features
-        # nmap
-        liblinear
-        curl
-        wget
-        ripgrep
-        ripgrep-all
-        rsync
-        fzf
-        # docker-credential-helpers
-        sops
-
-        # editors
-        vscode
-
-        # brave -- not yet available in nix-darwin
-        dasht
-        direnv
-        # hammerspoon -- not available
-        iterm2
-        jq
-        ijq
-        pick # probably want to use fzf instead
-        utm
-        tealdeer # provides tldr
-        tig
-
-        # Auth tools
-        _1password-cli # -- op CLI tool
-        yubikey-manager
 
         # Webservice CLIs
         awscli
-        ssm-session-manager-plugin
-        github-cli
-
-        bat
-
-        # nix language server
-        nixd
-        nixpkgs-fmt
 
         # other language tools
         shellcheck
