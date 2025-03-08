@@ -58,6 +58,7 @@ in
   rtlong = {
     spotify.enable = true;
     emacs.enable = true;
+    rancher-desktop.enable = true;
 
     skhd = {
       enable = true;
