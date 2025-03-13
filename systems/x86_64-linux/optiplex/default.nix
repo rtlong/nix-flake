@@ -68,6 +68,9 @@
     users.groups.media = {
       name = "media";
     };
+    users.groups.downloaders = {
+      name = "downloaders";
+    };
 
     ## Servies 
 
@@ -77,11 +80,6 @@
     services.zfs = {
       autoScrub.enable = true;
       trim.enable = true;
-    };
-
-    services.k3s = {
-      enable = true;
-      extraFlags = [ "--tls-san=optiplex,optiplex.liberty.rtlong.com" ];
     };
 
     services.ollama.enable = true;
@@ -101,57 +99,33 @@
       ];
     };
 
-    services.jellyfin = {
+    services.influxdb2 = {
+      enable = true; # used by homeassistant (running on a standalone host)
+    };
+
+    services.postgresql = {
       enable = true;
-      openFirewall = true;
+      package = pkgs.postgresql_17;
+      ensureDatabases = [ "paperless" ];
+      ensureUsers = [{
+        name = "paperless";
+        ensureDBOwnership = true;
+      }];
     };
 
-    services.calibre-web = {
+    services.redis = {
       enable = true;
-      openFirewall = true;
-      listen = {
-        port = 8083;
-        ip = "0.0.0.0";
-      };
-      options = {
-        calibreLibrary = "/data/media/books";
-      };
     };
 
-    users.users.calibre-web = {
-      extraGroups = [ "media" ];
+    services.syncthing = {
+      enable = true;
+      guiAddress = "0.0.0.0:8384";
+      user = "syncthing";
     };
 
-    # KanIDM is a self-hosted identity and access management solution.
-    # services.kanidm = {
-    #   clientSettings = { };
-    #   serverSettings = { };
-    #   provision = {
-    #     systems = {
-    #       oauth2 = {
-    #         (name) = { };
-    #       };
-    #     };
-    #     persons = { };
-    #     groups = { };
-    #     adminPasswordFile = "/etc/kanidm/admin_password";
-    #   };
-    #   unixSettings = { };
-    #   enableServer = true;
-    #   enableClient = true;
-    #   enablePAM = true;
-    # };
-
-    #  services.static-web-server = {
-    #    enable = true;
-    #    listen = "[::]:8787";
-    #    root = "/tmp/usb";
-    #    configuration = {
-    #      general = {
-    #        directory-listing = true;
-    #      };
-    #    };
-    #  };
+    users.users.syncthing = {
+      extraGroups = [ "media" "downloaders" "users" ];
+    };
 
     services.samba = {
       enable = true;
@@ -209,14 +183,120 @@
       };
     };
 
+    services.jellyfin = {
+      enable = true;
+      openFirewall = true;
+    };
+
+    services.k3s = {
+      enable = true;
+      extraFlags = [
+        "--tls-san=optiplex,optiplex.liberty.rtlong.com,optiplex.tailnet.rtlong.com"
+      ];
+    };
+
+    services.webdav-server-rs = {
+      enable = true;
+      user = "ryan";
+      settings = {
+        server = {
+          listen = [ "0.0.0.0:4918" "[::]:4918" ];
+          identification = "optiplex";
+        };
+
+        accounts = {
+          # how to authenticate: pam, htaccess.NAME (default: unset).
+          auth-type = "pam";
+          # what account "database" to use (default: unset).
+          acct-type = "unix";
+        };
+
+        pam = {
+          service = "other";
+        };
+
+        location = [
+          {
+            auth = "true";
+            route = [ "/org/*path" ];
+            directory = "/data/documents/org";
+            setuid = true;
+            handler = "filesystem";
+            autoindex = true;
+            hide-symlinks = false;
+          }
+        ];
+      };
+    };
+
+    # TODO: set up paperless via Kubernetes instead
+    # services.paperless = {
+    #   enable = false;
+    #   consumptionDirIsPublic = true;
+    #   address = "paperless.lab.rtlong.com";
+    #   passwordFile = "/etc/paperless-admin-pass";
+    #   settings = {
+    #     PAPERLESS_DBENGINE = "postgres";
+    #     PAPERLESS_DBHOST = "localhost";
+    #     PAPERLESS_CONSUMPTION_DIR = "/data/media/documents/inbox";
+    #     PAPERLESS_CONSUMER_RECURSIVE = true;
+    #     PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS = true;
+    #     PAPERLESS_CONSUMER_IGNORE_PATTERN = [
+    #       ".DS_STORE/*"
+    #       "desktop.ini"
+    #     ];
+    #     PAPERLESS_OCR_LANGUAGE = "eng";
+    #     PAPERLESS_OCR_USER_ARGS = {
+    #       optimize = 1;
+    #       pdfa_image_compression = "lossless";
+    #     };
+    #     PAPERLESS_TIME_ZONE = "America/New_York";
+    #   };
+    # };
+
+    # TODO: set up calibre-web via Kubernetes instead; maybe alternative software exists for managing books/audiobooks like this?
+    # services.calibre-web = {
+    #   enable = false;
+    #   openFirewall = true;
+    #   listen = {
+    #     port = 8083;
+    #     ip = "0.0.0.0";
+    #   };
+    #   options = {
+    #     calibreLibrary = "/data/media/books";
+    #   };
+    # };
+    # users.users.calibre-web = {
+    #   extraGroups = [ "media" ];
+    # };
+
+    # TODO: set up KanIDM (via Kubernetes? maybe)
+    # KanIDM is a self-hosted identity and access management solution.
+    # services.kanidm = {
+    #   clientSettings = { };
+    #   serverSettings = { };
+    #   provision = {
+    #     systems = {
+    #       oauth2 = {
+    #         (name) = { };
+    #       };
+    #     };
+    #     persons = { };
+    #     groups = { };
+    #     adminPasswordFile = "/etc/kanidm/admin_password";
+    #   };
+    #   unixSettings = { };
+    #   enableServer = true;
+    #   enableClient = true;
+    #   enablePAM = true;
+    # };
+
     # List packages installed in system profile. To search, run:
     # $ nix search wget
     environment.systemPackages = with pkgs; [
       hfsprogs
       zfs
       zfstools
-
-      maestral # FOSS Dropbox.com client
     ];
 
     ### END
