@@ -93,7 +93,7 @@ in
         # remove delay for showing dock
         autohide-delay = 0.0;
         # how fast is the dock showing animation
-        autohide-time-modifier = 1.0;
+        autohide-time-modifier = 0.1;
         mineffect = "scale";
         minimize-to-application = false;
         mouse-over-hilite-stack = true;

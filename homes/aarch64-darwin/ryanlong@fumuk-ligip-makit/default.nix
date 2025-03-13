@@ -40,6 +40,26 @@ let
     '';
   });
 
+  echo-exec = (pkgs.writeShellApplication {
+    name = "echo-exec";
+    text = ''
+      echo "$@"  >&2
+      exec "$@"
+    '';
+  });
+
+  pgadmin-rds-password-helper = (pkgs.writeShellApplication {
+    name = "pgadmin-rds-password-helper";
+    runtimeInputs = with pkgs; [
+      aws-vault-wrapper
+      yubikey-manager
+      awscli
+    ];
+    text = ''
+      exec aws-vault exec opencounter -- aws rds generate-db-auth-token --hostname "$1" --port "$2" --user "$3"
+    '';
+  });
+
   openBraveWithProfile = profile:
     let
       applescriptFile = pkgs.writeScript "open-brave-with-profile-${profile}.scpt" ''
@@ -58,6 +78,7 @@ in
 
   rtlong = {
     spotify.enable = true;
+    emacs.enable = true;
 
     skhd = {
       enable = true;
@@ -66,14 +87,14 @@ in
         B = openBraveWithProfile "Personal";
         C = openBraveWithProfile "Work";
         D = "Dash";
-        E = "Visual Studio Code";
+        E = "Emacs";
         F = "Finder";
         # G = "Messages";
         # H = "Home Assistant";
         I = '': osascript -e 'tell application "BusyCal" to activate' ''; # When launched using `open` BusyCal always prompts for some settings reset... IDK
         J = "com.culturedcode.ThingsMac";
         K = "Yubico Authenticator";
-        # L = "";
+        L = "pgAdmin 4";
         M = "Spark Mail";
         N = "Notes";
         O = "com.microsoft.Outlook";
@@ -81,9 +102,9 @@ in
         Q = "System Settings";
         R = "LM Studio";
         S = "Slack";
-        T = "iTerm2";
+        T = "Ghostty";
         U = "Perplexity";
-        # V = "";
+        V = "Visual Studio Code";
         # W = "";
         # X = "";
         Y = "Spotify";
@@ -107,6 +128,8 @@ in
 
   home.packages = with pkgs; [
     aws-vault-wrapper
+    echo-exec
+    pgadmin-rds-password-helper
     awscli
     github-cli
     # lastpass-cli
