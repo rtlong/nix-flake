@@ -4,6 +4,7 @@
   inputs = {
     # nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # nixpkgs.url = "github:NixOS/nixpkgs?rev=b10b8846883e20f78b1c9d72ca691dee1dbe7ecb"; # NOTE: specifying this rev to avoid issue with tailscale in latest head as of 2025-03-08
 
     snowfall-lib = {
       url = "github:snowfallorg/lib";
@@ -46,13 +47,10 @@
         inherit inputs;
         src = ./.;
 
-        namespace = "rtlong"; # TODO: is this necessary ?
+        namespace = "rtlong";
         snowfall = {
           namespace = "rtlong";
         };
-        # You can optionally place your Snowfall-related files in another
-        # directory.
-        # snowfall.root = ./nix;
       };
     in
     lib.mkFlake {

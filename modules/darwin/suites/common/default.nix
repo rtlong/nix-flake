@@ -48,11 +48,16 @@ in
         nmap
         openssh
         openssl
+        unixtools.nettools
         ripgrep
         ripgrep-all
         wget
       ];
     };
+
+    security.pam.enableSudoTouchIdAuth = true;
+    # upcoming:
+    # security.pam.services.sudo_local.touchIdAuth = true;
 
     rtlong = {
       nix = enabled;

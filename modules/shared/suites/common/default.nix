@@ -41,6 +41,7 @@ in
       unzip
       wget
       xclip
+      tree
     ];
   };
 }

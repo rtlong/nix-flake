@@ -26,7 +26,6 @@
 }:
 
 {
-  security.pam.enableSudoTouchIdAuth = true;
   ids.gids.nixbld = 350;
   environment.systemPackages = with pkgs; [
     colima # replacement for Docker Desktop

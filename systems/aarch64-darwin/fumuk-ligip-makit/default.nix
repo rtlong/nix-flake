@@ -35,7 +35,6 @@
     };
   };
 
-  security.pam.enableSudoTouchIdAuth = true;
 
   # List packages installed in system profile. To search by name, run:
   environment.systemPackages = with pkgs; [

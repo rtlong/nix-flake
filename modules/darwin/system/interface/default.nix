@@ -91,7 +91,7 @@ in
         # auto show and hide dock
         autohide = true;
         # remove delay for showing dock
-        autohide-delay = 0.1;
+        autohide-delay = 0.0;
         # how fast is the dock showing animation
         autohide-time-modifier = 1.0;
         mineffect = "scale";

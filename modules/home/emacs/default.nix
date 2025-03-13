@@ -29,10 +29,6 @@ let
   inherit (lib) mkIf;
   inherit (lib.${namespace}) enabled mkBoolOpt mkOpt;
 
-  # emacs = (pkgs.emacsPackagesFor cfg.package).emacsWithPackages (
-  #   epkgs: with epkgs; [
-  #   ]
-  # );
   cfg = config.${namespace}.emacs;
 in
 {
@@ -40,35 +36,31 @@ in
 
   options.${namespace}.emacs = {
     enable = mkBoolOpt false "Whether or not to enable emacs";
-    package = mkOpt lib.types.package pkgs.emacsMacport "Which emacs package to use.";
+    package = mkOpt lib.types.package pkgs.emacs30 "Which emacs package to use.";
   };
 
   config = mkIf cfg.enable {
     programs.emacs = {
       enable = true;
       package = cfg.package;
-      extraPackages = epkgs: with epkgs;[
-        treesit-grammars.with-all-grammars
-        vterm
-        mu4e
-        magit
-
-      ];
     };
+
+    programs.zsh.envExtra = ''
+      export PATH="$HOME/.config/emacs/bin:$PATH"
+    '';
 
     home.packages = with pkgs; [
       fontconfig
       coreutils-prefixed
       fd # find alternative - recommended by DoomEmacs
-
-      ## Emacs itself
       binutils # native-comp needs 'as', provided by this
-      # emacs # HEAD + native-comp
 
       ## Doom dependencies
       gitFull
       ripgrep
       gnutls # for TLS connectivity
+
+      emacs-all-the-icons-fonts
 
       ## Optional dependencies
       fd # faster projectile indexing
@@ -87,6 +79,7 @@ in
       editorconfig-core-c # per-project style config
       # :tools lookup & :lang org +roam
       sqlite
+      graphviz # for org-roam graph
       # :lang cc
       clang-tools
       # :lang latex & :lang org (latex previews)

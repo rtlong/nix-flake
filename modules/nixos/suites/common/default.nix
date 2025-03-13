@@ -58,6 +58,7 @@ in
     environment = {
       systemPackages = with pkgs; [
         bash-completion
+        busybox
         bzip2
         coreutils
         curl
