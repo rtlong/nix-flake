@@ -1,8 +1,9 @@
-{ config
-, lib
-, pkgs
-, namespace
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  namespace,
+  ...
 }:
 let
   inherit (lib) mkIf;
@@ -43,9 +44,24 @@ in
       };
 
       CustomUserPreferences = {
+        # this is meant to provide an escape from the predefined and typed defaults keys. anything in here should be applied verbatim, but not all of the settings I've tried actually work.
         NSGlobalDomain = {
+          # NSGlobalDomain is probably where keys found at the top level of the `defaults read` output should go.
+
           NSQuitAlwaysKeepsWindows = true;
+
+          "com.apple.mail" = {
+            NSUserKeyEquivalents = {
+              Archive = "^e";
+            };
+          };
+
+          "com.apple.custommenu.apps" = [
+            "com.apple.mail"
+            "NSGlobalDomain"
+          ];
         };
+
       };
 
       NSGlobalDomain = {
