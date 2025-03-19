@@ -45,6 +45,11 @@ in
       package = cfg.package;
     };
 
+    services.emacs = {
+      enable = true;
+      package = cfg.package;
+    };
+
     programs.zsh.envExtra = ''
       export PATH="$HOME/.config/emacs/bin:$PATH"
     '';

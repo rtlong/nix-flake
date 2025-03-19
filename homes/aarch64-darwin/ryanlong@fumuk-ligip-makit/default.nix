@@ -87,7 +87,7 @@ in
         B = openBraveWithProfile "Personal";
         C = openBraveWithProfile "Work";
         D = "Dash";
-        E = "Emacs";
+        E = '': osascript -e 'tell application "Emacs" to activate' '';
         F = "Finder";
         # G = "Messages";
         # H = "Home Assistant";
@@ -139,6 +139,15 @@ in
     tailscale
     yubikey-manager
   ];
+
+  services.syncthing = {
+    enable = true;
+    tray = {
+      enable = false; # unsupported on macOS
+    };
+    overrideDevices = false;
+    overrideFolders = false;
+  };
 
   home.stateVersion = "22.05";
 }

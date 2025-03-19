@@ -53,6 +53,8 @@ in
           "super+alt+shift+w=close_all_windows"
           "super+w=close_surface"
 
+          "global:cmd+ctrl+grave_accent=toggle_quick_terminal"
+
           "super+ctrl+f=toggle_fullscreen"
           "super+enter=toggle_fullscreen"
 
