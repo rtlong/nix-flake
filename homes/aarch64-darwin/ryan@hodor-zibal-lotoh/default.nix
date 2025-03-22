@@ -84,7 +84,7 @@ in
         Q = "System Settings";
         R = "LM Studio";
         # S = "";
-        T = "iTerm2";
+        T = "Ghostty";
         U = "Perplexity";
         V = "Visual Studio Code";
         # W = "Sonos";
@@ -120,6 +120,10 @@ in
     tray = {
       enable = false; # unsupported on macOS
     };
+
+    # allow folders and devices configured manually to persist
+    overrideDevices = false;
+    overrideFolders = false;
   };
 
   home.shellAliases =

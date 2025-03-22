@@ -29,13 +29,18 @@ let
   inherit (lib.${namespace}) enabled mkBoolOpt mkOpt;
 
   cfg = config.${namespace}.emacs;
+
+  emacsPkg = (pkgs.emacsPackagesFor pkgs.emacs30).emacsWithPackages (epkgs: [
+    epkgs.vterm
+  ]);
+
 in
 {
   # imports = [ ];
 
   options.${namespace}.emacs = {
     enable = mkBoolOpt false "Whether or not to enable emacs";
-    package = mkOpt lib.types.package pkgs.emacs30 "Which emacs package to use.";
+    package = mkOpt lib.types.package emacsPkg "Which emacs package to use.";
   };
 
   config = mkIf cfg.enable {

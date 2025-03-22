@@ -41,6 +41,7 @@ in
       vscode
       utm
       _1password-cli # -- op CLI tool
+      xbar
     ];
   };
 }
