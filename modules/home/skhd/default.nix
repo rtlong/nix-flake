@@ -1,60 +1,65 @@
 {
   # Snowfall Lib provides a customized `lib` instance with access to your flake's library
   # as well as the libraries available from your flake's inputs.
-  lib
-, # An instance of `pkgs` with your overlays and packages applied is also available.
-  pkgs
-, # You also have access to your flake's inputs.
-  inputs
-, # Additional metadata is provided by Snowfall Lib.
-  namespace
-, # The namespace used for your flake, defaulting to "internal" if not set.
-  system
-, # The home architecture for this host (eg. `x86_64-linux`).
-  target
-, # The Snowfall Lib target for this home (eg. `x86_64-home`).
-  format
-, # A normalized name for the home target (eg. `home`).
-  virtual
-, # A boolean to determine whether this home is a virtual target using nixos-generators.
-  host
-, # The host name for this home.
+  lib,
+  # An instance of `pkgs` with your overlays and packages applied is also available.
+  pkgs,
+  # You also have access to your flake's inputs.
+  inputs,
+  # Additional metadata is provided by Snowfall Lib.
+  namespace,
+  # The namespace used for your flake, defaulting to "internal" if not set.
+  system,
+  # The home architecture for this host (eg. `x86_64-linux`).
+  target,
+  # The Snowfall Lib target for this home (eg. `x86_64-home`).
+  format,
+  # A normalized name for the home target (eg. `home`).
+  virtual,
+  # A boolean to determine whether this home is a virtual target using nixos-generators.
+  host, # The host name for this home.
 
   # All other arguments come from the home home.
-  config
-, ...
+  config,
+  ...
 }:
 let
   # inherit (builtins) map mapAttrs listToAttrs;
   inherit (lib) mkIf mkOption types;
-  inherit (lib.strings) toLower hasInfix hasPrefix removePrefix;
+  inherit (lib.strings)
+    toLower
+    hasInfix
+    hasPrefix
+    removePrefix
+    ;
   inherit (lib.attrsets) mapAttrsToList;
   inherit (lib.${namespace}) mkBoolOpt join;
 
   cfg = config.${namespace}.skhd;
 
-  skhdrc = join "\n" (lib.lists.flatten
-    [
+  skhdrc = join "\n" (
+    lib.lists.flatten [
       (mapAttrsToList
 
-        (key: application:
+        (
+          key: application:
           let
             command =
-              if (hasPrefix ": " application)
-              then removePrefix ": " application
+              if (hasPrefix ": " application) then
+                removePrefix ": " application
+              else if (hasInfix " " application) then
+                ''open -a "${application}"''
               else
-                if (hasInfix " " application)
-                then ''open -a "${application}"''
-                else
-                  (if (hasInfix "." application)
-                  then "open -b ${application}"
-                  else "open -a ${application}");
+                (if (hasInfix "." application) then "open -b ${application}" else "open -a ${application}");
           in
-          "cmd + alt + shift + ctrl - ${toLower key} : ${command}")
-        cfg.appLaunchBinds)
+          "cmd + alt + shift + ctrl - ${toLower key} : ${command}"
+        )
+        cfg.appLaunchBinds
+      )
 
       cfg.extraConfig
-    ]);
+    ]
+  );
 in
 {
   options.${namespace}.skhd = {
@@ -99,7 +104,10 @@ in
       config = {
         StandardOutPath = "/tmp/skhd.log";
         StandardErrorPath = "/tmp/skhd.log";
-        ProgramArguments = [ "${cfg.package}/bin/skhd" "-V" ];
+        ProgramArguments = [
+          "${cfg.package}/bin/skhd"
+          "-V"
+        ];
         KeepAlive = true;
         # FIXME: this needs to chill out whenever it's failing due to lacking permissions. It agressively restarts and makes it actually difficult to grant permissions for the new binary. Also is there some way to make it provide a consistent path to MacOS for this purpose, instead of the hashed store path that is version dependent?
         ProcessType = "Interactive";

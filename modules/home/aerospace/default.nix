@@ -1,4 +1,10 @@
-{ config, namespace, pkgs, lib, ... }:
+{
+  config,
+  namespace,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
   settingsFormat = pkgs.formats.toml { };
@@ -68,9 +74,11 @@ in
 
     xdg.configFile."aerospace/aerospace.toml".source = settingsFormat.generate "aerospace.toml" cfg.config;
 
-    home.activation.aerospaceConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] /* bash */ ''
-      $VERBOSE_ECHO "Reloading configuration"
-      $DRY_RUN_CMD ${pkgs.aerospace}/bin/aerospace reload-config
-    '';
+    home.activation.aerospaceConfig =
+      lib.hm.dag.entryAfter [ "writeBoundary" ] # bash
+        ''
+          $VERBOSE_ECHO "Reloading configuration"
+          $DRY_RUN_CMD ${pkgs.aerospace}/bin/aerospace reload-config
+        '';
   };
 }

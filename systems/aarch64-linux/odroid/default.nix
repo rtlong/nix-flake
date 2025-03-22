@@ -1,14 +1,15 @@
-{ lib
-, pkgs
-, inputs
-, namespace
-, system
-, target
-, format
-, virtual
-, systems
-, config
-, ...
+{
+  lib,
+  pkgs,
+  inputs,
+  namespace,
+  system,
+  target,
+  format,
+  virtual,
+  systems,
+  config,
+  ...
 }:
 
 {
@@ -40,7 +41,6 @@
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
-
 
   system.stateVersion = "24.11";
 }

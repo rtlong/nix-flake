@@ -1,10 +1,11 @@
-{ lib
-, pkgs
-, inputs
-, namespace
-, system
-, config
-, ...
+{
+  lib,
+  pkgs,
+  inputs,
+  namespace,
+  system,
+  config,
+  ...
 }:
 let
   # inherit (builtins) map mapAttrs listToAttrs;

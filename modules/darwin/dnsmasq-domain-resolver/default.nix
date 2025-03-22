@@ -1,7 +1,18 @@
 # FIXME: PR this back info nix-darwin
-{ config, lib, pkgs, namespace, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  namespace,
+  ...
+}:
 let
-  inherit (lib) types map listToAttrs mkIf;
+  inherit (lib)
+    types
+    map
+    listToAttrs
+    mkIf
+    ;
   inherit (lib.${namespace}) mkBoolOpt mkOpt;
 
   cfg = config.${namespace}.dnsmasq-dev-domains;
@@ -22,7 +33,6 @@ in
     domains = mkOpt (listOf str) [ "localhost" ] "Which nix package to use.";
   };
 
-
   config = mkIf cfg.enable {
     environment.systemPackages = [ package ];
 
@@ -39,8 +49,8 @@ in
       serviceConfig.KeepAlive = true;
     };
 
-    environment.etc = listToAttrs (map
-      (domain: {
+    environment.etc = listToAttrs (
+      map (domain: {
         name = "resolver/${domain}";
         value = {
           enable = true;
@@ -49,7 +59,7 @@ in
             nameserver ${bind}
           '';
         };
-      })
-      cfg.domains);
+      }) cfg.domains
+    );
   };
 }

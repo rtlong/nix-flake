@@ -45,11 +45,13 @@ rec {
   compose = fns: v: foldr (f: e: f e) v fns;
 
   # (string: bool) => string => string
-  filterLines = pred: compose [
-    (join "\n")
-    (filter pred)
-    (strings.splitString "\n")
-  ];
+  filterLines =
+    pred:
+    compose [
+      (join "\n")
+      (filter pred)
+      (strings.splitString "\n")
+    ];
 
   # array => bool
   isEmpty = compose [

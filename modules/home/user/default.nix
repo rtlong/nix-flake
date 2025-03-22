@@ -1,13 +1,14 @@
-{ lib
-, pkgs
-, inputs
-, namespace
-, config
-, ...
+{
+  lib,
+  pkgs,
+  inputs,
+  namespace,
+  config,
+  ...
 }:
 let
   inherit (lib) types;
-  inherit (lib.${namespace}) mkOpt;# humans;
+  inherit (lib.${namespace}) mkOpt; # humans;
   cfg = config.primaryUser;
 in
 {

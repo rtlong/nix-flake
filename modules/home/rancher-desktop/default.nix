@@ -1,4 +1,9 @@
-{ namespace, lib, config, ... }:
+{
+  namespace,
+  lib,
+  config,
+  ...
+}:
 let
   inherit (lib) mkIf mkOption types;
 

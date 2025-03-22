@@ -1,4 +1,10 @@
-{ config, namespace, pkgs, lib, ... }:
+{
+  config,
+  namespace,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
   toml = pkgs.formats.toml { };

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 
@@ -9,14 +14,22 @@ let
   builder = pkgs.substituteAll {
     src = ./generate-kboot-conf.sh;
     isExecutable = true;
-    path = [pkgs.coreutils pkgs.gnused pkgs.gnugrep];
+    path = [
+      pkgs.coreutils
+      pkgs.gnused
+      pkgs.gnugrep
+    ];
     inherit (pkgs) bash;
   };
   # The builder exposed in populateCmd, which runs on the build architecture
   populateBuilder = pkgs.buildPackages.substituteAll {
     src = ./generate-kboot-conf.sh;
     isExecutable = true;
-    path = with pkgs.buildPackages; [coreutils gnused gnugrep];
+    path = with pkgs.buildPackages; [
+      coreutils
+      gnused
+      gnugrep
+    ];
     inherit (pkgs.buildPackages) bash;
   };
 in
@@ -50,11 +63,13 @@ in
       };
     };
   };
-  config = let
-    args = "-g ${toString cfg.configurationLimit} -n ${config.hardware.deviceTree.name}";
-  in mkIf cfg.enable {
-    system.build.installBootLoader = "${builder} ${args} -c";
-    system.boot.loader.id = "kboot-conf";
-    boot.loader.kboot-conf.populateCmd = "${populateBuilder} ${args}";
-  };
+  config =
+    let
+      args = "-g ${toString cfg.configurationLimit} -n ${config.hardware.deviceTree.name}";
+    in
+    mkIf cfg.enable {
+      system.build.installBootLoader = "${builder} ${args} -c";
+      system.boot.loader.id = "kboot-conf";
+      boot.loader.kboot-conf.populateCmd = "${populateBuilder} ${args}";
+    };
 }

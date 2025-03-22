@@ -1,66 +1,72 @@
 {
   # Snowfall Lib provides a customized `lib` instance with access to your flake's library
   # as well as the libraries available from your flake's inputs.
-  lib
-, # An instance of `pkgs` with your overlays and packages applied is also available.
-  pkgs
-, # You also have access to your flake's inputs.
-  inputs
-, # Additional metadata is provided by Snowfall Lib.
-  namespace
-, # The namespace used for your flake, defaulting to "internal" if not set.
-  home
-, # The home architecture for this host (eg. `x86_64-linux`).
-  target
-, # The Snowfall Lib target for this home (eg. `x86_64-home`).
-  format
-, # A normalized name for the home target (eg. `home`).
-  virtual
-, # A boolean to determine whether this home is a virtual target using nixos-generators.
-  host
-, # The host name for this home.
+  lib,
+  # An instance of `pkgs` with your overlays and packages applied is also available.
+  pkgs,
+  # You also have access to your flake's inputs.
+  inputs,
+  # Additional metadata is provided by Snowfall Lib.
+  namespace,
+  # The namespace used for your flake, defaulting to "internal" if not set.
+  home,
+  # The home architecture for this host (eg. `x86_64-linux`).
+  target,
+  # The Snowfall Lib target for this home (eg. `x86_64-home`).
+  format,
+  # A normalized name for the home target (eg. `home`).
+  virtual,
+  # A boolean to determine whether this home is a virtual target using nixos-generators.
+  host, # The host name for this home.
 
   # All other arguments come from the home home.
-  config
-, ...
+  config,
+  ...
 }:
 let
   inherit (builtins) map listToAttrs;
 
-  aws-vault-wrapper = (pkgs.writeShellApplication {
-    name = "aws-vault";
-    runtimeEnv = {
-      AWS_VAULT_BACKEND = "file";
-      AWS_SESSION_TOKEN_TTL = "36h";
-    };
-    excludeShellChecks = [ "SC2209" ];
-    text = ''
-      exec env AWS_VAULT_FILE_PASSPHRASE="$(${pkgs._1password-cli}/bin/op --account my read op://qvutxi2zizeylilt23rflojdky/c5nz76at6k6vqx4cxhday5yg7u/password)" \
-        "${pkgs.aws-vault}/bin/aws-vault" "$@"
-    '';
-  });
+  aws-vault-wrapper = (
+    pkgs.writeShellApplication {
+      name = "aws-vault";
+      runtimeEnv = {
+        AWS_VAULT_BACKEND = "file";
+        AWS_SESSION_TOKEN_TTL = "36h";
+      };
+      excludeShellChecks = [ "SC2209" ];
+      text = ''
+        exec env AWS_VAULT_FILE_PASSPHRASE="$(${pkgs._1password-cli}/bin/op --account my read op://qvutxi2zizeylilt23rflojdky/c5nz76at6k6vqx4cxhday5yg7u/password)" \
+          "${pkgs.aws-vault}/bin/aws-vault" "$@"
+      '';
+    }
+  );
 
-  echo-exec = (pkgs.writeShellApplication {
-    name = "echo-exec";
-    text = ''
-      echo "$@"  >&2
-      exec "$@"
-    '';
-  });
+  echo-exec = (
+    pkgs.writeShellApplication {
+      name = "echo-exec";
+      text = ''
+        echo "$@"  >&2
+        exec "$@"
+      '';
+    }
+  );
 
-  pgadmin-rds-password-helper = (pkgs.writeShellApplication {
-    name = "pgadmin-rds-password-helper";
-    runtimeInputs = with pkgs; [
-      aws-vault-wrapper
-      yubikey-manager
-      awscli
-    ];
-    text = ''
-      exec aws-vault exec opencounter -- aws rds generate-db-auth-token --hostname "$1" --port "$2" --user "$3"
-    '';
-  });
+  pgadmin-rds-password-helper = (
+    pkgs.writeShellApplication {
+      name = "pgadmin-rds-password-helper";
+      runtimeInputs = with pkgs; [
+        aws-vault-wrapper
+        yubikey-manager
+        awscli
+      ];
+      text = ''
+        exec aws-vault exec opencounter -- aws rds generate-db-auth-token --hostname "$1" --port "$2" --user "$3"
+      '';
+    }
+  );
 
-  openBraveWithProfile = profile:
+  openBraveWithProfile =
+    profile:
     let
       applescriptFile = pkgs.writeScript "open-brave-with-profile-${profile}.scpt" ''
         tell application "Brave Browser" to activate
@@ -116,15 +122,25 @@ in
     };
   };
 
-  home.shellAliases = {
-    tf = "terraform";
-    dc = "docker compose";
-    with-creds = "op run -- aws-vault exec opencounter --";
-  } // (listToAttrs (map
-    (cmd: {
-      name = cmd;
-      value = "with-creds ${cmd}";
-    }) [ "rails" "sidekiq" "overmind" "terraform" ]));
+  home.shellAliases =
+    {
+      tf = "terraform";
+      dc = "docker compose";
+      with-creds = "op run -- aws-vault exec opencounter --";
+    }
+    // (listToAttrs (
+      map
+        (cmd: {
+          name = cmd;
+          value = "with-creds ${cmd}";
+        })
+        [
+          "rails"
+          "sidekiq"
+          "overmind"
+          "terraform"
+        ]
+    ));
 
   home.packages = with pkgs; [
     aws-vault-wrapper
