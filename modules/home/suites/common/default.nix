@@ -212,6 +212,9 @@ in
 
         # other language tools
         shellcheck
+
+        age
+        sops
       ];
 
       # # Misc configuration files --------------------------------------------------------------------{{{

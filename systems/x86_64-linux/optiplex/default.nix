@@ -1,33 +1,52 @@
 {
   # Snowfall Lib provides a customized `lib` instance with access to your flake's library
   # as well as the libraries available from your flake's inputs.
-  lib
-, # An instance of `pkgs` with your overlays and packages applied is also available.
-  pkgs
-, # You also have access to your flake's inputs.
-  inputs
-, # Additional metadata is provided by Snowfall Lib.
-  namespace
-, # The namespace used for your flake, defaulting to "internal" if not set.
-  system
-, # The system architecture for this host (eg. `x86_64-linux`).
-  target
-, # The Snowfall Lib target for this system (eg. `x86_64-iso`).
-  format
-, # A normalized name for the system target (eg. `iso`).
-  virtual
-, # A boolean to determine whether this system is a virtual target using nixos-generators.
-  systems
-, # An attribute map of your defined hosts.
+  lib,
+  # An instance of `pkgs` with your overlays and packages applied is also available.
+  pkgs,
+  # You also have access to your flake's inputs.
+  inputs,
+  # Additional metadata is provided by Snowfall Lib.
+  namespace,
+  # The namespace used for your flake, defaulting to "internal" if not set.
+  system,
+  # The system architecture for this host (eg. `x86_64-linux`).
+  target,
+  # The Snowfall Lib target for this system (eg. `x86_64-iso`).
+  format,
+  # A normalized name for the system target (eg. `iso`).
+  virtual,
+  # A boolean to determine whether this system is a virtual target using nixos-generators.
+  systems, # An attribute map of your defined hosts.
 
   # All other arguments come from the system system.
-  config
-, ...
+  config,
+  ...
 }:
 {
   imports = [ ./hardware-configuration.nix ];
 
   config = {
+    sops = {
+      # This will add secrets.yml to the nix store
+      # You can avoid this by adding a string to the full path instead, i.e.
+      # defaultSopsFile = "/root/.sops/secrets/example.yaml";
+      defaultSopsFile = ./secrets/default.yaml;
+      defaultSopsFormat = "yaml";
+
+      age = {
+        # This will automatically import SSH keys as age keys
+        sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+      };
+      # This is the actual specification of the secrets.
+      secrets = {
+        # example-key = {
+        # sopsFile = ""; # override the defaultSopsFile, per secret
+        # };
+        "aws_credentials" = { };
+      };
+    };
+
     boot = {
       # kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
       kernelParams = [ "elevator=none" ]; # disable the disk scheduler to avoid issues with ZSH having only part of the disk
@@ -72,7 +91,7 @@
       name = "downloaders";
     };
 
-    ## Servies 
+    ## Servies
 
     # Enable CUPS to print documents.
     services.printing.enable = true;
@@ -107,24 +126,36 @@
       enable = true;
       package = pkgs.postgresql_17;
       ensureDatabases = [ "paperless" ];
-      ensureUsers = [{
-        name = "paperless";
-        ensureDBOwnership = true;
-      }];
+      ensureUsers = [
+        {
+          name = "paperless";
+          ensureDBOwnership = true;
+        }
+      ];
     };
 
     services.redis = {
-      enable = true;
+      servers = {
+        store = {
+          enable = true;
+          port = 6379;
+        };
+      };
     };
 
     services.syncthing = {
       enable = true;
       guiAddress = "0.0.0.0:8384";
       user = "syncthing";
+      group = "users";
     };
 
     users.users.syncthing = {
-      extraGroups = [ "media" "downloaders" "users" ];
+      extraGroups = [
+        "media"
+        "downloaders"
+        "users"
+      ];
     };
 
     services.samba = {
@@ -195,35 +226,75 @@
       ];
     };
 
-    services.webdav-server-rs = {
+    security.acme = {
+      acceptTerms = true;
+      defaults = {
+        email = "ryan@rtlong.com";
+        dnsProvider = "route53";
+        dnsPropagationCheck = false;
+        credentialFiles = {
+          AWS_CONFIG_FILE = config.sops.secrets.aws_credentials.path;
+        };
+        environmentFile = pkgs.writeText "lego-config" ''
+          # do not follow CNAME on the _acme-challenge record, since *.optiplex.tailnet.rtlong.com resolves all subdomains
+          LEGO_DISABLE_CNAME_SUPPORT=true
+          LEGO_DEBUG_CLIENT_VERBOSE_ERROR=true
+          LEGO_DEBUG_ACME_HTTP_CLIENT=true
+        '';
+      };
+
+      certs = {
+        "webdav.optiplex.tailnet.rtlong.com" = {
+          group = "users";
+          # acmeRoot = null; # use DNS-01 validation
+        };
+      };
+    };
+
+    # systemd.units."secrets-test.service" = {
+    #   text = ''
+    #     [Service]
+    #     Environment="AWS_CONFIG_FILE=%d/AWS_CONFIG_FILE"
+    #     LoadCredential=AWS_CONFIG_FILE:/run/secrets/aws_credentials
+    #     ExecStartPre=${pkgs.busybox}/bin/env
+    #     ExecStartPre=/run/current-system/sw/bin/cat $AWS_CONFIG_FILE
+    #     ExecStart=${pkgs.awscli}/bin/aws --debug sts get-caller-identity
+    #   '';
+    # };
+
+    # security.pam.services.webdav = { };
+    services.webdav = {
       enable = true;
       user = "ryan";
+      group = "users";
+
+      # http://optiplex.tailnet.rtlong.com:6050/org/index.org
       settings = {
-        server = {
-          listen = [ "0.0.0.0:4918" "[::]:4918" ];
-          identification = "optiplex";
-        };
-
-        accounts = {
-          # how to authenticate: pam, htaccess.NAME (default: unset).
-          auth-type = "pam";
-          # what account "database" to use (default: unset).
-          acct-type = "unix";
-        };
-
-        pam = {
-          service = "other";
-        };
-
-        location = [
+        address = "0.0.0.0";
+        port = 6050;
+        tls = true;
+        cert = "/var/lib/acme/webdav.optiplex.tailnet.rtlong.com/full.pem";
+        key = "/var/lib/acme/webdav.optiplex.tailnet.rtlong.com/key.pem";
+        directory = "/data/public";
+        debug = true;
+        modify = true;
+        auth = true;
+        users = [
           {
-            auth = "true";
-            route = [ "/org/*path" ];
-            directory = "/data/documents/org";
-            setuid = true;
-            handler = "filesystem";
-            autoindex = true;
-            hide-symlinks = false;
+            username = "org-mobile";
+            password = "{bcrypt}$2a$10$ETEOrBlS8knRUBPXrjUyyeEkZH7VSIgrcjO6zm4WOlDtAq.4rezki";
+            directory = "/data/documents";
+            permissions = "none";
+            rules = [
+              {
+                path = "/org";
+                permissions = "CRUD";
+              }
+              {
+                path = "/org-roam";
+                permissions = "CRUD";
+              }
+            ];
           }
         ];
       };

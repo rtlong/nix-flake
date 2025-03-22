@@ -1,8 +1,9 @@
-{ config
-, lib
-, pkgs
-, namespace
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  namespace,
+  ...
 }:
 let
   inherit (lib) mkIf;
@@ -17,6 +18,7 @@ in
 
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
+      age
       bat
       coreutils
       curl
@@ -37,11 +39,12 @@ in
       ripgrep
       ripgrep-all
       rsync
+      sops
       tldr
+      tree
       unzip
       wget
       xclip
-      tree
     ];
   };
 }

@@ -35,13 +35,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    agenix = {
-      url = "github:ryantm/agenix";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = inputs:
+  outputs =
+    inputs:
     let
       lib = inputs.snowfall-lib.mkLib {
         inherit inputs;
@@ -55,7 +56,8 @@
     in
     lib.mkFlake {
       channels-config = {
-        allowUnfreePredicate = pkg:
+        allowUnfreePredicate =
+          pkg:
           builtins.elem (lib.getName pkg) [
             "vscode"
             "spotify"
@@ -69,11 +71,18 @@
         inputs.emacs-overlay.overlays.default
       ];
 
+      systems.modules.nixos = with inputs; [
+        sops-nix.nixosModules.sops
+
+      ];
       systems.modules.darwin = with inputs; [
         mac-app-util.darwinModules.default # enables Alfred/Spotlight to launch nix-controlled apps correctly
+        sops-nix.darwinModules.sops
+
       ];
       homes.modules = with inputs; [
         spicetify-nix.homeManagerModules.default
+        sops-nix.homeManagerModules.sops
         mac-app-util.homeManagerModules.default
       ];
     };
