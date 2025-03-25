@@ -1,43 +1,41 @@
 {
-  # Snowfall Lib provides a customized `lib` instance with access to your flake's library
-  # as well as the libraries available from your flake's inputs.
   lib,
-  # An instance of `pkgs` with your overlays and packages applied is also available.
   pkgs,
-  # You also have access to your flake's inputs.
-  inputs,
-  # Additional metadata is provided by Snowfall Lib.
   namespace,
-  # The namespace used for your flake, defaulting to "internal" if not set.
-  system,
-  # The home architecture for this host (eg. `x86_64-linux`).
-  target,
-  # The Snowfall Lib target for this home (eg. `x86_64-home`).
-  format,
-  # A normalized name for the home target (eg. `home`).
-  virtual,
-  # A boolean to determine whether this home is a virtual target using nixos-generators.
-  host, # The host name for this home.
-
-  # All other arguments come from the home home.
   config,
   ...
 }:
 let
-  inherit (builtins) map listToAttrs;
-  inherit (lib) mkIf;
-  inherit (lib.${namespace}) enabled mkBoolOpt mkOpt;
+  inherit (lib) mkIf mkForce;
+  inherit (lib.${namespace}) mkBoolOpt mkOpt;
 
   cfg = config.${namespace}.emacs;
 
-  emacsPkg = (pkgs.emacsPackagesFor pkgs.emacs30).emacsWithPackages (epkgs: [
+  basePkg = pkgs.emacs30;
+  emacsPkg = (pkgs.emacsPackagesFor basePkg).emacsWithPackages (epkgs: [
     epkgs.vterm
   ]);
 
+  emacsActivate = (
+    pkgs.writeShellApplication {
+      name = "emacs-activate";
+      text = ''
+        # NB: I had issues with emacsclient -r -- when no frame exists it wouldn't create one, so using this custom function to make it a little more reliable:
+        ${emacsPkg}/bin/emacsclient -n -e "(my/raise-or-create-frame)"
+        emacs_pid=$(${emacsPkg}/bin/emacsclient -n -e "(emacs-pid)")
+
+        # Emacs does not reliably bring the frame to the foreground, so this AppleScript helps:
+        osascript <<-EOF
+          tell application "System Events"
+            set frontmost of the first process whose unix id is ''${emacs_pid} to true
+          end tell
+        EOF
+      '';
+    }
+  );
+
 in
 {
-  # imports = [ ];
-
   options.${namespace}.emacs = {
     enable = mkBoolOpt false "Whether or not to enable emacs";
     package = mkOpt lib.types.package emacsPkg "Which emacs package to use.";
@@ -53,12 +51,22 @@ in
       enable = true;
       package = cfg.package;
     };
+    launchd.agents.emacs.config = {
+      KeepAlive = mkForce true;
+      EnvironmentVariables = (
+        mkIf config.${namespace}.ghostty.enable {
+          TERMINFO = "/Applications/Ghostty.app/Contents/Resources/terminfo/"; # FIX *ERROR*: Terminal type xterm-ghostty is not defined when invoking emacsclient from Ghostty
+        }
+      );
+    };
 
     programs.zsh.envExtra = ''
       export PATH="$HOME/.config/emacs/bin:$PATH"
     '';
 
     home.packages = with pkgs; [
+      emacsActivate # referenced by skhd config
+
       fontconfig
       coreutils-prefixed
       fd # find alternative - recommended by DoomEmacs
@@ -104,5 +112,16 @@ in
       nerd-fonts.symbols-only
     ];
 
+    home.file.".config/doom/nix-helpers/activate.el" = {
+      text = ''
+        (defun my/raise-or-create-frame ()
+          "Raise an existing frame or create a new one if none exists."
+          (if (frame-list)  ;; Check if there are any frames
+              (let ((frame (selected-frame)))
+                (raise-frame frame)
+                (select-frame-set-input-focus frame))
+            (make-frame)))  ;; Create a new frame if none exists
+      '';
+    };
   };
 }

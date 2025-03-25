@@ -1,25 +1,6 @@
 {
-  # Snowfall Lib provides a customized `lib` instance with access to your flake's library
-  # as well as the libraries available from your flake's inputs.
   lib,
-  # An instance of `pkgs` with your overlays and packages applied is also available.
   pkgs,
-  # You also have access to your flake's inputs.
-  inputs,
-  # Additional metadata is provided by Snowfall Lib.
-  namespace,
-  # The namespace used for your flake, defaulting to "internal" if not set.
-  home,
-  # The home architecture for this host (eg. `x86_64-linux`).
-  target,
-  # The Snowfall Lib target for this home (eg. `x86_64-home`).
-  format,
-  # A normalized name for the home target (eg. `home`).
-  virtual,
-  # A boolean to determine whether this home is a virtual target using nixos-generators.
-  host, # The host name for this home.
-
-  # All other arguments come from the home home.
   config,
   ...
 }:
@@ -51,6 +32,35 @@ let
     }
   );
 
+  derive-password = (
+    pkgs.writeTextFile {
+      name = "derive-password";
+      executable = true;
+      destination = "/bin/derive-password";
+      text = ''
+        #!${pkgs.ruby}/bin/ruby
+
+        require 'openssl'
+        require 'io/console'
+        require 'base64'
+
+        email = ARGV[0]
+        index = ARGV[1]&.to_i || 0
+        password = ENV.fetch('MASTER_PASSWORD') {
+          `${pkgs._1password-cli}/bin/op --account my read "op://qvutxi2zizeylilt23rflojdky/5q2alfwlezaqtrmt7dj4w7mm24/password"`.strip
+        }
+        raise "Invalid Password" if password.length < 10
+
+        key = OpenSSL::KDF.pbkdf2_hmac(password,
+                                      salt: email,
+                                      iterations: 1 + index,
+                                      length: 30,
+                                      hash: OpenSSL::Digest::SHA256.new)
+        puts Base64.encode64(key)
+      '';
+    }
+  );
+
   pgadmin-rds-password-helper = (
     pkgs.writeShellApplication {
       name = "pgadmin-rds-password-helper";
@@ -70,7 +80,7 @@ let
     let
       applescriptFile = pkgs.writeScript "open-brave-with-profile-${profile}.scpt" ''
         tell application "Brave Browser" to activate
-        delay 0.5
+        delay 0.2
         tell application "System Events"
             tell process "Brave Browser"
                 click menu item "${profile}" of menu "Profiles" of menu bar 1
@@ -93,7 +103,7 @@ in
         B = openBraveWithProfile "Personal";
         C = openBraveWithProfile "Work";
         D = "Dash";
-        E = '': osascript -e 'tell application "Emacs" to activate' '';
+        E = ": emacs-activate";
         F = "Finder";
         # G = "Messages";
         # H = "Home Assistant";
@@ -143,10 +153,11 @@ in
     ));
 
   home.packages = with pkgs; [
+    awscli
     aws-vault-wrapper
+    derive-password
     echo-exec
     pgadmin-rds-password-helper
-    awscli
     github-cli
     # lastpass-cli
     lnav
