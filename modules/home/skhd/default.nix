@@ -25,7 +25,12 @@
 }:
 let
   # inherit (builtins) map mapAttrs listToAttrs;
-  inherit (lib) mkIf mkOption types;
+  inherit (lib)
+    mkIf
+    mkForce
+    mkOption
+    types
+    ;
   inherit (lib.strings)
     toLower
     hasInfix
@@ -97,7 +102,17 @@ in
   config = mkIf cfg.enable {
     home.packages = [ cfg.package ];
 
-    xdg.configFile."skhd/skhdrc".text = skhdrc;
+    xdg.configFile."skhd/skhdrc" = {
+      text = skhdrc;
+      onChange =
+        let
+          plist = "${config.home.homeDirectory}/Library/LaunchAgents/${config.launchd.agents.skhd.config.Label}.plist";
+        in
+        ''
+          launchctl unload ${plist};
+          launchctl load ${plist}
+        '';
+    };
 
     launchd.agents.skhd = {
       enable = true;
@@ -108,7 +123,7 @@ in
           "${cfg.package}/bin/skhd"
           "-V"
         ];
-        KeepAlive = true;
+        KeepAlive = mkForce true;
         # FIXME: this needs to chill out whenever it's failing due to lacking permissions. It agressively restarts and makes it actually difficult to grant permissions for the new binary. Also is there some way to make it provide a consistent path to MacOS for this purpose, instead of the hashed store path that is version dependent?
         ProcessType = "Interactive";
       };
