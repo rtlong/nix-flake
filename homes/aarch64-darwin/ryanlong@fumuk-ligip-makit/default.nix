@@ -103,7 +103,7 @@ in
         B = openBraveWithProfile "Personal";
         C = openBraveWithProfile "Work";
         D = "Dash";
-        E = ": emacs-activate";
+        E = '': osascript -e 'tell application "Emacs" to activate' '';
         F = "Finder";
         # G = "Messages";
         # H = "Home Assistant";

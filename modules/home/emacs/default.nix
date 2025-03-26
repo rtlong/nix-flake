@@ -16,24 +16,6 @@ let
     epkgs.vterm
   ]);
 
-  emacsActivate = (
-    pkgs.writeShellApplication {
-      name = "emacs-activate";
-      text = ''
-        # NB: I had issues with emacsclient -r -- when no frame exists it wouldn't create one, so using this custom function to make it a little more reliable:
-        ${emacsPkg}/bin/emacsclient -n -e "(my/raise-or-create-frame)"
-        emacs_pid=$(${emacsPkg}/bin/emacsclient -n -e "(emacs-pid)")
-
-        # Emacs does not reliably bring the frame to the foreground, so this AppleScript helps:
-        osascript <<-EOF
-          tell application "System Events"
-            set frontmost of the first process whose unix id is ''${emacs_pid} to true
-          end tell
-        EOF
-      '';
-    }
-  );
-
 in
 {
   options.${namespace}.emacs = {
@@ -67,8 +49,6 @@ in
     '';
 
     home.packages = with pkgs; [
-      emacsActivate # referenced by skhd config
-
       fontconfig
       coreutils-prefixed
       fd # find alternative - recommended by DoomEmacs
@@ -113,23 +93,5 @@ in
 
       nerd-fonts.symbols-only
     ];
-
-    home.file.".config/doom/nix-helpers/activate.el" = {
-      text = ''
-        (defun my/raise-or-create-frame ()
-          "Raise an existing frame or create a new one if none exists."
-          (if (frame-list)
-              (let ((frame (selected-frame)))
-                (raise-frame frame)
-                (select-frame-set-input-focus frame))
-            ;; If no frames exist, create a new one and ensure it's visible
-            (let* ((frame (make-frame))
-                   ;; Ensure the frame is visible immediately
-                   (_ (set-frame-parameter frame 'visible t))
-                   ;; Focus the new frame
-                   (_ (select-frame frame)))
-              (activate-frame frame))))
-      '';
-    };
   };
 }
