@@ -38,6 +38,7 @@ in
 {
   options.${namespace}.emacs = {
     enable = mkBoolOpt false "Whether or not to enable emacs";
+    enableServer = mkBoolOpt false "Whether or not to run Emacs server in the background as a service";
     package = mkOpt lib.types.package emacsPkg "Which emacs package to use.";
   };
 
@@ -48,10 +49,11 @@ in
     };
 
     services.emacs = {
-      enable = true;
+      enable = cfg.enableServer;
       package = cfg.package;
     };
-    launchd.agents.emacs.config = {
+
+    launchd.agents.emacs.config = mkIf cfg.enableServer {
       KeepAlive = mkForce true;
       EnvironmentVariables = (
         mkIf config.${namespace}.ghostty.enable {
@@ -116,11 +118,17 @@ in
       text = ''
         (defun my/raise-or-create-frame ()
           "Raise an existing frame or create a new one if none exists."
-          (if (frame-list)  ;; Check if there are any frames
+          (if (frame-list)
               (let ((frame (selected-frame)))
                 (raise-frame frame)
                 (select-frame-set-input-focus frame))
-            (make-frame)))  ;; Create a new frame if none exists
+            ;; If no frames exist, create a new one and ensure it's visible
+            (let* ((frame (make-frame))
+                   ;; Ensure the frame is visible immediately
+                   (_ (set-frame-parameter frame 'visible t))
+                   ;; Focus the new frame
+                   (_ (select-frame frame)))
+              (activate-frame frame))))
       '';
     };
   };
