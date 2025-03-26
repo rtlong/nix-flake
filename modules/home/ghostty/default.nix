@@ -37,6 +37,8 @@ in
   };
 
   config = mkIf cfg.enable {
+    ${namespace}.skhd.appLaunchBinds.T = "Ghostty";
+
     programs.ghostty = {
       enable = cfg.enable;
       package = if install then pkgs.ghostty else null;

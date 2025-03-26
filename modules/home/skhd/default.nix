@@ -1,25 +1,7 @@
 {
-  # Snowfall Lib provides a customized `lib` instance with access to your flake's library
-  # as well as the libraries available from your flake's inputs.
   lib,
-  # An instance of `pkgs` with your overlays and packages applied is also available.
   pkgs,
-  # You also have access to your flake's inputs.
-  inputs,
-  # Additional metadata is provided by Snowfall Lib.
   namespace,
-  # The namespace used for your flake, defaulting to "internal" if not set.
-  system,
-  # The home architecture for this host (eg. `x86_64-linux`).
-  target,
-  # The Snowfall Lib target for this home (eg. `x86_64-home`).
-  format,
-  # A normalized name for the home target (eg. `home`).
-  virtual,
-  # A boolean to determine whether this home is a virtual target using nixos-generators.
-  host, # The host name for this home.
-
-  # All other arguments come from the home home.
   config,
   ...
 }:
@@ -43,28 +25,38 @@ let
   cfg = config.${namespace}.skhd;
 
   skhdrc = join "\n" (
-    lib.lists.flatten [
-      (mapAttrsToList
-
-        (
+    lib.remove null (
+      lib.lists.flatten [
+        (mapAttrsToList (
           key: application:
-          let
-            command =
-              if (hasPrefix ": " application) then
-                removePrefix ": " application
-              else if (hasInfix " " application) then
-                ''open -a "${application}"''
-              else
-                (if (hasInfix "." application) then "open -b ${application}" else "open -a ${application}");
-          in
-          "cmd + alt + shift + ctrl - ${toLower key} : ${command}"
-        )
-        cfg.appLaunchBinds
-      )
+          if (lib.isString application) then
+            let
+              command =
+                if (hasPrefix ": " application) then
+                  removePrefix ": " application
+                else if (hasInfix " " application) then
+                  ''open -a "${application}"''
+                else
+                  (if (hasInfix "." application) then "open -b ${application}" else "open -a ${application}");
+            in
+            "cmd + alt + shift + ctrl - ${toLower key} : ${command}"
+          else
+            null
+        ) cfg.appLaunchBinds)
 
-      cfg.extraConfig
-    ]
+        cfg.extraConfig
+      ]
+    )
   );
+
+  binding = types.str; # TODO: define this type more richly, add constructors to build them and annotate intention instead of this cryptic magic string
+  mkBindingOpt =
+    default:
+    mkOption {
+      type = types.nullOr binding;
+      default = default;
+      description = "The binding for this key.";
+    };
 in
 {
   options.${namespace}.skhd = {
@@ -82,20 +74,40 @@ in
       description = "Config to use for {file}`skhdrc`.";
     };
 
-    appLaunchBinds = mkOption {
-      type = types.attrsOf types.str;
-      default = {
-        A = "Activity Monitor";
-        F = "Finder";
-        G = "Messages";
-        I = "Calendar";
-        M = "Mail";
-        N = "Notes";
-        P = "com.1password.1password";
-        T = "iTerm2";
-        Y = "Spotify";
-      };
-      description = "attrset of keys to map (combined with the MEH key [ctrl+shift+option] + command) to launch/focus Mac applications";
+    # attrset of keys to map (combined with the MEH key [ctrl+shift+option] + command) to launch/focus Mac applications;
+    appLaunchBinds = {
+      A = mkBindingOpt "Activity Monitor";
+      B = mkBindingOpt "Brave Browser";
+      C = mkBindingOpt "Brave Browser";
+      D = mkBindingOpt "Dash";
+      E = mkBindingOpt '': osascript -e 'tell application "Emacs" to activate' '';
+      F = mkBindingOpt "Finder";
+      G = mkBindingOpt "Messages";
+      H = mkBindingOpt null;
+      I = mkBindingOpt "Calendar";
+      J = mkBindingOpt null;
+      K = mkBindingOpt null;
+      L = mkBindingOpt null;
+      M = mkBindingOpt "Mail";
+      N = mkBindingOpt "Notes";
+      O = mkBindingOpt null;
+      P = mkBindingOpt "com.1password.1password";
+      Q = mkBindingOpt "System Settings";
+      R = mkBindingOpt null;
+      S = mkBindingOpt null;
+      T = mkBindingOpt "iTerm2";
+      U = mkBindingOpt null;
+      V = mkBindingOpt "Visual Studio Code";
+      W = mkBindingOpt null;
+      X = mkBindingOpt null;
+      Y = mkBindingOpt "Spotify";
+      Z = mkBindingOpt "us.zoom.xos";
+      "0x2C" = # aka "/"
+        mkBindingOpt null;
+
+      # Do not use these:
+      # "0x2B" = null # , -- this is bound globally by MacOS
+      # "0x2F" = null # . -- this is bound globally by MacOS `sysdiagnose`
     };
   };
 

@@ -44,35 +44,14 @@ in
     skhd = {
       enable = true;
       appLaunchBinds = {
-        A = "Activity Monitor";
-        B = openBraveWithProfile "Default";
-        C = openBraveWithProfile "Default";
-        D = "Dash";
-        E = ": emacs-activate";
-        F = "Finder";
-        G = "Messages";
+        # B = openBraveWithProfile "Default";
+        # C = openBraveWithProfile "Default";
         H = "Home Assistant";
-        I = "Calendar.app";
-        J = "com.culturedcode.ThingsMac";
         K = "Yubico Authenticator";
-        # L = "";
         M = "Spark Mail";
-        N = "Notes";
-        # O = "";
-        P = "com.1password.1password";
-        Q = "System Settings";
         R = "LM Studio";
-        # S = "";
         T = "Ghostty";
         U = "Perplexity";
-        V = "Visual Studio Code";
-        # W = "Sonos";
-        # X = "";
-        Y = "Spotify";
-        Z = "us.zoom.xos";
-        # "," = "";
-        # "." = "";
-        # "-" = "";
       };
     };
   };

@@ -99,35 +99,15 @@ in
     skhd = {
       enable = true;
       appLaunchBinds = {
-        A = "Activity Monitor";
         B = openBraveWithProfile "Personal";
         C = openBraveWithProfile "Work";
-        D = "Dash";
-        E = '': osascript -e 'tell application "Emacs" to activate' '';
-        F = "Finder";
-        # G = "Messages";
-        # H = "Home Assistant";
         I = '': osascript -e 'tell application "BusyCal" to activate' ''; # When launched using `open` BusyCal always prompts for some settings reset... IDK
-        J = "com.culturedcode.ThingsMac";
         K = "Yubico Authenticator";
         L = "pgAdmin 4";
-        M = "Mail";
-        N = "Notes";
         O = "com.microsoft.Outlook";
-        P = "com.1password.1password";
-        Q = "System Settings";
         R = "LM Studio";
         S = "Slack";
-        T = "Ghostty";
         U = "Perplexity";
-        V = "Visual Studio Code";
-        # W = "";
-        # X = "";
-        Y = "Spotify";
-        Z = "us.zoom.xos";
-        # "0x2B" = '': osascript -e 'tell application "System Settings" to activate' ''; # , -- this is bound globally by `tailspin`
-        # "0x2F" = ""; # . -- this is bound globally by MacOS `sysdiagnose`
-        # "0x2C" = ""; # /
       };
     };
   };
