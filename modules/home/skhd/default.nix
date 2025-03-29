@@ -34,10 +34,10 @@ let
               command =
                 if (hasPrefix ": " application) then
                   removePrefix ": " application
-                else if (hasInfix " " application) then
-                  ''open -a "${application}"''
+                else if (hasInfix "." application) then
+                  ''osascript -l AppleScript -e 'tell application id "${application}" to activate' ''
                 else
-                  (if (hasInfix "." application) then "open -b ${application}" else "open -a ${application}");
+                  ''osascript -l AppleScript -e 'tell application "${application}" to activate' '';
             in
             "cmd + alt + shift + ctrl - ${toLower key} : ${command}"
           else
@@ -80,7 +80,7 @@ in
       B = mkBindingOpt "Brave Browser";
       C = mkBindingOpt "Brave Browser";
       D = mkBindingOpt "Dash";
-      E = mkBindingOpt '': osascript -e 'tell application "Emacs" to activate' '';
+      E = mkBindingOpt "Emacs";
       F = mkBindingOpt "Finder";
       G = mkBindingOpt "Messages";
       H = mkBindingOpt null;

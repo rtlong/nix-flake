@@ -101,12 +101,13 @@ in
       appLaunchBinds = {
         B = openBraveWithProfile "Personal";
         C = openBraveWithProfile "Work";
-        I = '': osascript -e 'tell application "BusyCal" to activate' ''; # When launched using `open` BusyCal always prompts for some settings reset... IDK
+        G = "Slack";
+        I = "BusyCal";
         K = "Yubico Authenticator";
         L = "pgAdmin 4";
         O = "com.microsoft.Outlook";
         R = "LM Studio";
-        S = "Slack";
+        # S = "Slack";
         U = "Perplexity";
       };
     };

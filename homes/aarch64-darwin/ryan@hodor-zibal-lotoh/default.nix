@@ -20,20 +20,6 @@ let
     }
   );
 
-  openBraveWithProfile =
-    profile:
-    let
-      applescriptFile = pkgs.writeScript "open-brave-with-profile-${profile}.scpt" ''
-        tell application "Brave Browser" to activate
-        delay 0.5
-        tell application "System Events"
-            tell process "Brave Browser"
-                click menu item "${profile}" of menu "Profiles" of menu bar 1
-            end tell
-        end tell
-      '';
-    in
-    ": osascript ${applescriptFile}";
 in
 {
   rtlong = {
@@ -44,13 +30,10 @@ in
     skhd = {
       enable = true;
       appLaunchBinds = {
-        # B = openBraveWithProfile "Default";
-        # C = openBraveWithProfile "Default";
         H = "Home Assistant";
         K = "Yubico Authenticator";
         M = "Spark Mail";
         R = "LM Studio";
-        T = "Ghostty";
         U = "Perplexity";
       };
     };

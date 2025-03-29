@@ -147,6 +147,10 @@ in
           ui = "auto";
         };
 
+        branch = {
+          autoSetupMerge = "simple";
+        };
+
         status.showUntrackedFiles = "all";
 
         rebase = {
