@@ -56,9 +56,7 @@ in
       ];
     };
 
-    security.pam.enableSudoTouchIdAuth = true;
-    # upcoming:
-    # security.pam.services.sudo_local.touchIdAuth = true;
+    security.pam.services.sudo_local.touchIdAuth = true;
 
     rtlong = {
       nix = enabled;
