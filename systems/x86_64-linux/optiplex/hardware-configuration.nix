@@ -58,6 +58,7 @@
     fsType = "ext4";
   };
 
+  boot.zfs.extraPools = [ "lacie-orange" ];
   fileSystems."/lacie-orange" = {
     device = "lacie-orange";
     fsType = "zfs";
