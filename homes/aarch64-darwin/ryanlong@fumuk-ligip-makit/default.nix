@@ -110,6 +110,10 @@ in
         # S = "Slack";
         U = "Perplexity";
       };
+
+      extraBinds = {
+        "alt + shift + ctrl - e" = "emacsclient --eval '(emacs-everywhere)'";
+      };
     };
   };
 

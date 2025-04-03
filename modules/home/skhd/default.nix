@@ -44,6 +44,8 @@ let
             null
         ) cfg.appLaunchBinds)
 
+        (mapAttrsToList (key: command: "${key} : ${command}") cfg.extraBinds)
+
         cfg.extraConfig
       ]
     )
@@ -65,13 +67,6 @@ in
       type = types.package;
       default = pkgs.skhd;
       description = "This option specifies the skhd package to use.";
-    };
-
-    extraConfig = mkOption {
-      type = types.lines;
-      default = "";
-      example = "alt + shift - r   :   chunkc quit";
-      description = "Config to use for {file}`skhdrc`.";
     };
 
     # attrset of keys to map (combined with the MEH key [ctrl+shift+option] + command) to launch/focus Mac applications;
@@ -109,6 +104,23 @@ in
       # "0x2B" = null # , -- this is bound globally by MacOS
       # "0x2F" = null # . -- this is bound globally by MacOS `sysdiagnose`
     };
+
+    extraBinds = mkOption {
+      type = types.attrsOf binding;
+      default = { };
+      example = {
+        "alt + shift - r" = "chunkc quit";
+      };
+      description = "Additional top-level binds";
+    };
+
+    extraConfig = mkOption {
+      type = types.lines;
+      default = "";
+      example = ''.load "partial_skhdrc"'';
+      description = "Config to use for {file}`skhdrc`.";
+    };
+
   };
 
   config = mkIf cfg.enable {
