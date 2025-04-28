@@ -33,7 +33,7 @@ let
 in
 {
   options.${namespace}.ghostty = {
-    enable = mkBoolOpt true "Whether or not to enable ghostty terminal emulator";
+    enable = mkBoolOpt false "Whether or not to enable ghostty terminal emulator";
   };
 
   config = mkIf cfg.enable {

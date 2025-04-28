@@ -121,7 +121,6 @@ in
     {
       tf = "terraform";
       dc = "docker compose";
-      with-creds = "op run -- aws-vault exec opencounter --";
     }
     // (listToAttrs (
       map
@@ -136,6 +135,15 @@ in
           "terraform"
         ]
     ));
+  programs.zsh.initContent = ''
+    function with-creds() {
+      if [[ -z $AWS_VAULT ]]; then
+        op run -- aws-vault exec opencounter -- $@
+      else
+        command $@
+      fi
+    }
+  '';
 
   home.packages = with pkgs; [
     awscli
@@ -144,7 +152,6 @@ in
     echo-exec
     pgadmin-rds-password-helper
     github-cli
-    # lastpass-cli
     lnav
     pgadmin4-desktopmode
     ssm-session-manager-plugin

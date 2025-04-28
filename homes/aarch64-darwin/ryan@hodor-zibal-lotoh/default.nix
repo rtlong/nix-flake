@@ -69,7 +69,6 @@ in
 
   home.shellAliases =
     {
-      with-creds = "op run -- aws-vault exec rtlong --";
       tf = "terraform";
       dc = "docker compose";
     }
@@ -79,6 +78,16 @@ in
         value = "with-creds ${cmd}";
       }) [ "terraform" ]
     ));
+
+  programs.zsh.initContent = ''
+    function with-creds() {
+      if [[ -z $AWS_VAULT ]]; then
+        op run -- aws-vault exec rtlong -- $@
+      else
+        command $@
+      fi
+    }
+  '';
 
   home.stateVersion = "22.05";
 }

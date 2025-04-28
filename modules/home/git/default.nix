@@ -80,6 +80,8 @@ in
         # Hint file for Emacs/projectile indicating explicit project roots.
         ".projectile"
 
+        "*.code-workspace"
+
         "docker-compose.override.yml"
 
         ".zsh_history"
@@ -214,6 +216,7 @@ in
       git-get
       git-open
       git-cola
+      git-crypt
       git-doc
       # git-graph
       git-annex
