@@ -11,10 +11,12 @@ let
 
   cfg = config.${namespace}.emacs;
 
-  basePkg = pkgs.emacs30;
-  emacsPkg = (pkgs.emacsPackagesFor basePkg).emacsWithPackages (epkgs: [
-    epkgs.vterm
-  ]);
+  basePkg = (pkgs.emacs30-pgtk.override {
+    withNativeCompilation = false; # TODO: reenable this once bug is resolved properly
+  });
+  emacsPkg = basePkg; #(pkgs.emacsPackagesFor basePkg).emacsWithPackages (epkgs: [ # TODO: reenable this once bug is resolved properly
+  #   epkgs.vterm
+  # ]);
 
 in
 {
@@ -59,7 +61,7 @@ in
       ripgrep
       gnutls # for TLS connectivity
 
-      emacs-all-the-icons-fonts
+      # emacs-all-the-icons-fonts
 
       ## Optional dependencies
       fd # faster projectile indexing
@@ -69,8 +71,6 @@ in
       zstd # for undo-fu-session/undo-tree compression
 
       ## Module dependencies
-      # :email mu4e
-      mu
       isync
       # :checkers spell
       (aspellWithDicts (

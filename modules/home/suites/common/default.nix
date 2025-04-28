@@ -164,7 +164,7 @@ in
         [[ -f "$HOME/.zshenv.local" ]] && source "$HOME/.zshenv.local"
       '';
 
-      initExtra = ''
+      initContent = ''
         xtrace() { printf >&2 '+ %s\n' "$*"; "$@"; }
 
         autoload -U select-word-style
@@ -222,6 +222,7 @@ in
 
       age
       sops
+      direnv
     ];
 
     # # Misc configuration files --------------------------------------------------------------------{{{

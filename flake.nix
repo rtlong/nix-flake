@@ -3,7 +3,7 @@
 
   inputs = {
     # nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     # nixpkgs.url = "github:NixOS/nixpkgs?rev=b10b8846883e20f78b1c9d72ca691dee1dbe7ecb"; # NOTE: specifying this rev to avoid issue with tailscale in latest head as of 2025-03-08
 
     snowfall-lib = {
@@ -67,8 +67,8 @@
       };
 
       overlays = with inputs; [
-        self.outputs.overlays.my-patches
         inputs.emacs-overlay.overlays.default
+        self.outputs.overlays.my-patches
       ];
 
       systems.modules.nixos = with inputs; [
@@ -81,7 +81,7 @@
 
       ];
       homes.modules = with inputs; [
-        spicetify-nix.homeManagerModules.default
+        # spicetify-nix.homeManagerModules.default
         sops-nix.homeManagerModules.sops
         mac-app-util.homeManagerModules.default
       ];
