@@ -33,6 +33,7 @@ in
       lsof
       nawk
       nixd
+      nix-tree
       nixpkgs-fmt
       openssh
       pciutils

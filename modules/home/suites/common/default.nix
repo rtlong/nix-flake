@@ -223,6 +223,9 @@ in
       age
       sops
       direnv
+      devenv
+
+      docker-credential-helpers
     ];
 
     # # Misc configuration files --------------------------------------------------------------------{{{
