@@ -14,14 +14,6 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.initrd.availableKernelModules = [
-    "usb_storage"
-    "usbhid"
-  ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ ];
-  boot.extraModulePackages = [ ];
-
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/6b1612d4-d88f-44ca-ade0-b41019299ba7";
     fsType = "ext4";

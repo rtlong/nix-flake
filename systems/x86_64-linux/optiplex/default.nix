@@ -94,7 +94,23 @@
     ## Servies
 
     # Enable CUPS to print documents.
-    services.printing.enable = true;
+    services.printing = {
+      enable = true;
+      listenAddresses = [
+        "*:631"
+      ];
+      drivers = with pkgs; [
+        cups-dymo
+      ];
+      allowFrom = [ "all" ];
+      defaultShared = true;
+      browsing = true;
+      browsed.enable = true;
+      logLevel = "debug";
+      extraConf = ''
+        ServerAlias optiplex optiplex.liberty.rtlong.com optiplex.tailnet.rtlong.com
+      '';
+    };
 
     services.zfs = {
       autoScrub.enable = true;
@@ -368,6 +384,7 @@
       hfsprogs
       zfs
       zfstools
+      mlocate
     ];
 
     ### END

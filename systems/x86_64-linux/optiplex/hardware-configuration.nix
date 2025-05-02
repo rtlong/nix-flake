@@ -53,13 +53,13 @@
     fsType = "zfs";
   };
 
-  fileSystems."/data" = {
-    device = "/dev/disk/by-partuuid/d8b3c08c-a67d-4729-8d48-1f1e153efb31";
-    fsType = "ext4";
-  };
+  # fileSystems."/data" = {
+  #   device = "/dev/disk/by-partuuid/d8b3c08c-a67d-4729-8d48-1f1e153efb31";
+  #   fsType = "ext4";
+  # };
 
   boot.zfs.extraPools = [ "lacie-orange" ];
-  fileSystems."/lacie-orange" = {
+  fileSystems."/data" = {
     device = "lacie-orange";
     fsType = "zfs";
   };
