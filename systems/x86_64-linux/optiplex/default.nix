@@ -227,12 +227,52 @@
         rpc-bind-address = "0.0.0.0";
         rpc-whitelist-enabled = false;
         rpc-host-whitelist-enabled = false;
+        script-torrent-done-enabled = true;
+        script-torrent-done-filename = ./bin/orgnize_downloads.sh;
+      };
+    };
+
+    systemd.timers.organizeMedia = {
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnBootSec = "5min";
+        OnUnitActiveSec = "15min";
+        Persistent = true;
+      };
+    };
+
+    systemd.services.organizeMedia = {
+      description = "Organize media into Jellyfin folders";
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.bash}/bin/bash ${./bin/orgnize_downloads.sh}";
+        WorkingDirectory = "/";
       };
     };
 
     services.jellyfin = {
       enable = true;
       openFirewall = true;
+      user = "jellyfin";
+    };
+    users.users.jellyfin.extraGroups = [
+      "video"
+      "render"
+    ];
+    # enable hardware acceleration in Jellyfin
+    systemd.services.jellyfin = {
+      environment = {
+        LIBVA_DRIVER_NAME = "iHD";
+      };
+      serviceConfig = {
+        SupplementaryGroups = [ "render" ];
+        DevicePolicy = "auto";
+        DeviceAllow = [ "/dev/dri/renderD128" ];
+      };
+    };
+    hardware.opengl = {
+      enable = true;
+      extraPackages = with pkgs; [ intel-media-driver ]; # or intel-vaapi-driver if iHD still fails
     };
 
     services.k3s = {
@@ -385,6 +425,12 @@
       zfs
       zfstools
       mlocate
+
+      # for Jellyfin HW acceleration:
+      jellyfin-ffmpeg
+      vaapiIntel
+      intel-media-driver
+      libva-utils
     ];
 
     ### END
