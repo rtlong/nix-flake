@@ -133,6 +133,7 @@ in
           "sidekiq"
           "overmind"
           "terraform"
+          "init-deployment"
         ]
     ));
   programs.zsh.initContent = ''
