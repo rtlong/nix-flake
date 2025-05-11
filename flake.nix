@@ -2,8 +2,9 @@
   description = "rtlong nix flake";
 
   inputs = {
-    # nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
+    # nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-24.11-darwin";
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    # nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
     # nixpkgs.url = "github:NixOS/nixpkgs?rev=b10b8846883e20f78b1c9d72ca691dee1dbe7ecb"; # NOTE: specifying this rev to avoid issue with tailscale in latest head as of 2025-03-08
 
     snowfall-lib = {
@@ -13,7 +14,7 @@
 
     # nb: snowfall demands this input be named `darwin`
     darwin = {
-      url = "github:LnL7/nix-darwin";
+      url = "github:LnL7/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -38,6 +39,7 @@
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
+
     };
   };
 
@@ -81,7 +83,7 @@
 
       ];
       homes.modules = with inputs; [
-        # spicetify-nix.homeManagerModules.default
+        spicetify-nix.homeManagerModules.default
         sops-nix.homeManagerModules.sops
         mac-app-util.homeManagerModules.default
       ];

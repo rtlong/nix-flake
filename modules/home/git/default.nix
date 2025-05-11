@@ -219,8 +219,8 @@ in
       git-crypt
       git-doc
       # git-graph
-      git-annex
-      git-standup
+      # git-annex
+      # git-standup
     ];
   };
 }
