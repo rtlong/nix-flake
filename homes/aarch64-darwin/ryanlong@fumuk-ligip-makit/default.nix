@@ -61,6 +61,23 @@ let
     }
   );
 
+  my-open-webui = (
+    pkgs.writeShellApplication {
+      name = "open-webui";
+      # runtimeInputs = with pkgs; [
+      #   python311
+      #   uv
+      # ];
+      text = ''
+        set -x
+        export DATA_DIR="$HOME/.open-webui"
+        export UV_NO_MANAGED_PYTHON=true
+        export UV_PYTHON=${pkgs.python311}
+        exec ${pkgs.uv}/bin/uvx open-webui@latest serve "$@"
+      '';
+    }
+  );
+
   pgadmin-rds-password-helper = (
     pkgs.writeShellApplication {
       name = "pgadmin-rds-password-helper";
@@ -158,6 +175,7 @@ in
     pgadmin-rds-password-helper
     github-cli
     lnav
+    my-open-webui
     pgadmin4-desktopmode
     ssm-session-manager-plugin
     tailscale
