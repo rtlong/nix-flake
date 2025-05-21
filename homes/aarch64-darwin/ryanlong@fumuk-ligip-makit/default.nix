@@ -70,7 +70,9 @@ let
         awscli
       ];
       text = ''
-        exec aws-vault exec opencounter -- aws rds generate-db-auth-token --hostname "$1" --port "$2" --user "$3"
+        mkdir -p ~/.local/log
+        exec 2> ~/.local/log/pdagmin-rds-password-helper.log
+        exec aws rds generate-db-auth-token --hostname "$1" --port "$2" --user "$3"
       '';
     }
   );
@@ -134,12 +136,14 @@ in
           "overmind"
           "terraform"
           "init-deployment"
+          "aws"
         ]
     ));
+
   programs.zsh.initContent = ''
     function with-creds() {
       if [[ -z $AWS_VAULT ]]; then
-        op run -- aws-vault exec opencounter -- $@
+        op run -- $@
       else
         command $@
       fi
