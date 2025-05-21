@@ -81,7 +81,7 @@
 
       ];
       homes.modules = with inputs; [
-        # spicetify-nix.homeManagerModules.default
+        spicetify-nix.homeManagerModules.default
         sops-nix.homeManagerModules.sops
         mac-app-util.homeManagerModules.default
       ];
