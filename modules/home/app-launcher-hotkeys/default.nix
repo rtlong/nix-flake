@@ -46,7 +46,7 @@ in
       Q = mkBindingOpt "System Settings";
       R = mkBindingOpt null;
       S = mkBindingOpt null;
-      T = mkBindingOpt "com.googlecode.iterm2";
+      T = mkBindingOpt "iTerm2";
       U = mkBindingOpt null;
       V = mkBindingOpt "Visual Studio Code";
       W = mkBindingOpt null;
