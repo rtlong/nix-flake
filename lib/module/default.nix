@@ -61,4 +61,43 @@ rec {
 
   # f => f
   complement = f: v: !(f v);
+
+  mkTaggedSubmodule =
+    tag: extraOptions:
+    types.submodule {
+      options = {
+        type = lib.mkOption {
+          type = types.enum [ tag ];
+          default = tag;
+          description = "Type tag for this app binding.";
+        };
+      } // extraOptions;
+    };
+
+  my-types = {
+    binding = types.oneOf [
+      types.str
+      (mkTaggedSubmodule "braveProfile" {
+        profile = lib.mkOption {
+          type = types.str;
+          description = "Brave profile name.";
+        };
+      })
+      (mkTaggedSubmodule "nixApp" {
+        name = lib.mkOption {
+          type = types.str;
+          description = "Nix app name.";
+        };
+      })
+    ];
+
+  };
+
+  mkBindingOpt =
+    default:
+    mkOption {
+      type = types.nullOr my-types.binding;
+      default = default;
+      description = "The binding for this key.";
+    };
 }

@@ -93,21 +93,6 @@ let
       '';
     }
   );
-
-  openBraveWithProfile =
-    profile:
-    let
-      applescriptFile = pkgs.writeScript "open-brave-with-profile-${profile}.scpt" ''
-        tell application "Brave Browser" to activate
-        delay 0.2
-        tell application "System Events"
-            tell process "Brave Browser"
-                click menu item "${profile}" of menu "Profiles" of menu bar 1
-            end tell
-        end tell
-      '';
-    in
-    ": osascript ${applescriptFile}";
 in
 {
 
@@ -116,23 +101,32 @@ in
     emacs.enable = true;
 
     skhd = {
-      enable = true;
+      enable = false;
+      extraBinds = {
+        "alt + shift + ctrl - e" = "emacsclient --eval '(emacs-everywhere)'";
+      };
+    };
+
+    app-launcher-hotkeys = {
+      backend = "hammerspoon";
       appLaunchBinds = {
-        B = openBraveWithProfile "Personal";
-        C = openBraveWithProfile "Work";
+        B = {
+          type = "braveProfile";
+          profile = "Personal";
+        };
+        C = {
+          type = "braveProfile";
+          profile = "Work";
+        };
         G = "Slack";
         I = "BusyCal";
         K = "Yubico Authenticator";
         L = "pgAdmin 4";
         O = "com.microsoft.Outlook";
         R = "LM Studio";
-        # S = "Slack";
         U = "Perplexity";
       };
 
-      extraBinds = {
-        "alt + shift + ctrl - e" = "emacsclient --eval '(emacs-everywhere)'";
-      };
     };
   };
 

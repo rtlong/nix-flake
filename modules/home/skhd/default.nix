@@ -20,9 +20,29 @@ let
     removePrefix
     ;
   inherit (lib.attrsets) mapAttrsToList;
-  inherit (lib.${namespace}) mkBoolOpt join;
+  inherit (lib.${namespace})
+    mkBoolOpt
+    join
+    my-types
+    mkBindingOpt
+    ;
 
   cfg = config.${namespace}.skhd;
+
+  openBraveWithProfile =
+    profile:
+    let
+      applescriptFile = pkgs.writeScript "open-brave-with-profile-${profile}.scpt" ''
+        tell application "Brave Browser" to activate
+        delay 0.2
+        tell application "System Events"
+            tell process "Brave Browser"
+                click menu item "${profile}" of menu "Profiles" of menu bar 1
+            end tell
+        end tell
+      '';
+    in
+    ": osascript ${applescriptFile}";
 
   skhdrc = join "\n" (
     lib.remove null (
@@ -35,9 +55,9 @@ let
                 if (hasPrefix ": " application) then
                   removePrefix ": " application
                 else if (hasInfix "." application) then
-                  ''osascript -l AppleScript -e 'tell application id "${application}" to activate' ''
+                  ''open -b "${application}"''
                 else
-                  ''osascript -l AppleScript -e 'tell application "${application}" to activate' '';
+                  ''open -a "${application}"'';
             in
             "cmd + alt + shift + ctrl - ${toLower key} : ${command}"
           else
@@ -50,15 +70,6 @@ let
       ]
     )
   );
-
-  binding = types.str; # TODO: define this type more richly, add constructors to build them and annotate intention instead of this cryptic magic string
-  mkBindingOpt =
-    default:
-    mkOption {
-      type = types.nullOr binding;
-      default = default;
-      description = "The binding for this key.";
-    };
 in
 {
   options.${namespace}.skhd = {
@@ -71,32 +82,32 @@ in
 
     # attrset of keys to map (combined with the MEH key [ctrl+shift+option] + command) to launch/focus Mac applications;
     appLaunchBinds = {
-      A = mkBindingOpt "Activity Monitor";
-      B = mkBindingOpt "Brave Browser";
-      C = mkBindingOpt "Brave Browser";
-      D = mkBindingOpt "Dash";
-      E = mkBindingOpt "Emacs";
-      F = mkBindingOpt "Finder";
-      G = mkBindingOpt "Messages";
+      A = mkBindingOpt null;
+      B = mkBindingOpt null;
+      C = mkBindingOpt null;
+      D = mkBindingOpt null;
+      E = mkBindingOpt null;
+      F = mkBindingOpt null;
+      G = mkBindingOpt null;
       H = mkBindingOpt null;
-      I = mkBindingOpt "Calendar";
+      I = mkBindingOpt null;
       J = mkBindingOpt null;
       K = mkBindingOpt null;
       L = mkBindingOpt null;
-      M = mkBindingOpt "Mail";
-      N = mkBindingOpt "Notes";
+      M = mkBindingOpt null;
+      N = mkBindingOpt null;
       O = mkBindingOpt null;
-      P = mkBindingOpt "com.1password.1password";
-      Q = mkBindingOpt "System Settings";
+      P = mkBindingOpt null;
+      Q = mkBindingOpt null;
       R = mkBindingOpt null;
       S = mkBindingOpt null;
-      T = mkBindingOpt "iTerm2";
+      T = mkBindingOpt null;
       U = mkBindingOpt null;
-      V = mkBindingOpt "Visual Studio Code";
+      V = mkBindingOpt null;
       W = mkBindingOpt null;
       X = mkBindingOpt null;
-      Y = mkBindingOpt "Spotify";
-      Z = mkBindingOpt "us.zoom.xos";
+      Y = mkBindingOpt null;
+      Z = mkBindingOpt null;
       "0x2C" = # aka "/"
         mkBindingOpt null;
 
@@ -106,7 +117,7 @@ in
     };
 
     extraBinds = mkOption {
-      type = types.attrsOf binding;
+      type = types.attrsOf my-types.binding;
       default = { };
       example = {
         "alt + shift - r" = "chunkc quit";

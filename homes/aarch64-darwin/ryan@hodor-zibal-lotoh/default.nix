@@ -27,8 +27,9 @@ in
     emacs.enable = true;
     rancher-desktop.enable = true;
 
-    skhd = {
-      enable = true;
+    # skhd.enable = false;
+    app-launcher-hotkeys = {
+      backend = "hammerspoon";
       appLaunchBinds = {
         H = "Home Assistant";
         K = "Yubico Authenticator";
