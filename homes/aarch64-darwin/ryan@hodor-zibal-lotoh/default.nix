@@ -43,18 +43,18 @@ in
   home.packages = with pkgs; [
     aws-vault-wrapper
     # blender # BROKEN
-    cyberduck
+    # cyberduck
     devenv
     duckdb
+    ext4fuse
     inkscape-with-extensions
     keepassxc
+    macfuse-stubs
+    rtlong.open-webui
     pgadmin4-desktopmode
     tailscale
     vlc-bin-universal
     yubikey-manager
-
-    macfuse-stubs
-    ext4fuse
   ];
 
   services.syncthing = {

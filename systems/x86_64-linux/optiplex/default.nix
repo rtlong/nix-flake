@@ -228,7 +228,7 @@
         rpc-whitelist-enabled = false;
         rpc-host-whitelist-enabled = false;
         script-torrent-done-enabled = true;
-        script-torrent-done-filename = ./bin/orgnize_downloads.sh;
+        script-torrent-done-filename = ./bin/organize_downloads.sh;
       };
     };
 
@@ -245,7 +245,7 @@
       description = "Organize media into Jellyfin folders";
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = "${pkgs.bash}/bin/bash ${./bin/orgnize_downloads.sh}";
+        ExecStart = "${pkgs.bash}/bin/bash ${./bin/organize_downloads.sh}";
         WorkingDirectory = "/";
       };
     };
