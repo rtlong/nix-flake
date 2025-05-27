@@ -29,11 +29,26 @@ in
 
     app-launcher-hotkeys = {
       bindings = {
-        H = "Home Assistant";
-        K = "Yubico Authenticator";
-        M = "Spark Mail";
-        R = "LM Studio";
-        U = "Perplexity";
+        H = {
+          type = "appName";
+          value = "Home Assistant";
+        };
+        K = {
+          type = "appName";
+          value = "Yubico Authenticator";
+        };
+        M = {
+          type = "appName";
+          value = "Spark Mail";
+        };
+        R = {
+          type = "appName";
+          value = "LM Studio";
+        };
+        U = {
+          type = "appName";
+          value = "Perplexity";
+        };
       };
     };
   };
