@@ -83,31 +83,44 @@ in
     spotify.enable = true;
     emacs.enable = true;
 
-    skhd = {
-      enable = false;
-      extraBinds = {
-        "alt + shift + ctrl - e" = "emacsclient --eval '(emacs-everywhere)'";
-      };
-    };
-
     app-launcher-hotkeys = {
-      backend = "hammerspoon";
-      appLaunchBinds = {
+      bindings = {
         B = {
           type = "braveProfile";
-          profile = "Personal";
+          value = "Personal";
         };
         C = {
           type = "braveProfile";
-          profile = "Work";
+          value = "Work";
         };
-        G = "Slack";
-        I = "BusyCal";
-        K = "Yubico Authenticator";
-        L = "pgAdmin 4";
-        O = "com.microsoft.Outlook";
-        R = "LM Studio";
-        U = "Perplexity";
+        G = {
+          type = "appName";
+          value = "Slack";
+        };
+        I = {
+          type = "appName";
+          value = "BusyCal";
+        };
+        K = {
+          type = "appName";
+          value = "Yubico Authenticator";
+        };
+        L = {
+          type = "appName";
+          value = "pgAdmin 4";
+        };
+        O = {
+          type = "appBundleIdentifier";
+          value = "com.microsoft.Outlook";
+        };
+        R = {
+          type = "appName";
+          value = "LM Studio";
+        };
+        U = {
+          type = "appName";
+          value = "Perplexity";
+        };
       };
 
     };

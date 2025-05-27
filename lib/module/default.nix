@@ -62,42 +62,41 @@ rec {
   # f => f
   complement = f: v: !(f v);
 
-  mkTaggedSubmodule =
-    tag: extraOptions:
-    types.submodule {
-      options = {
-        type = lib.mkOption {
-          type = types.enum [ tag ];
-          default = tag;
-          description = "Type tag for this app binding.";
-        };
-      } // extraOptions;
-    };
+  # mkTaggedSubmodule =
+  #   tag: extraOptions:
+  #   types.submodule {
+  #     options = {
+  #       type = lib.mkOption {
+  #         type = types.enum [ tag ];
+  #         default = tag;
+  #         description = "Type tag for this app binding.";
+  #       };
+  #     } // extraOptions;
+  #   };
 
   my-types = {
-    binding = types.oneOf [
-      types.str
-      (mkTaggedSubmodule "braveProfile" {
-        profile = lib.mkOption {
-          type = types.str;
-          description = "Brave profile name.";
+    binding = types.submodule {
+      options = {
+        type = lib.mkOption {
+          type = types.enum [
+            "braveProfile"
+            "nixApp"
+            "appName"
+            "appBundleIdentifier"
+          ];
+          description = "Type of app binding";
         };
-      })
-      (mkTaggedSubmodule "nixApp" {
-        name = lib.mkOption {
+        value = lib.mkOption {
           type = types.str;
-          description = "Nix app name.";
+          description = "Reference (id, name, etc. as defined by the type) to the app";
         };
-      })
-    ];
-
+      };
+    };
   };
 
-  mkBindingOpt =
-    default:
-    mkOption {
-      type = types.nullOr my-types.binding;
-      default = default;
-      description = "The binding for this key.";
-    };
+  mkBindingOpt = mkOption {
+    type = types.nullOr my-types.binding;
+    description = "The binding for this key.";
+    default = null;
+  };
 }

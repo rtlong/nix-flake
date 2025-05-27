@@ -37,7 +37,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    ${namespace}.app-launcher-hotkeys.appLaunchBinds.T = "Ghostty";
+    ${namespace}.app-launcher-hotkeys.bindings.T = "Ghostty";
 
     programs.ghostty = {
       enable = cfg.enable;

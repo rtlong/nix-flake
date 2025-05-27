@@ -10,68 +10,133 @@ let
   inherit (lib)
     mkIf
     mkOption
+    mkDefault
     mkForce
     types
     ;
-  inherit (lib.${namespace}) mkBoolOpt mkBindingOpt;
+  inherit (lib.${namespace}) mkBoolOpt mkBindingOpt my-types;
 
   cfg = config.${namespace}.app-launcher-hotkeys;
+
+  defaultBindings = {
+    A = {
+      type = "appName";
+      value = "Activity Monitor";
+    };
+    B = {
+      type = "appName";
+      value = "Brave Browser";
+    };
+    C = {
+      type = "appName";
+      value = "Brave Browser";
+    };
+    D = {
+      type = "appName";
+      value = "Dash";
+    };
+    E = {
+      type = "nixApp";
+      value = "Emacs";
+    };
+    F = {
+      type = "appName";
+      value = "Finder";
+    };
+    G = {
+      type = "appName";
+      value = "Messages";
+    };
+    I = {
+      type = "appName";
+      value = "Calendar";
+    };
+    M = {
+      type = "appName";
+      value = "Mail";
+    };
+    N = {
+      type = "appName";
+      value = "Notes";
+    };
+    P = {
+      type = "appBundleIdentifier";
+      value = "com.1password.1password";
+    };
+    Q = {
+      type = "appName";
+      value = "System Settings";
+    };
+    T = {
+      type = "appName";
+      value = "iTerm2";
+    };
+    V = {
+      type = "nixApp";
+      value = "Visual Studio Code";
+    };
+    Y = {
+      type = "nixApp";
+      value = "Spotify";
+    };
+    Z = {
+      type = "appBundleIdentifier";
+      value = "us.zoom.xos";
+    };
+  };
+
+  # this set is the intersection of the keys on my layer 0 (which are not modifiers/meta themselves), and those which are actually available for mapping (not already consumed by the MacOS system)
+  allowedKeys = [
+    "A"
+    "B"
+    "C"
+    "D"
+    "E"
+    "F"
+    "G"
+    "H"
+    "I"
+    "J"
+    "K"
+    "L"
+    "M"
+    "N"
+    "O"
+    "P"
+    "Q"
+    "R"
+    "S"
+    "T"
+    "U"
+    "V"
+    "W"
+    "X"
+    "Y"
+    "Z"
+    "/"
+    # TODO: can Bksp be mapped here?
+    # NOTE: not allowed:
+    # , -- this is bound globally by MacOS
+    # . -- this is bound globally by MacOS `sysdiagnose`
+  ];
 in
 {
   options.${namespace}.app-launcher-hotkeys = {
     enable = mkBoolOpt true "Whether or not to enable app-launcher-hotkeys.";
-    backend = mkOption {
-      type = types.str;
-      default = "skhd";
-    };
 
-    # default attrset of keys to map (combined with the MEH key [ctrl+shift+option] + command) to launch/focus Mac applications;
-    appLaunchBinds = {
-      A = mkBindingOpt "Activity Monitor";
-      B = mkBindingOpt "Brave Browser";
-      C = mkBindingOpt "Brave Browser";
-      D = mkBindingOpt "Dash";
-      E = mkBindingOpt "Emacs";
-      F = mkBindingOpt "Finder";
-      G = mkBindingOpt "Messages";
-      H = mkBindingOpt null;
-      I = mkBindingOpt "Calendar";
-      J = mkBindingOpt null;
-      K = mkBindingOpt null;
-      L = mkBindingOpt null;
-      M = mkBindingOpt "Mail";
-      N = mkBindingOpt "Notes";
-      O = mkBindingOpt null;
-      P = mkBindingOpt "com.1password.1password";
-      Q = mkBindingOpt "System Settings";
-      R = mkBindingOpt null;
-      S = mkBindingOpt null;
-      T = mkBindingOpt "iTerm2";
-      U = mkBindingOpt null;
-      V = mkBindingOpt "Visual Studio Code";
-      W = mkBindingOpt null;
-      X = mkBindingOpt null;
-      Y = mkBindingOpt "com.spotify.client";
-      Z = mkBindingOpt "us.zoom.xos";
-      "0x2C" = # aka "/"
-        mkBindingOpt null;
-
-      # Do not use these:
-      # "0x2B" = null # , -- this is bound globally by MacOS
-      # "0x2F" = null # . -- this is bound globally by MacOS `sysdiagnose`
+    bindings = mkOption {
+      type = types.attrsOf (types.nullOr my-types.binding);
+      default = { };
+      apply = value: lib.filterAttrs (k: _: lib.elem k allowedKeys) value;
+      description = "Map of MEH+Command keys to app launch bindings.";
     };
   };
 
   config = mkIf cfg.enable {
     ${namespace} = {
-      skhd = mkIf (cfg.backend == "skhd") {
+      hammerspoon = {
         enable = mkForce true;
-        appLaunchBinds = cfg.appLaunchBinds;
-      };
-
-      hammerspoon = mkIf (cfg.backend == "hammerspoon") {
-        enable = mkForce true;
-        appLaunchBinds = cfg.appLaunchBinds;
+        appLauncherBinds = lib.traceValSeq (lib.recursiveUpdate defaultBindings cfg.bindings);
       };
     };
   };

@@ -21,7 +21,7 @@ in
     homebrew = {
       enable = true;
       casks = [
-        "hammerspoon" # used for keyboard hotkeys to launch and focus apps, instead of skhd
+        "hammerspoon"
       ];
     };
   };
