@@ -136,7 +136,7 @@ in
     ${namespace} = {
       hammerspoon = {
         enable = mkForce true;
-        appLauncherBinds = lib.traceValSeq (lib.recursiveUpdate defaultBindings cfg.bindings);
+        appLauncherBinds = lib.recursiveUpdate defaultBindings cfg.bindings;
       };
     };
   };

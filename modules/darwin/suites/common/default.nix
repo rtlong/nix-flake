@@ -58,6 +58,8 @@ in
 
     security.pam.services.sudo_local.touchIdAuth = true;
 
+    system.primaryUser = config.primaryUser.name;
+
     rtlong = {
       nix = enabled;
 

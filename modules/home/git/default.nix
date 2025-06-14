@@ -215,7 +215,7 @@ in
       git-lfs
       git-get
       git-open
-      git-cola
+      # git-cola
       git-crypt
       git-doc
       # git-graph

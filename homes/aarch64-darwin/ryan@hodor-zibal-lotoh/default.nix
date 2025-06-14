@@ -61,7 +61,7 @@ in
     duckdb
     ext4fuse
     inkscape-with-extensions
-    keepassxc
+    # keepassxc # BROKEN
     macfuse-stubs
     rtlong.open-webui
     pgadmin4-desktopmode
