@@ -18,7 +18,7 @@ let
     hostname: remoteFlakeLocation:
     pkgs.writeShellScriptBin "deploy-${hostname}" ''
       git add -A .
-      rsync -aP ./ ${hostname}:${remoteFlakeLocation} 
+      rsync -aP --delete ./ ${hostname}:${remoteFlakeLocation}
       ssh -t ${hostname} sudo nixos-rebuild --verbose   --flake ${remoteFlakeLocation} switch
     '';
 in
@@ -27,5 +27,6 @@ mkShell {
   packages = with pkgs; [
     (deployScript "optiplex" "./nix-flake")
     (deployScript "odroid" "./nix-flake")
+    (deployScript "silo-1" "./nix-flake")
   ];
 }
