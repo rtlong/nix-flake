@@ -23,6 +23,7 @@ in
   };
 
   config = mkIf cfg.enable {
+    # FIXME: have Hammerspoon watch this file
     home.file.".hammerspoon/app-launch-binds.json".text = builtins.toJSON cfg.appLauncherBinds;
   };
 }
