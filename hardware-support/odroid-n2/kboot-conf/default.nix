@@ -11,8 +11,7 @@ let
   cfg = config.boot.loader.kboot-conf;
 
   # The builder used to write during system activation
-  builder = pkgs.substituteAll {
-    src = ./generate-kboot-conf.sh;
+  builder = pkgs.replaceVars ./generate-kboot-conf.sh {
     isExecutable = true;
     path = [
       pkgs.coreutils
@@ -22,8 +21,7 @@ let
     inherit (pkgs) bash;
   };
   # The builder exposed in populateCmd, which runs on the build architecture
-  populateBuilder = pkgs.buildPackages.substituteAll {
-    src = ./generate-kboot-conf.sh;
+  populateBuilder = pkgs.buildPackages.replaceVars ./generate-kboot-conf.sh {
     isExecutable = true;
     path = with pkgs.buildPackages; [
       coreutils
