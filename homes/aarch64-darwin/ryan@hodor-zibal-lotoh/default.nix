@@ -33,6 +33,10 @@ in
           type = "appName";
           value = "Home Assistant";
         };
+        I = {
+          type = "appName";
+          value = "BusyCal";
+        };
         K = {
           type = "appName";
           value = "Yubico Authenticator";
@@ -48,6 +52,10 @@ in
         U = {
           type = "appName";
           value = "Perplexity";
+        };
+        W = {
+          type = "appName";
+          value = "Sonos";
         };
       };
     };
