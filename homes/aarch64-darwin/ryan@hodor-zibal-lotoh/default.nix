@@ -33,6 +33,10 @@ in
           type = "appName";
           value = "Home Assistant";
         };
+        I = {
+          type = "appName";
+          value = "BusyCal";
+        };
         K = {
           type = "appName";
           value = "Yubico Authenticator";
@@ -49,6 +53,10 @@ in
           type = "appName";
           value = "Perplexity";
         };
+        W = {
+          type = "appName";
+          value = "Sonos";
+        };
       };
     };
   };
@@ -64,6 +72,7 @@ in
     # keepassxc # BROKEN
     macfuse-stubs
     rtlong.open-webui
+    restic
     pgadmin4-desktopmode
     tailscale
     vlc-bin-universal

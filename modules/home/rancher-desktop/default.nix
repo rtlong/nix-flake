@@ -5,18 +5,15 @@
   ...
 }:
 let
-  inherit (lib) mkIf mkOption types;
+  inherit (lib) mkIf;
+  inherit (lib.${namespace}) mkBoolOpt;
 
   cfg = config.${namespace}.rancher-desktop;
 in
 {
   options = {
     ${namespace}.rancher-desktop = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Enable Rancher Desktop support (install Rancher Desktop separately!)";
-      };
+      enable = mkBoolOpt false "Enable Rancher Desktop support (install Rancher Desktop separately!)";
     };
   };
 

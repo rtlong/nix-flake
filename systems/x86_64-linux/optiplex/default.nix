@@ -216,7 +216,7 @@
     };
 
     services.transmission = {
-      enable = true;
+      enable = false;
       openFirewall = true;
       user = "ryan";
       home = "/data/downloads";
@@ -354,6 +354,27 @@
           }
         ];
       };
+    };
+
+    ## Containers
+    # Enable Podman in configuration.nix
+    virtualisation.podman = {
+      enable = true;
+      # Create the default bridge network for podman
+      defaultNetwork.settings.dns_enabled = true;
+    };
+
+    # Optionally, create a Docker compatibility alias
+    programs.zsh.shellAliases = {
+      docker = "podman";
+    };
+
+    ${namespace}.smart-monitoring = {
+      enable = true;
+      devices = [
+        { device = "/dev/sda"; }
+        { device = "/dev/nvme0"; }
+      ];
     };
 
     # TODO: set up paperless via Kubernetes instead

@@ -65,6 +65,8 @@ in
         curl
         dig
         dosfstools
+        efibooteditor
+        efibootmgr
         findutils
         fzf
         gawk

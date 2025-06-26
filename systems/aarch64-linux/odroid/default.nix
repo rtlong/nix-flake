@@ -22,29 +22,29 @@
   networking.hostId = "7e075a6b"; # provide a unique 32-bit ID, primarily for use by ZFS. This one was derived from /etc/machine-id
 
   boot = {
-    kernelPackages = lib.mkForce config.boot.zfs.package.latestCompatibleLinuxPackages;
-    supportedFilesystems = {
-      zfs = lib.mkForce true;
-    };
+    # kernelPackages = lib.mkForce config.boot.zfs.package.latestCompatibleLinuxPackages;
+    # supportedFilesystems = {
+    #   zfs = lib.mkForce true;
+    # };
 
     initrd = {
       availableKernelModules = [
         "usb_storage"
         "usbhid"
       ];
-      kernelModules = [ "zfs" ];
+      # kernelModules = [ "zfs" ];
     };
   };
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    hfsprogs
+    # hfsprogs
     vlc
     brave
     tailscale
-    zfs
-    zfstools
-    ddrescue
+    # zfs
+    # zfstools
+    # ddrescue
   ];
 
   # Enable the X11 windowing system.
