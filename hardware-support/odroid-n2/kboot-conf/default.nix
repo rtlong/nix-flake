@@ -11,24 +11,34 @@ let
   cfg = config.boot.loader.kboot-conf;
 
   # The builder used to write during system activation
-  builder = pkgs.replaceVars ./generate-kboot-conf.sh {
+  builder = pkgs.replaceVarsWith {
+    src = ./generate-kboot-conf.sh;
     isExecutable = true;
-    path = [
-      pkgs.coreutils
-      pkgs.gnused
-      pkgs.gnugrep
-    ];
-    inherit (pkgs) bash;
+
+    replacements = {
+      path = with pkgs; [
+        coreutils
+        gnused
+        gnugrep
+      ];
+      inherit (pkgs) bash;
+    };
   };
   # The builder exposed in populateCmd, which runs on the build architecture
-  populateBuilder = pkgs.buildPackages.replaceVars ./generate-kboot-conf.sh {
+  populateBuilder = pkgs.buildPackages.replaceVarsWith {
+    src = ./generate-kboot-conf.sh;
     isExecutable = true;
-    path = with pkgs.buildPackages; [
-      coreutils
-      gnused
-      gnugrep
-    ];
-    inherit (pkgs.buildPackages) bash;
+
+    replacements = {
+
+      # isExecutable = true;
+      path = with pkgs.buildPackages; [
+        coreutils
+        gnused
+        gnugrep
+      ];
+      inherit (pkgs.buildPackages) bash;
+    };
   };
 in
 {
