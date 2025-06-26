@@ -198,11 +198,15 @@ in
         "~/.ssh/config.d/*"
       ];
 
-      matchBlocks = {
-        "*".extraOptions = {
-          IdentityAgent = ''"~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"'';
-        };
-      };
+      matchBlocks =
+        if (lib.snowfall.system.is-darwin system) then
+          {
+            "*".extraOptions = {
+              IdentityAgent = ''"~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"'';
+            };
+          }
+        else
+          { };
     };
 
     home.sessionVariables = {

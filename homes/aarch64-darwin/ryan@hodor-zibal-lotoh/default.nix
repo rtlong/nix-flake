@@ -72,6 +72,7 @@ in
     # keepassxc # BROKEN
     macfuse-stubs
     rtlong.open-webui
+    restic
     pgadmin4-desktopmode
     tailscale
     vlc-bin-universal

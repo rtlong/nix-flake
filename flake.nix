@@ -39,8 +39,9 @@
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
-
     };
+
+    disko.url = "github:nix-community/disko";
   };
 
   outputs =
@@ -75,7 +76,7 @@
 
       systems.modules.nixos = with inputs; [
         sops-nix.nixosModules.sops
-
+        disko.nixosModules.disko
       ];
       systems.modules.darwin = with inputs; [
         mac-app-util.darwinModules.default # enables Alfred/Spotlight to launch nix-controlled apps correctly
