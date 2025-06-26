@@ -149,11 +149,7 @@ in
 
   programs.zsh.initContent = ''
     function with-creds() {
-      if [[ -z $AWS_VAULT ]]; then
-        op run -- $@
-      else
-        command $@
-      fi
+      op run -- $@
     }
   '';
 
