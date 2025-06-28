@@ -161,6 +161,7 @@ in
     github-cli
     lnav
     rtlong.open-webui
+    restic
     pgadmin-rds-password-helper
     pgadmin4-desktopmode
     ssm-session-manager-plugin
