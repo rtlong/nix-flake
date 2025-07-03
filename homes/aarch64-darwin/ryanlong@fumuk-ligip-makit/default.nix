@@ -101,6 +101,10 @@ in
           type = "appName";
           value = "BusyCal";
         };
+        J = {
+          type = "braveProfile";
+          value = "devtools";
+        };
         K = {
           type = "appName";
           value = "Yubico Authenticator";
@@ -167,6 +171,7 @@ in
     ssm-session-manager-plugin
     tailscale
     yubikey-manager
+    # keepassxc # BROKEN
   ];
 
   services.syncthing = {
