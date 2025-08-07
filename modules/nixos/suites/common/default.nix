@@ -77,8 +77,10 @@ in
         gnutls
         gzip
         htop
+        iftop
         iotop
         jq
+        mc
         moreutils
         nawk
         nmap

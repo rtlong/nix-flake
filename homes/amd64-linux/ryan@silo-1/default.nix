@@ -26,6 +26,8 @@
 {
   rtlong = { };
   home.shellAliases = { };
-  home.packages = with pkgs; [ ];
+  home.packages = with pkgs; [
+    _1password-cli
+  ];
   home.stateVersion = "25.05";
 }

@@ -93,31 +93,10 @@
 
     ## Servies
 
-    # Enable CUPS to print documents.
-    services.printing = {
-      enable = true;
-      listenAddresses = [
-        "*:631"
-      ];
-      drivers = with pkgs; [
-        cups-dymo
-      ];
-      allowFrom = [ "all" ];
-      defaultShared = true;
-      browsing = true;
-      browsed.enable = true;
-      logLevel = "debug";
-      extraConf = ''
-        ServerAlias optiplex optiplex.liberty.rtlong.com optiplex.tailnet.rtlong.com
-      '';
-    };
-
     services.zfs = {
       autoScrub.enable = true;
       trim.enable = true;
     };
-
-    services.ollama.enable = true;
 
     services.kubo = {
       # IPFS
@@ -127,11 +106,7 @@
     services.tailscale = {
       enable = true;
       useRoutingFeatures = "client";
-      extraSetFlags = [
-        #"--accept-routes"
-        "--exit-node-allow-lan-access"
-        "--exit-node=100.89.129.123" # us-bos-wg-102.mullvad.ts.net
-      ];
+      extraSetFlags = [ ];
     };
 
     services.influxdb2 = {
@@ -172,107 +147,6 @@
         "downloaders"
         "users"
       ];
-    };
-
-    services.samba = {
-      enable = true;
-      openFirewall = true;
-      settings = {
-        global = {
-          security = "user";
-        };
-
-        media = {
-          "path" = "/data/media";
-          "browseable" = "yes";
-          "read only" = "yes";
-          "guest ok" = "no";
-          "create mask" = "0644";
-          "directory mask" = "0755";
-          "force user" = "ryan";
-          "force group" = "users";
-        };
-        downloads = {
-          "path" = "/data/downloads";
-          "browseable" = "yes";
-          "read only" = "yes";
-          "guest ok" = "no";
-          "create mask" = "0644";
-          "directory mask" = "0755";
-          "force user" = "ryan";
-          "force group" = "users";
-        };
-        inbox = {
-          "path" = "/data/inbox";
-          "browseable" = "yes";
-          "read only" = "no";
-          "guest ok" = "yes";
-          "create mask" = "0644";
-          "directory mask" = "0755";
-          "force user" = "ryan";
-          "force group" = "users";
-        };
-      };
-    };
-
-    services.transmission = {
-      enable = false;
-      openFirewall = true;
-      user = "ryan";
-      home = "/data/downloads";
-
-      webHome = pkgs.flood-for-transmission;
-
-      settings = {
-        rpc-bind-address = "0.0.0.0";
-        rpc-whitelist-enabled = false;
-        rpc-host-whitelist-enabled = false;
-        script-torrent-done-enabled = true;
-        script-torrent-done-filename = ./bin/organize_downloads.sh;
-      };
-    };
-
-    systemd.timers.organizeMedia = {
-      wantedBy = [ "timers.target" ];
-      timerConfig = {
-        OnBootSec = "5min";
-        OnUnitActiveSec = "15min";
-        Persistent = true;
-      };
-    };
-
-    systemd.services.organizeMedia = {
-      description = "Organize media into Jellyfin folders";
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStart = "${pkgs.bash}/bin/bash ${./bin/organize_downloads.sh}";
-        WorkingDirectory = "/";
-      };
-    };
-
-    services.jellyfin = {
-      enable = true;
-      openFirewall = true;
-      user = "jellyfin";
-    };
-    users.users.jellyfin.extraGroups = [
-      "video"
-      "render"
-    ];
-    # enable hardware acceleration in Jellyfin
-    systemd.services.jellyfin = {
-      environment = {
-        LIBVA_DRIVER_NAME = "iHD";
-      };
-      serviceConfig = {
-        SupplementaryGroups = [ "render" ];
-        DevicePolicy = "auto";
-        DeviceAllow = [ "/dev/dri/renderD128" ];
-      };
-    };
-    hardware.opengl = {
-      enable = true;
-      extraPackages = with pkgs; [ intel-media-driver ]; # or intel-vaapi-driver if iHD still fails
     };
 
     services.k3s = {
@@ -446,12 +320,6 @@
       zfs
       zfstools
       mlocate
-
-      # for Jellyfin HW acceleration:
-      jellyfin-ffmpeg
-      vaapiIntel
-      intel-media-driver
-      libva-utils
     ];
 
     ### END

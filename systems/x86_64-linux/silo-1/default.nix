@@ -168,6 +168,34 @@
       group = "users";
     };
 
+    services.tailscale = {
+      enable = true;
+      useRoutingFeatures = "client";
+      extraSetFlags = [
+        #"--accept-routes"
+        "--exit-node-allow-lan-access"
+        "--exit-node=100.89.129.123" # us-bos-wg-102.mullvad.ts.net
+      ];
+    };
+
+    services.restic = {
+      server = {
+        enable = true;
+        dataDir = "/tank/restic";
+        extraFlags = [
+          "--debug"
+        ];
+      };
+    };
+
+    services.pinchflat = {
+      enable = true;
+      mediaDir = "/tank/public-media/youtube";
+      user = "pinchflat";
+      group = "media";
+      selfhosted = true;
+    };
+
     users.users.syncthing = {
       extraGroups = [
         "media"
@@ -175,6 +203,46 @@
         "users"
       ];
     };
+    users.users.pinchflat = {
+      extraGroups = [
+        "media"
+        "downloaders"
+      ];
+    };
+
+    services.qbittorrent = {
+      enable = true;
+      port = 8056;
+    };
+    users.users.${config.services.qbittorrent.user}.extraGroups = [
+      "media"
+    ];
+
+    services.jellyfin = {
+      enable = true;
+      openFirewall = true;
+      user = "jellyfin";
+    };
+    users.users.${config.services.jellyfin.user}.extraGroups = [
+      "video"
+      "media"
+      "render"
+    ];
+    # enable hardware acceleration in Jellyfin
+    # systemd.services.jellyfin = {
+    #   environment = {
+    #     LIBVA_DRIVER_NAME = "iHD";
+    #   };
+    #   serviceConfig = {
+    #     SupplementaryGroups = [ "render" ];
+    #     DevicePolicy = "auto";
+    #     DeviceAllow = [ "/dev/dri/renderD128" ];
+    #   };
+    # };
+    # hardware.opengl = {
+    #   enable = true;
+    #   extraPackages = with pkgs; [ intel-media-driver ]; # or intel-vaapi-driver if iHD still fails
+    # };
 
     ## Containers
     # Enable Podman in configuration.nix
@@ -204,6 +272,7 @@
           sudo nixos-install --root /mnt/ --flake ./nix-flake\#silo-1-usb-standby --no-root-password
         '';
       })
+
       # for Jellyfin HW acceleration:
       # jellyfin-ffmpeg
       # vaapiIntel
