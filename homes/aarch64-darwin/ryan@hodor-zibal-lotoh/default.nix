@@ -77,6 +77,14 @@ in
     tailscale
     vlc-bin-universal
     yubikey-manager
+    claude-code
+
+    gh
+    erlang
+    elixir
+    elixir-ls
+    hex
+    rebar3
   ];
 
   services.syncthing = {

@@ -66,6 +66,7 @@
             "spotify"
             "1password"
             "1password-cli"
+            "claude-code"
           ];
       };
 
