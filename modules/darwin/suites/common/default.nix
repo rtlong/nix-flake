@@ -49,7 +49,7 @@ in
         nmap
         openssh
         openssl
-        unixtools.nettools
+        unixtools.net-tools
         ripgrep
         ripgrep-all
         wget

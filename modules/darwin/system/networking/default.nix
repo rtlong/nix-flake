@@ -21,17 +21,13 @@ in
       #   "1.1.1.1"
       #   "8.8.8.8"
       # ];
-    };
 
-    system.defaults = {
       # firewall settings
-      alf = {
-        # 0 = disabled 1 = enabled 2 = blocks all connections except for essential services
-        globalstate = 1;
-        loggingenabled = 0;
-        stealthenabled = 0;
-        allowdownloadsignedenabled = 1;
-        allowsignedenabled = 1;
+      applicationFirewall = {
+        enable = true;
+        enableStealthMode = false;
+        allowSignedApp = true;
+        allowSigned = true;
       };
     };
   };

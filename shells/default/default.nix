@@ -29,5 +29,7 @@ mkShell {
     (deployScript "optiplex" "./nix-flake")
     (deployScript "odroid" "./nix-flake")
     (deployScript "silo-1" "./nix-flake")
+
+    git
   ];
 }
