@@ -11,10 +11,12 @@ let
 
   cfg = config.${namespace}.emacs;
 
-  basePkg = (pkgs.emacs30-pgtk.override {
-    withNativeCompilation = false; # TODO: reenable this once bug is resolved properly
-  });
-  emacsPkg = basePkg; #(pkgs.emacsPackagesFor basePkg).emacsWithPackages (epkgs: [ # TODO: reenable this once bug is resolved properly
+  basePkg = (
+    pkgs.emacs30-pgtk.override {
+      withNativeCompilation = false; # TODO: reenable this once bug is resolved properly
+    }
+  );
+  emacsPkg = basePkg; # (pkgs.emacsPackagesFor basePkg).emacsWithPackages (epkgs: [ # TODO: reenable this once bug is resolved properly
   #   epkgs.vterm
   # ]);
 
@@ -57,7 +59,7 @@ in
       binutils # native-comp needs 'as', provided by this
 
       ## Doom dependencies
-      gitFull
+      gitMinimal
       ripgrep
       gnutls # for TLS connectivity
 

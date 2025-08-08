@@ -36,7 +36,7 @@ in
         findutils
         fzf
         gawk
-        gitFull
+        gitMinimal
         gnugrep
         gnupg
         gnused

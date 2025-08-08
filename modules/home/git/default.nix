@@ -42,7 +42,7 @@ in
       userEmail = config.primaryUser.email;
       userName = config.primaryUser.fullName;
 
-      package = pkgs.gitFull;
+      package = pkgs.gitMinimal;
       ignores = [
         ".project"
         "*.lck"
