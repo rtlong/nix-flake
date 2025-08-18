@@ -20,7 +20,7 @@ let
       set -euo pipefail
       git add -A .
       rsync -aP --delete ./ ${hostname}:${remoteFlakeLocation}
-      ssh -t ${hostname} sudo nixos-rebuild --flake ${remoteFlakeLocation} switch
+      ssh -t ${hostname} -- sudo nixos-rebuild --flake \~/${remoteFlakeLocation} switch
     '';
 in
 mkShell {

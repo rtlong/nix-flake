@@ -2,18 +2,19 @@
   config,
   lib,
   pkgs,
+  namespace,
   ...
 }:
 
 with lib;
 
 let
-  cfg = config.services.qbittorrent;
+  cfg = config.${namespace}.qbittorrent;
   UID = 888;
   GID = 888;
 in
 {
-  options.services.qbittorrent = {
+  options.${namespace}.qbittorrent = {
     enable = mkEnableOption (lib.mdDoc "qBittorrent headless");
 
     dataDir = mkOption {
@@ -29,6 +30,14 @@ in
       default = "qbittorrent";
       description = lib.mdDoc ''
         User account under which qBittorrent runs.
+      '';
+    };
+
+    userExtraGroups = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      description = lib.mdDoc ''
+        Extra group names to add to the user that qBittorrent runs as.
       '';
     };
 
@@ -118,7 +127,9 @@ in
     users.users = mkIf (cfg.user == "qbittorrent") {
       qbittorrent = {
         group = cfg.group;
+        extraGroups = cfg.userExtraGroups;
         uid = UID;
+        isSystemUser = true;
       };
     };
 

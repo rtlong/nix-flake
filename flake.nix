@@ -26,11 +26,6 @@
 
     mac-app-util.url = "github:hraban/mac-app-util";
 
-    spicetify-nix = {
-      url = "github:Gerg-L/spicetify-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     emacs-overlay = {
       url = "github:nix-community/emacs-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -67,6 +62,7 @@
             "1password"
             "1password-cli"
             "claude-code"
+            "netdata"
           ];
       };
 
@@ -85,7 +81,6 @@
 
       ];
       homes.modules = with inputs; [
-        spicetify-nix.homeManagerModules.default
         sops-nix.homeManagerModules.sops
         mac-app-util.homeManagerModules.default
       ];

@@ -80,7 +80,6 @@ in
 {
 
   rtlong = {
-    spotify.enable = true;
     emacs.enable = true;
 
     app-launcher-hotkeys = {
@@ -130,26 +129,25 @@ in
     };
   };
 
-  home.shellAliases =
-    {
-      tf = "terraform";
-      dc = "docker compose";
-    }
-    // (listToAttrs (
-      map
-        (cmd: {
-          name = cmd;
-          value = "with-creds ${cmd}";
-        })
-        [
-          "rails"
-          "sidekiq"
-          "overmind"
-          "terraform"
-          "init-deployment"
-          "aws"
-        ]
-    ));
+  home.shellAliases = {
+    tf = "terraform";
+    dc = "docker compose";
+  }
+  // (listToAttrs (
+    map
+      (cmd: {
+        name = cmd;
+        value = "with-creds ${cmd}";
+      })
+      [
+        "rails"
+        "sidekiq"
+        "overmind"
+        "terraform"
+        "init-deployment"
+        "aws"
+      ]
+  ));
 
   programs.zsh.initContent = ''
     function with-creds() {

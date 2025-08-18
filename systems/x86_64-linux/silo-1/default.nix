@@ -17,6 +17,31 @@
   ];
 
   config = {
+    ${namespace} = {
+      suites.server.enable = true;
+
+      # SMART monitoring
+      smart-monitoring = {
+        enable = true;
+        devices = [
+          { device = "dev/disk/by-id/nvme-Lexar_SSD_NM790_4TB_QB4263W100817P220J"; }
+          { device = "dev/disk/by-id/nvme-FIKWOT_FN955_4TB_AA251730044"; }
+          { device = "dev/disk/by-id/nvme-Lexar_SSD_NM790_4TB_QB4263W101865P220J"; }
+          { device = "dev/disk/by-id/nvme-FIKWOT_FN955_4TB_AA251740100"; }
+          { device = "dev/disk/by-id/nvme-Lexar_SSD_NM790_4TB_QB6866W100062P220J"; }
+          { device = "dev/disk/by-id/nvme-FIKWOT_FN955_4TB_AA251730134"; }
+        ];
+      };
+
+      qbittorrent = {
+        enable = true;
+        port = 8056;
+        userExtraGroups = [
+          "media"
+        ];
+      };
+    };
+
     boot = {
       loader = {
         systemd-boot.enable = true;
@@ -134,19 +159,6 @@
 
     ## Services
 
-    # SMART monitoring
-    ${namespace}.smart-monitoring = {
-      enable = true;
-      devices = [
-        { device = "dev/disk/by-id/nvme-Lexar_SSD_NM790_4TB_QB4263W100817P220J"; }
-        { device = "dev/disk/by-id/nvme-FIKWOT_FN955_4TB_AA251730044"; }
-        { device = "dev/disk/by-id/nvme-Lexar_SSD_NM790_4TB_QB4263W101865P220J"; }
-        { device = "dev/disk/by-id/nvme-FIKWOT_FN955_4TB_AA251740100"; }
-        { device = "dev/disk/by-id/nvme-Lexar_SSD_NM790_4TB_QB6866W100062P220J"; }
-        { device = "dev/disk/by-id/nvme-FIKWOT_FN955_4TB_AA251730134"; }
-      ];
-    };
-
     services.zfs = {
       autoScrub.enable = true;
       trim.enable = true;
@@ -209,14 +221,6 @@
         "downloaders"
       ];
     };
-
-    services.qbittorrent = {
-      enable = true;
-      port = 8056;
-    };
-    users.users.${config.services.qbittorrent.user}.extraGroups = [
-      "media"
-    ];
 
     services.jellyfin = {
       enable = true;

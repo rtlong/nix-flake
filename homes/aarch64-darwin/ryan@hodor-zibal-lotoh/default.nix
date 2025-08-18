@@ -23,7 +23,6 @@ let
 in
 {
   rtlong = {
-    spotify.enable = true;
     emacs.enable = true;
     rancher-desktop.enable = true;
 
@@ -85,6 +84,8 @@ in
     elixir-ls
     hex
     rebar3
+    uv
+    nodejs
   ];
 
   services.syncthing = {
@@ -98,17 +99,16 @@ in
     overrideFolders = false;
   };
 
-  home.shellAliases =
-    {
-      tf = "terraform";
-      dc = "docker compose";
-    }
-    // (listToAttrs (
-      map (cmd: {
-        name = cmd;
-        value = "with-creds ${cmd}";
-      }) [ "terraform" ]
-    ));
+  home.shellAliases = {
+    tf = "terraform";
+    dc = "docker compose";
+  }
+  // (listToAttrs (
+    map (cmd: {
+      name = cmd;
+      value = "with-creds ${cmd}";
+    }) [ "terraform" ]
+  ));
 
   programs.zsh.initContent = ''
     function with-creds() {

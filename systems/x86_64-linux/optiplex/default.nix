@@ -27,6 +27,19 @@
   imports = [ ./hardware-configuration.nix ];
 
   config = {
+    ${namespace} = {
+      # nb: only one of these "dynamic attributes" can exist in this attrset
+      suites.server.enable = true;
+
+      smart-monitoring = {
+        enable = true;
+        devices = [
+          { device = "/dev/sda"; }
+          { device = "/dev/nvme0"; }
+        ];
+      };
+    };
+
     sops = {
       # This will add secrets.yml to the nix store
       # You can avoid this by adding a string to the full path instead, i.e.
@@ -149,12 +162,12 @@
       ];
     };
 
-    services.k3s = {
-      enable = true;
-      extraFlags = [
-        "--tls-san=optiplex,optiplex.liberty.rtlong.com,optiplex.tailnet.rtlong.com"
-      ];
-    };
+    # services.k3s = {
+    #   enable = true;
+    #   extraFlags = [
+    #     "--tls-san=optiplex,optiplex.liberty.rtlong.com,optiplex.tailnet.rtlong.com"
+    #   ];
+    # };
 
     security.acme = {
       acceptTerms = true;
@@ -241,14 +254,6 @@
     # Optionally, create a Docker compatibility alias
     programs.zsh.shellAliases = {
       docker = "podman";
-    };
-
-    ${namespace}.smart-monitoring = {
-      enable = true;
-      devices = [
-        { device = "/dev/sda"; }
-        { device = "/dev/nvme0"; }
-      ];
     };
 
     # TODO: set up paperless via Kubernetes instead
