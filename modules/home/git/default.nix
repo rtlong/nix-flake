@@ -101,6 +101,7 @@ in
         com = "checkout master";
         d = "diff --word-diff";
         dc = "diff --cached";
+        diff-plain = "!git -c core.pager=cat -c interactive.diffFilter=cat diff ";
         f = "fetch";
         fe = "fetch";
         ff = "merge --ff-only";

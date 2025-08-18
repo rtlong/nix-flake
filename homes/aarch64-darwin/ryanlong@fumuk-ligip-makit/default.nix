@@ -11,13 +11,14 @@ let
     pkgs.writeShellApplication {
       name = "aws-vault";
       runtimeEnv = {
-        AWS_VAULT_BACKEND = "file";
+        AWS_VAULT_BACKEND = "pass";
+        AWS_VAULT_PASS_CMD = "${pkgs.gopass}/bin/gopass";
         AWS_SESSION_TOKEN_TTL = "36h";
       };
       excludeShellChecks = [ "SC2209" ];
       text = ''
-        exec env AWS_VAULT_FILE_PASSPHRASE="$(${pkgs._1password-cli}/bin/op --account my read op://qvutxi2zizeylilt23rflojdky/c5nz76at6k6vqx4cxhday5yg7u/password)" \
-          "${pkgs.aws-vault}/bin/aws-vault" "$@"
+        export AWS_VAULT_PASS_PASSWORD_STORE_DIR="''${HOME}/.local/share/gopass/stores/root";
+        exec "${pkgs.aws-vault}/bin/aws-vault" "$@"
       '';
     }
   );
@@ -162,14 +163,19 @@ in
     echo-exec
     github-cli
     lnav
-    rtlong.open-webui
-    restic
+    gopass
+    # pinentry-touchid
     pgadmin-rds-password-helper
     pgadmin4-desktopmode
+    restic
+    rtlong.aider
+    rtlong.open-webui
     ssm-session-manager-plugin
     tailscale
     yubikey-manager
-    # keepassxc # BROKEN
+
+    # The following are desired but broken; installed the old-fashioned way instead:
+    # keepassxc
   ];
 
   services.syncthing = {
