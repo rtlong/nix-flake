@@ -83,6 +83,8 @@ in
   rtlong = {
     emacs.enable = true;
 
+    # librechat.enable = true;
+
     app-launcher-hotkeys = {
       bindings = {
         B = {
@@ -159,19 +161,22 @@ in
   home.packages = with pkgs; [
     aws-vault-wrapper
     awscli
+    claude-code
     derive-password
     echo-exec
+    elixir
+    gh
     github-cli
-    lnav
     gopass
-    # pinentry-touchid
+    hex
+    lnav
+    nodejs
     pgadmin-rds-password-helper
     pgadmin4-desktopmode
     restic
-    rtlong.aider
-    rtlong.open-webui
     ssm-session-manager-plugin
     tailscale
+    uv
     yubikey-manager
 
     # The following are desired but broken; installed the old-fashioned way instead:

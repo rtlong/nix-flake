@@ -63,6 +63,7 @@
             "1password-cli"
             "claude-code"
             "netdata"
+            "mongodb"
           ];
       };
 
