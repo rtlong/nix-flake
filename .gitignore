@@ -3,4 +3,3 @@ result
 .direnv
 .devenv
 __pycache__/
-.claude/settings.local.json

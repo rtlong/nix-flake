@@ -67,7 +67,7 @@ in
 
         ".zsh_history"
 
-        ".claude/settings.local.json"
+        "**/.claude/settings.local.json"
       ];
 
       aliases = {
