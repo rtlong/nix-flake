@@ -42,6 +42,9 @@ in
       utm
       _1password-cli # -- op CLI tool
       xbar
+      terminal-notifier
+
+      rtlong.git-auto-sync
     ];
   };
 }

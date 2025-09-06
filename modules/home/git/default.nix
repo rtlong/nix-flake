@@ -1,20 +1,13 @@
 {
   lib,
   pkgs,
-  inputs,
   namespace,
-  system,
-  target,
-  format,
-  virtual,
-  host,
   config,
   ...
 }:
 let
-  inherit (builtins) map listToAttrs;
   inherit (lib) mkIf;
-  inherit (lib.${namespace}) enabled mkBoolOpt;
+  inherit (lib.${namespace}) mkBoolOpt;
 
   cfg = config.${namespace}.git;
 in
@@ -73,6 +66,8 @@ in
         "docker-compose.override.yml"
 
         ".zsh_history"
+
+        ".claude/settings.local.json"
       ];
 
       aliases = {
