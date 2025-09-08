@@ -29,6 +29,9 @@ let
       # repo_root_format = "[$before_root_path]($style)[$repo_root$path]($repo_root_style)[$read_only]($read_only_style) ";
 
       substitutions = {
+        "~/Code/github.com/opencounter/opencounter" = "/OC/oc";
+        "~/Code/github.com/opencounter/terraform" = "/OC/tf";
+        "~/Code/github.com/opencounter/" = "/OC/";
         "~/Code/github.com/" = " ";
       };
     };
@@ -70,6 +73,7 @@ in
     };
 
     # define another file with a simpler prompt for use in embedded terminals (eg. in IDE)
-    xdg.configFile."starship_simple.toml".source = toml.generate "starship_simple.toml" cfg.simpleConfig;
+    xdg.configFile."starship_simple.toml".source =
+      toml.generate "starship_simple.toml" cfg.simpleConfig;
   };
 }

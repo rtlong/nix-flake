@@ -64,6 +64,7 @@
             "claude-code"
             "netdata"
             "mongodb"
+            "ngrok"
           ];
       };
 

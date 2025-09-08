@@ -165,12 +165,14 @@ in
     derive-password
     echo-exec
     elixir
+    erlang
     gh
     github-cli
     gopass
     hex
     lnav
     nodejs
+    ngrok
     pgadmin-rds-password-helper
     pgadmin4-desktopmode
     restic
