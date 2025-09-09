@@ -176,7 +176,6 @@ in
     pgadmin-rds-password-helper
     pgadmin4-desktopmode
     restic
-    rtlong.aider
     rtlong.open-webui
     ssm-session-manager-plugin
     tailscale
