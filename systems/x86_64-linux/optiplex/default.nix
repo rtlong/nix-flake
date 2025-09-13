@@ -162,30 +162,7 @@
       ];
     };
 
-    # services.k3s = {
-    #   enable = true;
-    #   extraFlags = [
-    #     "--tls-san=optiplex,optiplex.liberty.rtlong.com,optiplex.tailnet.rtlong.com"
-    #   ];
-    # };
-
     security.acme = {
-      acceptTerms = true;
-      defaults = {
-        email = "ryan@rtlong.com";
-        dnsProvider = "route53";
-        dnsPropagationCheck = false;
-        credentialFiles = {
-          AWS_CONFIG_FILE = config.sops.secrets.aws_credentials.path;
-        };
-        environmentFile = pkgs.writeText "lego-config" ''
-          # do not follow CNAME on the _acme-challenge record, since *.optiplex.tailnet.rtlong.com resolves all subdomains
-          LEGO_DISABLE_CNAME_SUPPORT=true
-          LEGO_DEBUG_CLIENT_VERBOSE_ERROR=true
-          LEGO_DEBUG_ACME_HTTP_CLIENT=true
-        '';
-      };
-
       certs = {
         "webdav.optiplex.tailnet.rtlong.com" = {
           group = "users";
@@ -193,17 +170,6 @@
         };
       };
     };
-
-    # systemd.units."secrets-test.service" = {
-    #   text = ''
-    #     [Service]
-    #     Environment="AWS_CONFIG_FILE=%d/AWS_CONFIG_FILE"
-    #     LoadCredential=AWS_CONFIG_FILE:/run/secrets/aws_credentials
-    #     ExecStartPre=${pkgs.busybox}/bin/env
-    #     ExecStartPre=/run/current-system/sw/bin/cat $AWS_CONFIG_FILE
-    #     ExecStart=${pkgs.awscli}/bin/aws --debug sts get-caller-identity
-    #   '';
-    # };
 
     # security.pam.services.webdav = { };
     services.webdav = {

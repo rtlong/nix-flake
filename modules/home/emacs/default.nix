@@ -13,12 +13,12 @@ let
 
   basePkg = (
     pkgs.emacs30-pgtk.override {
-      withNativeCompilation = false; # TODO: reenable this once bug is resolved properly
+      withNativeCompilation = true;
     }
   );
-  emacsPkg = basePkg; # (pkgs.emacsPackagesFor basePkg).emacsWithPackages (epkgs: [ # TODO: reenable this once bug is resolved properly
-  #   epkgs.vterm
-  # ]);
+  emacsPkg = (pkgs.emacsPackagesFor basePkg).emacsWithPackages (epkgs: [
+    epkgs.vterm
+  ]);
 
 in
 {

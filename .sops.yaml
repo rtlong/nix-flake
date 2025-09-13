@@ -1,6 +1,8 @@
+# server keys are most likely the result of ssh-to-age (using the ssh host key)
 keys:
   - &admin_rtlong age1yckhkkdjmern0s3enutzllwm7chnzm5f98x09mquz5s8jqmdnv5q0n7vnv
   - &server_optiplex age1nx74q598cz4v5qx2w4l49aj2aescm3755579tdja8ggtqzaz2ggs0fslwk
+  - &server_silo_1 age1pr934c94sp6e0wyc4qxz4tqlfr5r98jn0s97xnmx3muemr0znscs595apk
 
 creation_rules:
   - path_regex: systems/.+?/optiplex/secrets/.*
@@ -8,3 +10,8 @@ creation_rules:
       - age:
         - *admin_rtlong
         - *server_optiplex
+  - path_regex: systems/.+?/silo-1/secrets/.*
+    key_groups:
+      - age:
+        - *admin_rtlong
+        - *server_silo_1

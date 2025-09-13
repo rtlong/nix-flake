@@ -42,6 +42,27 @@
       };
     };
 
+    sops = {
+      # This will add secrets.yml to the nix store
+      # You can avoid this by adding a string to the full path instead, i.e.
+      # defaultSopsFile = "/root/.sops/secrets/example.yaml";
+      defaultSopsFile = ./secrets/default.yaml;
+      defaultSopsFormat = "yaml";
+
+      age = {
+        # This will automatically import SSH keys as age keys
+        sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+      };
+      # This is the actual specification of the secrets.
+      secrets = {
+        # example-key = {
+        # sopsFile = ""; # override the defaultSopsFile, per secret
+        # };
+        "aws_credentials" = { }; # TODO why must I declare this one but not the git_server_ca_cert one?
+
+      };
+    };
+
     boot = {
       loader = {
         systemd-boot.enable = true;
@@ -164,6 +185,62 @@
       trim.enable = true;
     };
 
+    services.git-server = {
+      enable = true;
+      repoPath = "/tank/git";
+      domainName = "git.liberty.rtlong.com git.silo-1.tailnet.rtlong.com";
+      repos = [
+        "org-mode"
+      ];
+      port = 8013;
+    };
+
+    systemd.services.caddy = {
+      unitConfig.After = [ "sops-nix.service" ];
+      environment.AWS_CONFIG_FILE = config.sops.secrets.aws_credentials.path;
+    };
+
+    sops.secrets.aws_credentials = {
+      owner = "caddy";
+      group = "caddy";
+    };
+
+    services.samba = {
+      enable = true;
+      securityType = "user";
+      openFirewall = true;
+      settings = {
+        global = {
+          "workgroup" = "WORKGROUP";
+          "server string" = "silo-1";
+          "netbios name" = "silo-1";
+          "security" = "user";
+          #"use sendfile" = "yes";
+          #"max protocol" = "smb2";
+          # note: localhost is the ipv6 localhost ::1
+          "hosts allow" = "100. 192.168.8. 127.0.0.1 localhost";
+          "hosts deny" = "0.0.0.0/0";
+          "guest account" = "nobody";
+          "map to guest" = "bad user";
+        };
+        "public-media" = {
+          "path" = "/tank/public-media";
+          "browseable" = "yes";
+          "read only" = "no";
+          "guest ok" = "yes";
+          "create mask" = "0644";
+          "directory mask" = "0755";
+          # "force user" = "media";
+          # "force group" = "media";
+        };
+      };
+    };
+
+    services.samba-wsdd = {
+      enable = true;
+      openFirewall = true;
+    };
+
     services.kubo = {
       # IPFS
       enable = true;
@@ -187,7 +264,9 @@
         #"--accept-routes"
         "--exit-node-allow-lan-access"
         "--exit-node=100.89.129.123" # us-bos-wg-102.mullvad.ts.net
+        "--operator=${config.primaryUser.name}"
       ];
+      permitCertUid = config.services.caddy.user;
     };
 
     services.restic = {

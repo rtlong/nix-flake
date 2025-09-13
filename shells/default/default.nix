@@ -31,5 +31,6 @@ mkShell {
     (deployScript "silo-1" "./nix-flake")
 
     git
+    ssh-to-age
   ];
 }
