@@ -192,9 +192,16 @@ in
         gitget = {
           root = "~/Code";
         };
-      };
 
+        http = {
+          "https://git.liberty.rtlong.com:1234/" = {
+            sslCert = "${config.home.homeDirectory}/.config/git/certs/liberty.rtlong.com.crt";
+            sslKey = "${config.home.homeDirectory}/.config/git/certs/liberty.rtlong.com.key";
+          };
+        };
+      };
     };
+
     home.packages = with pkgs; [
       git-lfs
       git-get
