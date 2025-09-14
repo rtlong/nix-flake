@@ -153,7 +153,7 @@
 
     ## Networking
     networking = {
-      useDHCP = lib.mkDefault true;
+      useDHCP = false; # Disable the default networking, as we'll use systemd-networkd instead (see .systemd.network)
       hostName = "silo-1"; # Define your hostname.
       hostId = "e3e5cefd"; # provide a unique 32-bit ID, primarily for use by ZFS. This one was derived from /etc/machine-id
       # interfaces.enp1s0.useDHCP = lib.mkDefault true;
@@ -163,8 +163,35 @@
 
       firewall.enable = false; # Disable the firewall altogether.
     };
+
+    systemd.network = {
+      enable = true;
+      networks."10-lan" = {
+        matchConfig.Name = "enp2s0";
+
+        linkConfig.RequiredForOnline = "routable";
+
+        networkConfig = {
+          Address = "192.168.8.92/24";
+          Gateway = "192.168.8.1";
+          DNS = [ "192.168.8.1" ];
+        };
+
+        routingPolicyRules = [
+          {
+            # This rule catches packets that *originate* from the local node AND have set the source field to its own IP. Most traffic that is created on the node will not set source before this rule is evaluated, so will not be caught. Anything going to the main table will *skip* the Tailscale exit-node setup, which is the default otherwise.
+            # Effect: Return traffic from the router to this node, back to the router! ie. ensure port-forwarding works -- without this packets arrive but returned traffic is sent via tailscale exit node and never reach client
+            From = "192.168.8.92";
+            Table = "main";
+            Priority = 4900;
+          }
+        ];
+      };
+      wait-online.enable = true;
+    };
+
     systemd.services.NetworkManager-wait-online.enable = lib.mkForce false;
-    systemd.services.systemd-networkd-wait-online.enable = lib.mkForce false;
+    systemd.services.systemd-networkd-wait-online.enable = true;
 
     ## Users
     primaryUser = {
@@ -262,7 +289,7 @@
       useRoutingFeatures = "client";
       extraSetFlags = [
         #"--accept-routes"
-        "--exit-node-allow-lan-access"
+        "--exit-node-allow-lan-access=true"
         "--exit-node=100.89.129.123" # us-bos-wg-102.mullvad.ts.net
         "--operator=${config.primaryUser.name}"
       ];
