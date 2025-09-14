@@ -20,7 +20,8 @@ let
 
     setenv.add-environment = (
       "GIT_PROJECT_ROOT" => "${cfg.repoPath}",
-      "GIT_HTTP_EXPORT_ALL" => ""
+      "GIT_HTTP_EXPORT_ALL" => "",
+      "REMOTE_USER" => "git-user"
     )
 
     cgi.assign = ( "" => "" )
@@ -71,6 +72,9 @@ in
         }
 
         reverse_proxy localhost:${toString cfg.port} {
+          header_up X-Remote-User {tls_client_subject_cn}
+          header_up X-Client-DN {tls_client_subject}
+
           transport http {
             read_timeout 300s
           }
