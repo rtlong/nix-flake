@@ -25,7 +25,8 @@ let
     "--listen-address=${bind}"
     "--port=${toString port}"
     "--no-daemon"
-  ] ++ (map (domain: "--address=/${domain}/127.0.0.1") cfg.domains);
+  ]
+  ++ (map (domain: "--address=/${domain}/127.0.0.1") cfg.domains);
 in
 {
   options.${namespace}.dnsmasq-dev-domains = with types; {
@@ -41,7 +42,7 @@ in
       serviceConfig.ProgramArguments = [
         "/bin/sh"
         "-c"
-        "/bin/wait4path ${package} &amp;&amp; exec ${package}/bin/dnsmasq ${toString args}"
+        "/bin/wait4path ${package} && exec ${package}/bin/dnsmasq ${toString args}"
       ];
       serviceConfig.StandardOutPath = /var/log/dnsmasq.log;
       serviceConfig.StandardErrorPath = /var/log/dnsmasq.log;
