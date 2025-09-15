@@ -57,8 +57,6 @@ in
       };
 
       globalConfig = ''
-        debug
-
         acme_dns route53 {
             max_retries 10
             aws_profile "default"

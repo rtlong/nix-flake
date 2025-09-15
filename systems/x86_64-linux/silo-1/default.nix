@@ -217,7 +217,6 @@
       repoPath = "/tank/git";
       domainName = "git.liberty.rtlong.com git.silo-1.tailnet.rtlong.com";
       repos = [
-        "org-mode"
       ];
       port = 8013;
     };

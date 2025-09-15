@@ -3,6 +3,7 @@
   config,
   lib,
   pkgs,
+  namespace,
   ...
 }:
 
@@ -79,7 +80,17 @@ in
             read_timeout 300s
           }
         }
+
+        log {
+          output stderr
+          format json
+          level INFO
+        }
       '';
+    };
+    sops.secrets.${cfg.client_tls_ca_cert_sops_key} = {
+      owner = "caddy";
+      group = "caddy";
     };
 
     # Run git-http-backend with lighttpd
@@ -105,12 +116,20 @@ in
     users.users.git = {
       isSystemUser = true;
       group = "git";
+      shell = "${pkgs.git}/bin/git-shell";
+      openssh = {
+        authorizedKeys.keys = lib.${namespace}.humans.ryan.sshPublicKeys ++ [
+          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC/NDT8FaVhbwsgrYgo75Y2qqfELT1Cwu6mrbyw9DhAqrGHn5qOl9jmlVQCIOI7q+ovOH1DpuWmppZL9zXK84J6NnVS7U0xMfdh6miI9qpvquJJXfZPZi3diGeE58zG4Q/Vi6EW2bjIYA6Yo2cf8mD7IvVWJcX/MSiKI9msi8mMrOBlYgXmBUJX/Qo7v2HtHD5XB13GY00eP6bPchQbBOKam7SO8UJPXKEMe84EXHwHVOOJaSJVulzra5fL1cWlG1bj3CRIPXnOsgmAdEk1eSMZi74DOFAOGx5nfkJDyiNVv4Kc9Wugmsq89BRCl61N52CJzJG7/GiVZ+9BhkexPLI+lgxWXRmoq0Bfc97faqlRxYle4fpkjmyHt7U/AXFqWDMPg/5YQqzbLhXy48yBATTJWo5gCFXuv28iJKoLU8OsUlUZz9Gdq2qsddMLocA8UJ1fjpyexlzcUoQ21xO8kgqLoHTzdpwxWTfETdDfxRynfytxh59EVLjRzZW4yROHtXYFSJCXfdEWZkt/YpxyHvT6xY6aVGA+lNA8Zh2NKQsFj8PgBONMDT3dp3WkFF3ChCCaQH+qK2ImlfoplzShFWmTimgMtd6seFssPzuZQLaX87e6EJ4iSxn/Lw1pa/xnln/5efFMWfrjGeAkAbH7Bdjrc8ro50XRUCacT8+xo8ePCQ== WorkingCopy@iPhone-01092025"
+          "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBN7I7Co3pfKtHdOPtpq8oDjjfg3yPRSJ2+F2mmFo3gXG4iPLBq729lKy6kGOG3rCMzqMKIMHcu04aWHKP6UVcZQ= a-shell@iphone"
+        ];
+      };
     };
-    users.groups.git = { };
+    users.groups.git = {
+      members = [
+        "git"
+        "ryan"
+      ];
+    };
 
-    sops.secrets.${cfg.client_tls_ca_cert_sops_key} = {
-      owner = "caddy";
-      group = "caddy";
-    };
   };
 }
