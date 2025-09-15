@@ -233,14 +233,13 @@
 
     services.samba = {
       enable = true;
-      securityType = "user";
       openFirewall = true;
       settings = {
         global = {
-          "workgroup" = "WORKGROUP";
+          security = "user";
+          workgroup = "WORKGROUP";
           "server string" = "silo-1";
           "netbios name" = "silo-1";
-          "security" = "user";
           #"use sendfile" = "yes";
           #"max protocol" = "smb2";
           # note: localhost is the ipv6 localhost ::1
@@ -250,8 +249,8 @@
           "map to guest" = "bad user";
         };
         "public-media" = {
-          "path" = "/tank/public-media";
-          "browseable" = "yes";
+          path = "/tank/public-media";
+          browseable = "yes";
           "read only" = "no";
           "guest ok" = "yes";
           "create mask" = "0644";
