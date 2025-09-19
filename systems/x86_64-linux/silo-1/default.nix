@@ -197,6 +197,13 @@
             Table = "main";
             Priority = 4900;
           }
+          {
+            # Route all traffic destined for the local LAN through the main table instead of Tailscale exit node
+            # This allows the node to directly access other LAN devices
+            To = "192.168.8.0/24";
+            Table = "main";
+            Priority = 4800;
+          }
         ];
       };
       wait-online.enable = true;
