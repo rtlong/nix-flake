@@ -40,6 +40,14 @@
           "media"
         ];
       };
+
+      mouse-trap-checker = {
+        enable = true;
+        ha_url = "http://192.168.8.195:8123";
+        # ha_token_secret = config.sops.homeassistant_token.path;
+        camera_ha_entity_id = "camera.mousetrap_cam_camera";
+        image_url = "http://192.168.8.237:8081";
+      };
     };
 
     sops = {
@@ -58,10 +66,18 @@
         # example-key = {
         # sopsFile = ""; # override the defaultSopsFile, per secret
         # };
-        "aws_credentials" = { }; # TODO why must I declare this one but not the git_server_ca_cert one?
+        aws_credentials = {
+          owner = "caddy";
+          group = "caddy";
+        };
+        homeassistant_token = {
+          group = "applications";
+
+        };
 
       };
     };
+    users.groups.applications = { };
 
     boot = {
       loader = {
@@ -219,10 +235,6 @@
     systemd.services.caddy = {
       unitConfig.After = [ "sops-nix.service" ];
       environment.AWS_CONFIG_FILE = config.sops.secrets.aws_credentials.path;
-    };
-    sops.secrets.aws_credentials = {
-      owner = "caddy";
-      group = "caddy";
     };
 
     services.samba = {
