@@ -156,11 +156,7 @@
       useDHCP = false; # Disable the default networking, as we'll use systemd-networkd instead (see .systemd.network)
       hostName = "silo-1"; # Define your hostname.
       hostId = "e3e5cefd"; # provide a unique 32-bit ID, primarily for use by ZFS. This one was derived from /etc/machine-id
-      # interfaces.enp1s0.useDHCP = lib.mkDefault true;
-      # interfaces.enp2s0.useDHCP = lib.mkDefault true;
-      # interfaces.wlo1.useDHCP = lib.mkDefault true;
       networkmanager.enable = true;
-
       firewall.enable = false; # Disable the firewall altogether.
     };
 
@@ -216,8 +212,7 @@
       enable = true;
       repoPath = "/tank/git";
       domainName = "git.liberty.rtlong.com git.silo-1.tailnet.rtlong.com";
-      repos = [
-      ];
+      repos = [ ];
       port = 8013;
     };
 
@@ -225,7 +220,6 @@
       unitConfig.After = [ "sops-nix.service" ];
       environment.AWS_CONFIG_FILE = config.sops.secrets.aws_credentials.path;
     };
-
     sops.secrets.aws_credentials = {
       owner = "caddy";
       group = "caddy";
@@ -258,8 +252,21 @@
           # "force user" = "media";
           # "force group" = "media";
         };
+        "homeassistant-backups" = {
+          path = "/tank/backups/homeassistant";
+        };
+        "homeassistant-storage" = {
+          path = "/tank//homeassistant";
+        };
       };
     };
+
+    users.users.homeassistant = {
+      group = "homeassistant";
+      initialHashedPassword = "$y$j9T$4GCQiiph0vT3/NWjs9lbL/$HDpZf0eApNMSWIZm7FRsAYchiPiVo.GAUSmzJeORd52";
+      isSystemUser = true;
+    };
+    users.groups.homeassistant = { };
 
     services.samba-wsdd = {
       enable = true;
