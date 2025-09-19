@@ -47,10 +47,14 @@ let
       type = "appName";
       value = "Messages";
     };
+    # H = {};
     I = {
       type = "appName";
       value = "Calendar";
     };
+    # J = {};
+    # K = {};
+    # L = {};
     M = {
       type = "appName";
       value = "Mail";
@@ -59,6 +63,7 @@ let
       type = "appName";
       value = "Notes";
     };
+    # O = {};
     P = {
       type = "appBundleIdentifier";
       value = "com.1password.1password";
@@ -67,14 +72,19 @@ let
       type = "appName";
       value = "System Settings";
     };
+    # R = {};
+    # S = {};
     T = {
       type = "appName";
       value = "iTerm2";
     };
+    # U = {};
     V = {
       type = "nixApp";
       value = "Visual Studio Code";
     };
+    # W = {};
+    # X = {};
     Y = {
       type = "nixApp";
       value = "Spotify";

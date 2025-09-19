@@ -50,7 +50,7 @@ in
         };
         U = {
           type = "appName";
-          value = "Perplexity";
+          value = "Claude";
         };
         W = {
           type = "appName";
