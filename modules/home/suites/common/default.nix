@@ -96,48 +96,47 @@ in
 
     programs.htop = {
       enable = true;
-      settings =
-        {
-          show_program_path = true;
-          color_scheme = 6;
-          cpu_count_from_one = 0;
-          delay = 15;
-          fields = with config.lib.htop.fields; [
-            PID
-            USER
-            PRIORITY
-            NICE
-            M_SIZE
-            M_RESIDENT
-            M_SHARE
-            STATE
-            PERCENT_CPU
-            PERCENT_MEM
-            TIME
-            COMM
-          ];
-          highlight_base_name = 1;
-          highlight_megabytes = 1;
-          highlight_threads = 1;
-        }
-        // (
-          with config.lib.htop;
-          leftMeters [
-            (bar "AllCPUs2")
-            (bar "Memory")
-            (bar "Swap")
-            (text "Zram")
-          ]
-        )
-        // (
-          with config.lib.htop;
-          rightMeters [
-            (text "Tasks")
-            (text "LoadAverage")
-            (text "Uptime")
-            (text "Systemd")
-          ]
-        );
+      settings = {
+        show_program_path = true;
+        color_scheme = 6;
+        cpu_count_from_one = 0;
+        delay = 15;
+        fields = with config.lib.htop.fields; [
+          PID
+          USER
+          PRIORITY
+          NICE
+          M_SIZE
+          M_RESIDENT
+          M_SHARE
+          STATE
+          PERCENT_CPU
+          PERCENT_MEM
+          TIME
+          COMM
+        ];
+        highlight_base_name = 1;
+        highlight_megabytes = 1;
+        highlight_threads = 1;
+      }
+      // (
+        with config.lib.htop;
+        leftMeters [
+          (bar "AllCPUs2")
+          (bar "Memory")
+          (bar "Swap")
+          (text "Zram")
+        ]
+      )
+      // (
+        with config.lib.htop;
+        rightMeters [
+          (text "Tasks")
+          (text "LoadAverage")
+          (text "Uptime")
+          (text "Systemd")
+        ]
+      );
 
     };
 
@@ -166,6 +165,20 @@ in
 
       initContent = ''
         xtrace() { printf >&2 '+ %s\n' "$*"; "$@"; }
+
+        devenv-init() {
+          [[ -f flake.nix ]] && exit 1
+
+          nix flake init --template github:cachix/devenv || return 1
+
+          # Ensure .gitignore exists and add entries if not present
+          touch .gitignore
+          for pattern in ".devenv" ".direnv"; do
+              grep -qxF "$pattern" .gitignore 2>/dev/null || echo "$pattern" >> .gitignore
+          done
+
+          direnv allow
+        }
 
         autoload -U select-word-style
         select-word-style bash
