@@ -34,7 +34,7 @@
       };
 
       qbittorrent = {
-        enable = true;
+        enable = false;
         port = 8056;
         userExtraGroups = [
           "media"
