@@ -14,6 +14,7 @@ let
     types
     mkEnableOption
     ;
+  inherit (lib.strings) floatToString;
   # inherit (lib.${namespace}) mkBoolOpt mkOpt;
 
   cfg = config.${namespace}.mouse-trap-checker;
@@ -36,7 +37,7 @@ let
         HA_TOKEN=$(cat "${config.sops.secrets.${cfg.ha_token_secret_key}.path}")
         export HA_TOKEN
       fi
-      elixir ${./mouse_trap_checker.exs}
+      elixir --sname mouse-monitor --cookie chocolate-chip  ${./mouse_trap_checker.exs}
     '';
   };
 in
@@ -59,6 +60,10 @@ in
 
     image_url = mkOption {
       type = types.str;
+    };
+    difference_threshold = mkOption {
+      type = types.float;
+      default = 10000.0;
     };
   };
 
@@ -95,6 +100,7 @@ in
           "HA_URL=${cfg.ha_url}"
           "CAMERA_ENTITY=${cfg.camera_ha_entity_id}"
           "CAMERA_URL=${cfg.image_url}"
+          "DIFFERENCE_THRESHOLD=${floatToString cfg.difference_threshold}"
         ];
 
         # Logging

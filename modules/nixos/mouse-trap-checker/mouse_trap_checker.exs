@@ -25,7 +25,7 @@ defmodule MouseMonitor do
       camera_url: System.get_env("CAMERA_URL") || raise("CAMERA_URL not set"),
       ha_url: System.get_env("HA_URL") || raise("HA_URL not set"),
       ha_token: System.get_env("HA_TOKEN") || raise("HA_TOKEN not set"),
-      light_entity: System.get_env("LIGHT_ENTITY", "light.mouse_camera_light"),
+      light_entity: System.get_env("LIGHT_ENTITY", "switch.mousetrap_cam_flash"),
       check_interval_ms:
         String.to_integer(System.get_env("CHECK_INTERVAL_MINUTES", "15"), 10) * 60 * 1000,
       threshold: System.get_env("DIFFERENCE_THRESHOLD", "200.0") |> String.to_float()
@@ -70,7 +70,7 @@ defmodule MouseMonitor do
     # Turn on light
     control_light(config, true)
     # Wait for exposure adjustment
-    Process.sleep(3000)
+    Process.sleep(8000)
 
     # Capture image
     response = HTTPoison.get!(config.camera_url)
@@ -85,7 +85,7 @@ defmodule MouseMonitor do
     service = if on, do: "turn_on", else: "turn_off"
 
     HTTPoison.post!(
-      "#{config.ha_url}/api/services/light/#{service}",
+      "#{config.ha_url}/api/services/switch/#{service}",
       Jason.encode!(%{entity_id: config.light_entity}),
       [
         {"Authorization", "Bearer #{config.ha_token}"},
@@ -107,6 +107,8 @@ defmodule MouseMonitor do
       System.cmd(
         "compare",
         [
+          "-fuzz",
+          "5%",
           "-metric",
           "MAE",
           @reference_image,
@@ -116,6 +118,7 @@ defmodule MouseMonitor do
         stderr_to_stdout: true
       )
 
+    Logger.info(output)
     difference = parse_difference(output)
     Logger.info("Difference: #{difference} (threshold: #{config.threshold})")
 

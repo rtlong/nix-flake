@@ -104,6 +104,13 @@
       name = "downloaders";
     };
 
+    programs.nix-ld.enable = true;
+    programs.nix-ld.libraries = with pkgs; [
+      # Add any missing dynamic libraries for unpackaged programs
+      # here, NOT in environment.systemPackages
+      cmake
+      ninja
+    ];
     ## Servies
 
     services.zfs = {
@@ -113,7 +120,7 @@
 
     services.kubo = {
       # IPFS
-      enable = true;
+      enable = false;
     };
 
     services.tailscale = {
@@ -208,6 +215,163 @@
         ];
       };
     };
+
+    services.mosquitto = {
+      enable = true;
+      listeners = [
+        {
+          acl = [ "pattern readwrite #" ];
+          omitPasswordAuth = true;
+          settings.allow_anonymous = true;
+          address = "0.0.0.0";
+          port = 1883;
+        }
+      ];
+    };
+
+    services.frigate = {
+      enable = true;
+      checkConfig = false;
+      hostname = "frigate.optiplex.tailnet.rtlong.com";
+
+      settings = {
+        mqtt = {
+          enabled = true;
+          host = "localhost";
+          port = 1883;
+        };
+
+        detectors = {
+          cpu1 = {
+            type = "cpu";
+            num_threads = 4;
+          };
+        };
+
+        ffmpeg = {
+          hwaccel_args = "preset-vaapi";
+        };
+
+        environment_vars = {
+          LIBVA_DRIVER_NAME = "iHD";
+        };
+
+        go2rtc.streams = {
+          mousetrap-cam = [
+            "ffmpeg:http://182.168.8.236:8080#video=h264#hardware"
+          ];
+        };
+
+        # Your cameras
+        cameras = {
+          entryway = {
+            ffmpeg = {
+              inputs = [
+                {
+                  path = "tcp://192.168.8.208:8090";
+                  input_args = "-f h264";
+                  roles = [
+                    "detect"
+                    "record"
+                  ];
+                }
+              ];
+            };
+            detect = {
+              enabled = true;
+              width = 1920;
+              height = 1080;
+              fps = 5;
+            };
+
+            motion = {
+              threshold = 30;
+              contour_area = 100;
+            };
+            objects = {
+              track = [
+                "person"
+                "car"
+                "dog"
+                "cat"
+              ];
+              filters = {
+                person = {
+                  min_area = 5000;
+                  threshold = 0.7;
+                };
+              };
+            };
+          };
+
+          # Add ESP32-CAM if you want
+          driveway = {
+            enabled = true; # Set true when ready
+            ffmpeg = {
+              inputs = [
+                {
+                  path = "rtsp://127.0.0.1:8554/mousetrap-cam";
+                  roles = [ "detect" ];
+                }
+              ];
+              input_args = "preset-rtsp-restream";
+              output_args.record = "preset-record-generic";
+            };
+            detect = {
+              enabled = true;
+              width = 1024;
+              height = 768;
+              fps = 5;
+            };
+          };
+        };
+
+        # record = {
+        #   events = {
+        #     retain = {
+        #       default = 14;
+        #       mode = "active_objects";
+        #     };
+        #   };
+        # };
+
+        # Global settings
+        snapshots = {
+          enabled = true;
+          timestamp = true;
+          bounding_box = true;
+        };
+
+        # Where to store everything
+        database = {
+          path = "/var/lib/frigate/frigate.db";
+        };
+
+        # Optional: Configure zones
+        # zones = {
+        #   front_door = {
+        #     coordinates = "0,720,640,720,640,360,0,360";
+        #     objects = [ "person" ];
+        #   };
+        # };
+      };
+    };
+
+    # Open firewall ports
+    networking.firewall.allowedTCPPorts = [
+      5000 # Frigate web UI
+      1883 # MQTT
+      8554 # RTSP relay (if using)
+      8555 # WebRTC
+    ];
+    networking.firewall.allowedUDPPorts = [ 8555 ];
+
+    # Ensure Frigate has storage
+    systemd.tmpfiles.rules = [
+      "d /var/lib/frigate 0750 frigate frigate -"
+      "d /var/lib/frigate/recordings 0750 frigate frigate -"
+      "d /var/lib/frigate/clips 0750 frigate frigate -"
+    ];
 
     ## Containers
     # Enable Podman in configuration.nix
