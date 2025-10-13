@@ -101,7 +101,7 @@ in
         };
         I = {
           type = "appName";
-          value = "BusyCal";
+          value = "Calendar";
         };
         J = {
           type = "braveProfile";
