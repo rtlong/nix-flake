@@ -20,9 +20,6 @@ in
     programs.git = {
       enable = true;
 
-      userEmail = config.primaryUser.email;
-      userName = config.primaryUser.fullName;
-
       package = pkgs.gitMinimal;
       ignores = [
         ".project"
@@ -70,62 +67,50 @@ in
         "**/.claude/settings.local.json"
       ];
 
-      aliases = {
-        a = "add";
-        aa = "add -A";
-        ae = "add --edit";
-        ap = "add --patch";
-        b = "branch";
-        br = "branch";
-        c = "commit -v";
-        ci = "commit -v";
-        ci-retry = "commit -F .git/COMMIT_EDITMSG --edit";
-        co = "checkout";
-        com = "checkout master";
-        d = "diff --word-diff";
-        dc = "diff --cached";
-        diff-plain = "!git -c core.pager=cat -c interactive.diffFilter=cat diff ";
-        f = "fetch";
-        fe = "fetch";
-        ff = "merge --ff-only";
-        l = "log";
-        lg = "log --graph --pretty=custom --date=relative";
-        ll = "log --graph --pretty=custom --date=relative";
-        lla = "log --graph --pretty=custom --date=relative --exclude=origin/pr/* --exclude=gh-pages --remotes=origin --branches=*";
-        llaa = "log --graph --pretty=custom --date=relative --all";
-        log-json = "log --pretty=json";
-        ls = "ls-files";
-        mc = "merge --no-ff";
-        mt = "mergetool";
-        ps = "push";
-        push-force = "push --force-with-lease";
-        rb = "rebase";
-        rbi = "rebase -i";
-        rbc = "rebase --continue";
-        rs = "reset";
-        s = "status -sb";
-        su = "submodule update --init";
-        cw = "commit --all --no-edit --message wip";
-      };
+      settings = {
+        user = {
+          email = config.primaryUser.email;
+          name = config.primaryUser.fullName;
+        };
 
-      # attributes = [""];
+        alias = {
+          a = "add";
+          aa = "add -A";
+          ae = "add --edit";
+          ap = "add --patch";
+          b = "branch";
+          br = "branch";
+          c = "commit -v";
+          ci = "commit -v";
+          ci-retry = "commit -F .git/COMMIT_EDITMSG --edit";
+          co = "checkout";
+          com = "checkout master";
+          d = "diff --word-diff";
+          dc = "diff --cached";
+          diff-plain = "!git -c core.pager=cat -c interactive.diffFilter=cat diff ";
+          f = "fetch";
+          fe = "fetch";
+          ff = "merge --ff-only";
+          l = "log";
+          lg = "log --graph --pretty=custom --date=relative";
+          ll = "log --graph --pretty=custom --date=relative";
+          lla = "log --graph --pretty=custom --date=relative --exclude=origin/pr/* --exclude=gh-pages --remotes=origin --branches=*";
+          llaa = "log --graph --pretty=custom --date=relative --all";
+          log-json = "log --pretty=json";
+          ls = "ls-files";
+          mc = "merge --no-ff";
+          mt = "mergetool";
+          ps = "push";
+          push-force = "push --force-with-lease";
+          rb = "rebase";
+          rbi = "rebase -i";
+          rbc = "rebase --continue";
+          rs = "reset";
+          s = "status -sb";
+          su = "submodule update --init";
+          cw = "commit --all --no-edit --message wip";
+        };
 
-      signing = {
-        signByDefault = true;
-        key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEZRO70wZDRS1UvbBxoA4X+RPfOrisXYX162V6z8mkVa";
-        signer = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
-        format = "ssh";
-      };
-
-      lfs = {
-        enable = true;
-      };
-
-      delta = {
-        enable = true;
-      };
-
-      extraConfig = {
         color = {
           branch = "auto";
           diff = "auto";
@@ -200,6 +185,25 @@ in
           };
         };
       };
+
+      signing = {
+        signByDefault = true;
+        key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEZRO70wZDRS1UvbBxoA4X+RPfOrisXYX162V6z8mkVa";
+        signer = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+        format = "ssh";
+      };
+
+      lfs = {
+        enable = true;
+      };
+
+      extraConfig = {
+      };
+    };
+
+    programs.delta = {
+      enable = true;
+      enableGitIntegration = true;
     };
 
     home.packages = with pkgs; [
