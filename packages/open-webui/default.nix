@@ -16,6 +16,6 @@
     export UV_NO_MANAGED_PYTHON=true
     export UV_PYTHON="${pkgs.python311}"
     cd "$DATA_DIR"
-    exec ${pkgs.uv}/bin/uvx open-webui@0.6.33 serve "$@"
+    exec ${pkgs.uv}/bin/uvx open-webui@latest serve "$@"
   '';
 })

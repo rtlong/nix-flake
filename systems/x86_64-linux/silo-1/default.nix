@@ -66,10 +66,10 @@
         # example-key = {
         # sopsFile = ""; # override the defaultSopsFile, per secret
         # };
-        aws_credentials = {
-          owner = "caddy";
-          group = "caddy";
-        };
+        # aws_credentials = {
+        #   owner = "caddy";
+        #   group = "caddy";
+        # };
         homeassistant_token = {
           group = "applications";
 
@@ -317,7 +317,7 @@
         "--exit-node=100.89.129.123" # us-bos-wg-102.mullvad.ts.net
         "--operator=${config.primaryUser.name}"
       ];
-      permitCertUid = config.services.caddy.user;
+      # permitCertUid = config.services.caddy.user;
     };
 
     services.restic = {
@@ -378,10 +378,22 @@
     #   extraPackages = with pkgs; [ intel-media-driver ]; # or intel-vaapi-driver if iHD still fails
     # };
 
+    services.searx = {
+      enable = true;
+      # redisCreateLocally = true;
+      settings.server = {
+        bind_address = "0.0.0.0";
+        port = 8077;
+        # WARNING: setting secret_key here might expose it to the nix cache
+        # see below for the sops or environment file instructions to prevent this
+        secret_key = "Your secret key.";
+      };
+    };
+
     ## Containers
     # Enable Podman in configuration.nix
     virtualisation.podman = {
-      enable = true;
+      enable = false;
       # Create the default bridge network for podman
       defaultNetwork.settings.dns_enabled = true;
     };
