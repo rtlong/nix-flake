@@ -131,6 +131,10 @@ in
           type = "appName";
           value = "Sonos";
         };
+        X = {
+          type = "appName";
+          value = "Trello";
+        };
 
       };
 
@@ -140,6 +144,7 @@ in
   home.shellAliases = {
     tf = "terraform";
     dc = "docker compose";
+    services = "overmind-start-or-connect -x app,worker";
   }
   // (listToAttrs (
     map
@@ -184,6 +189,7 @@ in
     rtlong.open-webui
     ssm-session-manager-plugin
     tailscale
+    teamocil
     uv
     yubikey-manager
 
