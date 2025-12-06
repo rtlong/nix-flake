@@ -387,7 +387,23 @@
         # WARNING: setting secret_key here might expose it to the nix cache
         # see below for the sops or environment file instructions to prevent this
         secret_key = "Your secret key.";
+        search = {
+          # ... other search settings ...
+          formats = [
+            "html"
+            "json"
+          ]; # Enable both HTML and JSON formats
+        };
+
+        # Or if you want to be more permissive:
+        server = {
+          # ... other server settings ...
+          limiter = false; # This might also help if rate limiting is blocking API access
+        };
       };
+    };
+    services.yacy = {
+      enable = true;
     };
 
     ## Containers
