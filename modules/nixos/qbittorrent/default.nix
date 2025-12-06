@@ -73,9 +73,82 @@ in
         The qbittorrent package to use.
       '';
     };
+
+    networkInterface = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = lib.mdDoc ''
+        Network interface to bind to (e.g., "tailscale0").
+        If null, qBittorrent will bind to all interfaces.
+      '';
+    };
+
+    settings = mkOption {
+      type = types.attrs;
+      default = { };
+      description = lib.mdDoc ''
+        Additional qBittorrent settings to be merged into qBittorrent.conf.
+        These will be converted to the INI format used by qBittorrent.
+      '';
+      example = literalExpression ''
+        {
+          Preferences = {
+            "WebUI\\Port" = 8080;
+            "Downloads\\SavePath" = "/var/lib/qbittorrent/downloads";
+          };
+        }
+      '';
+    };
+
+    webUI = {
+      passwordHash = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = lib.mdDoc ''
+          PBKDF2 password hash for the WebUI admin user.
+          If null, qBittorrent will generate a temporary password on startup.
+
+          To generate a hash, set a password in the qBittorrent WebUI, then copy
+          the value from WebUI\Password_PBKDF2 in qBittorrent.conf.
+        '';
+      };
+
+      subnetWhitelist = mkOption {
+        type = types.listOf types.str;
+        default = [ "100.0.0.0/8" ];  # Tailscale network
+        description = lib.mdDoc ''
+          List of IP subnets that are allowed to bypass authentication.
+        '';
+      };
+    };
   };
 
-  config = mkIf cfg.enable {
+  config = mkIf cfg.enable (let
+    # Generate qBittorrent.conf from settings
+    settingsFormat = pkgs.formats.ini { };
+
+    # Build WebUI preferences
+    webUIPrefs = (optionalAttrs (cfg.webUI.passwordHash != null) {
+      "WebUI\\Password_PBKDF2" = ''"@ByteArray(${cfg.webUI.passwordHash})"'';
+    }) // {
+      "WebUI\\Address" = "*";  # Listen on all interfaces
+      "WebUI\\AuthSubnetWhitelist" = concatStringsSep ", " cfg.webUI.subnetWhitelist;
+      "WebUI\\AuthSubnetWhitelistEnabled" = true;
+      "WebUI\\HostHeaderValidation" = false;
+      "WebUI\\LocalHostAuth" = false;
+    };
+
+    # Merge default settings with user settings and network interface config
+    finalSettings = cfg.settings // {
+      Preferences = (cfg.settings.Preferences or { }) //
+        (optionalAttrs (cfg.networkInterface != null) {
+          "Connection\\Interface" = cfg.networkInterface;
+          "Connection\\InterfaceName" = cfg.networkInterface;
+        }) // webUIPrefs;
+    };
+
+    configFile = settingsFormat.generate "qBittorrent.conf" finalSettings;
+  in {
     networking.firewall = mkIf cfg.openFirewall {
       allowedTCPPorts = [ cfg.port ];
     };
@@ -104,6 +177,22 @@ in
               if ! test -d "$QBT_PROFILE"; then
                 echo "Creating initial qBittorrent data directory in: $QBT_PROFILE"
                 install -d -m 0755 -o "${cfg.user}" -g "${cfg.group}" "$QBT_PROFILE"
+              fi
+
+              # Create config directory if it doesn't exist
+              config_dir="$QBT_PROFILE/qBittorrent/config"
+              if ! test -d "$config_dir"; then
+                echo "Creating qBittorrent config directory: $config_dir"
+                install -d -m 0755 -o "${cfg.user}" -g "${cfg.group}" "$config_dir"
+              fi
+
+              # Copy generated config file
+              config_file="$config_dir/qBittorrent.conf"
+              if test -f "${configFile}"; then
+                echo "Installing qBittorrent configuration from Nix store"
+                ${pkgs.coreutils}/bin/cp "${configFile}" "$config_file"
+                ${pkgs.coreutils}/bin/chown "${cfg.user}:${cfg.group}" "$config_file"
+                ${pkgs.coreutils}/bin/chmod 644 "$config_file"
               fi
             '';
           in
@@ -138,5 +227,5 @@ in
         gid = GID;
       };
     };
-  };
+  });
 }

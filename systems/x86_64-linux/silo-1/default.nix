@@ -36,6 +36,8 @@
       qbittorrent = {
         enable = true;
         port = 8056;
+        networkInterface = "tailscale0";
+        webUI.passwordHash = "hEo8gLFB8IQyZfxcAytYAg==:jJgLBJjuGoG39gQFHymezY4fht2XosKBHMlDSYdJ0Zz7+nwIMVlTKD8187a0+FrMSTVzejEphEvgl9xIUSyFgg==";
         userExtraGroups = [
           "media"
         ];
@@ -402,9 +404,9 @@
         };
       };
     };
-    services.yacy = {
-      enable = true;
-    };
+    # services.yacy = {
+    #   enable = true;
+    # };
 
     ## Containers
     # Enable Podman in configuration.nix
