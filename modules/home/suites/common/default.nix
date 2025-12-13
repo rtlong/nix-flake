@@ -227,6 +227,7 @@ in
       CODE_WORKSPACE_ROOT = repository_path;
 
       _ZO_FZF_OPTS = ''--extended --no-sort --bind=ctrl-z:ignore,btab:up,tab:down --cycle --keep-right --border=sharp --height=45% --info=inline --layout=reverse --tabstop=1 --exit-0  --preview='${pkgs.eza}/bin/eza --color=always -A -F -s oldest --group-directories-first {2..}' --preview-window=down,30%,sharp '';
+      _ZO_ECHO = "1";
     };
 
     home.packages = with pkgs; [
@@ -242,6 +243,7 @@ in
       sops
       direnv
       devenv
+      git-crypt
 
       docker-credential-helpers
     ];
