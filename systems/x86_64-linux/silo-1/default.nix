@@ -174,7 +174,7 @@
       useDHCP = false; # Disable the default networking, as we'll use systemd-networkd instead (see .systemd.network)
       hostName = "silo-1"; # Define your hostname.
       hostId = "e3e5cefd"; # provide a unique 32-bit ID, primarily for use by ZFS. This one was derived from /etc/machine-id
-      networkmanager.enable = true;
+      networkmanager.enable = false; # Disabled to avoid conflict with systemd-networkd
       firewall.enable = false; # Disable the firewall altogether.
     };
 
@@ -319,7 +319,7 @@
       extraSetFlags = [
         #"--accept-routes"
         "--exit-node-allow-lan-access=true"
-        "--exit-node=100.89.129.123" # us-bos-wg-102.mullvad.ts.net
+        "--exit-node=100.65.194.122" # us-qas-wg-101.mullvad.ts.net (Ashburn, VA)
         "--operator=${config.primaryUser.name}"
       ];
       # permitCertUid = config.services.caddy.user;
