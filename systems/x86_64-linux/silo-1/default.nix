@@ -216,7 +216,10 @@
 
     ## Users
     primaryUser = {
-      extraGroups = [ "media" ];
+      extraGroups = [
+        "media"
+        "restic"
+      ];
     };
 
     users.groups.media = {
