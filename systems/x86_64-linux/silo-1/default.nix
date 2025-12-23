@@ -68,10 +68,10 @@
         # example-key = {
         # sopsFile = ""; # override the defaultSopsFile, per secret
         # };
-        # aws_credentials = {
-        #   owner = "caddy";
-        #   group = "caddy";
-        # };
+        aws_credentials = {
+          owner = "caddy";
+          group = "caddy";
+        };
         homeassistant_token = {
           group = "applications";
 
@@ -243,11 +243,11 @@
       repos = [ ];
       port = 8013;
     };
-    # Re-enable with services.git-server
-    # systemd.services.caddy = {
-    #   unitConfig.After = [ "sops-nix.service" ];
-    #   environment.AWS_CONFIG_FILE = config.sops.secrets.aws_credentials.path;
-    # };
+    # Caddy systemd configuration for AWS credentials
+    systemd.services.caddy = {
+      unitConfig.After = [ "sops-nix.service" ];
+      environment.AWS_CONFIG_FILE = config.sops.secrets.aws_credentials.path;
+    };
 
     services.samba = {
       enable = true;
@@ -359,7 +359,7 @@
 
     services.jellyfin = {
       enable = true;
-      openFirewall = true;
+      openFirewall = false; # Behind Caddy reverse proxy
       user = "jellyfin";
     };
     users.users.${config.services.jellyfin.user}.extraGroups = [
@@ -367,6 +367,20 @@
       "media"
       "render"
     ];
+
+    # Caddy reverse proxy for Jellyfin with HTTPS
+    services.caddy.enable = true;
+    services.caddy.virtualHosts."jellyfin.rtlong.com" = {
+      extraConfig = ''
+        reverse_proxy localhost:8096
+
+        log {
+          output stderr
+          format json
+          level INFO
+        }
+      '';
+    };
     # enable hardware acceleration in Jellyfin
     # systemd.services.jellyfin = {
     #   environment = {

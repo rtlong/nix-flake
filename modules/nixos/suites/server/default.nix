@@ -53,7 +53,7 @@ in
     services.caddy = {
       package = pkgs.caddy.withPlugins {
         plugins = [ "github.com/rtlong/caddy-route53@v0.0.0-20250913055854-44d25892d70a" ];
-        hash = "sha256-yy4e43jx9VcsTHc3jUt0NzltSoA+TJDdFdabYibJTIw=";
+        hash = "sha256-CSJxg6Zu++CNSBJpxh38MFfjjDjWQp0/Xk8slSXDvSY=";
       };
 
       globalConfig = ''
