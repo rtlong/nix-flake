@@ -16,6 +16,10 @@
     export UV_NO_MANAGED_PYTHON=true
     export UV_PYTHON="${pkgs.python311}"
     cd "$DATA_DIR"
-    exec ${pkgs.uv}/bin/uvx open-webui serve "$@"
+    declare -a args
+    if [[ -n $OPEN_WEBUI_PORT ]]; then
+       args+=( "--port=$OPEN_WEBUI_PORT" )
+    fi
+    exec ${pkgs.uv}/bin/uvx open-webui serve "''${args[@]}" "$@"
   '';
 })
