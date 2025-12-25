@@ -1,5 +1,6 @@
 {
   pkgs,
+  config,
   ...
 }:
 let
@@ -83,6 +84,23 @@ in
     vlc-bin-universal
     yubikey-manager
   ];
+
+  launchd.agents.open-webui = {
+    enable = true;
+    config = {
+      EnvironmentVariables = {
+        OPEN_WEBUI_DATA_DIR = "${config.home.homeDirectory}/.open-webui";
+        OPEN_WEBUI_PORT = "8080";
+      };
+      KeepAlive = true;
+      RunAtLoad = true;
+      StandardOutPath = "${config.home.homeDirectory}/.open-webui/launchd-out.log";
+      StandardErrorPath = "${config.home.homeDirectory}/.open-webui/launchd-error.log";
+      ProgramArguments = [
+        "${pkgs.rtlong.open-webui}/bin/open-webui"
+      ];
+    };
+  };
 
   services.syncthing = {
     enable = true;
