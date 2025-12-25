@@ -26,6 +26,7 @@ in
   rtlong = {
     emacs.enable = true;
     rancher-desktop.enable = true;
+    mcp-broker.enable = true;
 
     app-launcher-hotkeys = {
       bindings = {
