@@ -56,6 +56,13 @@ in
       ];
     };
 
+    homebrew = {
+      enable = true;
+      brews = [
+        "mole"
+      ];
+    };
+
     security.pam.services.sudo_local = {
       enable = true;
       touchIdAuth = true;
