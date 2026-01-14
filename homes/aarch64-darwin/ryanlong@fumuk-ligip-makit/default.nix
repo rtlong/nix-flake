@@ -79,11 +79,10 @@ let
   );
 in
 {
-
   rtlong = {
     emacs.enable = true;
-
-    # librechat.enable = true;
+    mcp-broker.enable = true;
+    wezterm.enable = true;
 
     app-launcher-hotkeys = {
       bindings = {
@@ -122,6 +121,10 @@ in
         R = {
           type = "appName";
           value = "LM Studio";
+        };
+        T = {
+          type = "appName";
+          value = "WezTerm";
         };
         U = {
           type = "appName";

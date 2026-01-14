@@ -15,17 +15,7 @@ in
   imports = [ (lib.snowfall.fs.get-file "modules/shared/suites/common/default.nix") ];
 
   config = mkIf cfg.enable {
-    # programs.zsh.enable = true;
-    # programs.bash.enable = true;
-
     programs.nix-index.enable = true;
-
-    # homebrew = {
-    #   brews = [
-    #     "bashdb"
-    #     "gnu-sed"
-    #   ];
-    # };
 
     environment = {
       systemPackages = with pkgs; [
@@ -53,14 +43,13 @@ in
         ripgrep
         ripgrep-all
         wget
+        wezterm
       ];
     };
 
     homebrew = {
       enable = true;
-      brews = [
-        "mole"
-      ];
+      brews = [ ];
     };
 
     security.pam.services.sudo_local = {
@@ -73,10 +62,6 @@ in
 
     rtlong = {
       nix = enabled;
-
-      # tools = {
-      #   homebrew = enabled;
-      # };
 
       system = {
         fonts = enabled;

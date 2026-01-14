@@ -197,7 +197,7 @@ in
         enable = true;
       };
 
-      extraConfig = {
+      settings = {
       };
     };
 
