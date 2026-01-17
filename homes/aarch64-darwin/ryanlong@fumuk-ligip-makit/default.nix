@@ -175,6 +175,7 @@ in
     aws-vault-wrapper
     awscli
     claude-code
+    python3
     derive-password
     echo-exec
     elixir

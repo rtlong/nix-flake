@@ -49,6 +49,8 @@ config.keys = {
   { key = '-', mods = 'CTRL', action = act.DisableDefaultAssignment },
   { key = '=', mods = 'CTRL', action = act.DisableDefaultAssignment },
   { key = '0', mods = 'CTRL', action = act.DisableDefaultAssignment },
+  { key = '_', mods = 'CTRL', action = act.DisableDefaultAssignment },
+  { key = '_', mods = 'CTRL|SHIFT', action = act.DisableDefaultAssignment },
 
   -- Clear screen (CMD+K like iTerm)
   { key = 'k', mods = 'CMD|SHIFT', action = act.ClearScrollback 'ScrollbackAndViewport' },
@@ -61,10 +63,11 @@ config.keys = {
   { key = 'v', mods = 'CMD', action = act.PasteFrom 'Clipboard' },
 
   -- Fullscreen
-  { key = 'Return', mods = 'CMD|CTRL', action = act.ToggleFullScreen },
+  { key = 'Return', mods = 'CMD', action = act.ToggleFullScreen },
 
   -- Maximize pane (toggle)
   { key = 'z', mods = 'CMD', action = act.TogglePaneZoomState },
+  { key = 'Return', mods = 'CMD|SHIFT', action = act.TogglePaneZoomState },
 
   -- Reload config
   { key = 'r', mods = 'CMD|SHIFT', action = act.ReloadConfiguration },
@@ -119,8 +122,12 @@ config.hyperlink_rules = wezterm.default_hyperlink_rules()
 
 -- Make file paths clickable (with optional :line:col suffix)
 -- Use custom scheme so WezTerm doesn't handle it internally
+-- Matches:
+--   - Prefixed paths: ./relative, ../relative, /absolute, ~/home, ~user/home (extension optional)
+--   - Unprefixed paths: must contain / AND file extension (e.g., src/main.rs)
+-- Supports quoted/unquoted paths, paths in parentheses, stack traces with :in, etc.
 table.insert(config.hyperlink_rules, {
-  regex = [[((?:\.\.?)?/[A-Za-z0-9_\-./]+\.[A-Za-z0-9]+(?::\d+(?::\d+)?)?)]],
+  regex = [[(?<=^|[\s"'(])((?:(?:\.\.?|~[A-Za-z0-9_-]*)?/[^\s"'():,]+|[A-Za-z0-9_][A-Za-z0-9_/-]*/[^\s"'():,]*\.[A-Za-z0-9]+)(?::\d+(?::\d+)?)?)(?=[\s"'():,]|$)]],
   format = 'openineditor:$1',
 })
 
@@ -146,24 +153,25 @@ config.mouse_bindings = {
   },
 }
 
--- Open openineditor: URIs in VS Code
+-- Open openineditor: URIs by delegating to our Rust file handler
 wezterm.on('open-uri', function(window, pane, uri)
-  wezterm.log_error('URI received: ' .. uri)
   if uri:sub(1, 13) == 'openineditor:' then
     local path = uri:sub(14)
 
-    -- Resolve relative paths using pane's current working directory
-    if path:sub(1, 1) ~= '/' then
-      local cwd = pane:get_current_working_dir()
-      if cwd then
-        -- cwd is a URL object, get the file path
-        local cwd_path = cwd.file_path or cwd:sub(8) -- strip file:// if string
-        path = cwd_path .. '/' .. path
-      end
+    -- Get the current working directory
+    local cwd = pane:get_current_working_dir()
+    local cwd_path = ''
+
+    if cwd then
+      -- cwd is a URL object, convert to string and get the file path
+      local cwd_str = tostring(cwd)
+      cwd_path = cwd.file_path or cwd_str:sub(8) -- strip file:// prefix if string
     end
 
-    wezterm.log_error('Path resolved: ' .. path)
-    wezterm.run_child_process { '/etc/profiles/per-user/ryanlong/bin/code', '--goto', path }
+    -- Delegate to the Rust file handler for all the complex logic
+    -- The handler will: resolve paths, check existence, and open appropriately
+    wezterm.run_child_process { '@fileHandler@', path, cwd_path }
+
     return false
   end
 end)

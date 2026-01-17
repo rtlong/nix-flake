@@ -1,0 +1,14 @@
+[package]
+name = "wezterm-file-handler"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "wezterm_file_handler"
+path = "src/lib.rs"
+
+[[bin]]
+name = "wezterm-file-handler"
+path = "src/main.rs"
+
+[dependencies]

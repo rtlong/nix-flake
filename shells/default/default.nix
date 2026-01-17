@@ -32,5 +32,12 @@ mkShell {
 
     git
     ssh-to-age
+
+    # Rust toolchain for development
+    cargo
+    rustc
+    rust-analyzer
+    rustfmt
+    clippy
   ];
 }

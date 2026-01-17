@@ -3,3 +3,6 @@ result
 .direnv
 .devenv
 __pycache__/
+
+# Rust artifacts
+target/
